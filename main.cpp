@@ -1,5 +1,6 @@
 #include <vector>
 #include <iostream>
+#include <iomanip>
 #include <string>
 #include "Vector.hpp"
 
@@ -16,11 +17,16 @@ int main(int argc, char **argv)
 {
 	int *ptr;
 	void *ddd;
-	std::vector<int> t;
-	Vector p();
-	t.rbegin();
-	t.begin();
-	std::cout << sizeof(ddd) << std::endl;
-	std::cout << sizeof(std::vector<int>) << std::endl;
+	std::vector<int> t(10);
+	Vector p(10);
+	t.push_back(15);
+	t.push_back(15);
+	t.push_back(15);
+
+	p[2] = 1265465;
+
+	std::cout << p[2] << std::endl;
+	//uint64_t *x = (uint64_t *)(void *)&p;
+	//std::cout << std::hex << x[0] << ' ' << x[1] << ' ' << x[2] << std::endl;
 	//p.push
 }

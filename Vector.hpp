@@ -95,17 +95,17 @@ class Vector
 		// TODO iterator erase( iterator pos );
 		// TODO iterator erase( iterator first, iterator last );
 
-		// TODO void push_back( const T& value );
+		void push_back( const_reference value );
 
-		// TODO void pop_back();
+		void pop_back();
 
 };
 
 // * Non-member Functions
 
-// TODO template< class T, class Alloc >bool			operator==
-// TODO			(const std::vector<T,Alloc>& lhs,
-// TODO			const std::vector<T,Alloc>& rhs );
+// TODO bool			operator==(const Vector& lhs, const Vector& rhs ){
+// TODO 	return(false);
+// TODO 	}
 
 // TODO template< class T, class Alloc >bool			operator!=
 // TODO			(const std::vector<T,Alloc>& lhs,
@@ -141,7 +141,7 @@ Vector::Vector(){
 Vector::Vector(ssize_t size) {
 	allocator_type _mem;
 	_start = _mem.allocate(size, NULL);
-	_capacity_end = _start + 10;
+	_capacity_end = _start + size;
 	_end = _capacity_end;
 }
 Vector::~Vector() {
@@ -240,4 +240,31 @@ Vector::const_reference Vector::at(size_type n) const{
 	return(*(_start + n));
 }
 
+
+void Vector::push_back( Vector::const_reference value ){
+	if (size() == capacity())
+	{
+		size_t _size = size();
+		size_t _capacity = capacity();
+		value_type *ptr;
+		std::allocator<value_type> mem;
+		ptr = mem.allocate(capacity() * 2, NULL);
+		for(size_t i = 0; i < size(); i++){
+			ptr[i] = data()[i];
+		}
+		mem.deallocate(_start, _capacity);
+		_start = ptr;
+		_end = _start + _size;
+		_capacity_end = _start + (_capacity * 2);
+	}
+	_end++;
+	*_end = value;
+}
+
+void Vector::pop_back(){
+	std::allocator<value_type> mem;
+	if (_end != _start)
+		_end--;
+	mem.destroy(_end);
+}
 #endif

@@ -15,22 +15,23 @@ void test(int *data, size_t size)
 
 int main(int argc, char **argv)
 {
-	std::vector<std::string> t(10);
-	Vector p(10);
-	Vector &d = p;
+	std::vector<int> t(11);
+	std::vector<int> p(2);
 
+	Vector b(2);
+
+	std::cout << b.size() << std::endl;
+	b.pop_back();
+	b.pop_back();
+	b.pop_back();
+	std::cout << b.size() << std::endl;
+	b.push_back(12);
+	b.pop_back();
 	p[9] = 25562;
-	t[9] = "Bonjour les amis";
-	std::string v = t.back();
 
 
-
-	std::cout << t.data()->c_str() << std::endl;
 	int j = p.front();
 
-	t.clear();
-
-	std::cout << t.data() << std::endl;
 	//uint64_t *x = (uint64_t *)(void *)&p;
 	//std::cout << std::hex << x[0] << ' ' << x[1] << ' ' << x[2] << std::endl;
 	//p.push

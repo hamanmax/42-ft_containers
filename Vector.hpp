@@ -5,15 +5,19 @@
 #include <string>
 #include <iostream>
 #include <iterator>
+#include <cstdlib>
 
 class Vector
 {
 	private:
 	protected:
-		int		*_data;
-		void	*_capacity;
-		void	*_size;
+
+		int		*_start;
+		int		*_capacity_end;
+		int		*_end;
+
 	public:
+
 		typedef int					value_type;
 		typedef std::allocator<int>	allocator_type;
 		typedef size_t				size_type;
@@ -27,7 +31,7 @@ class Vector
 		// * Constructeur / Destructeur
 
 		Vector();
-		// TODO explicit Vector(const std::allocator<int>& alloc);
+		// TODO explicit Vector(const allocator_type& alloc);
 		// TODO explicit vector( size_type count,
 				// TODO const int& value = int(),
 				// TODO const Allocator& alloc = Allocator());
@@ -42,17 +46,17 @@ class Vector
 		Vector & operator=(Vector const & op);
 
 		// * Element access
-		// TODO reference at( size_type pos );
-		// TODO const_reference at( size_type pos ) const;
+		reference at( size_type pos );
+		const_reference at( size_type pos ) const;
 
 		reference operator[]( size_type pos );
 		const_reference operator[] (size_type n) const;
 
-		// TODO reference front();
-		// TODO const_reference front() const;
+		reference front();
+		const_reference front() const;
 
-		// TODO reference back();
-		// TODO const_reference back() const;
+		reference back();
+		const_reference back() const;
 
 		int *data();
 		const int *data() const;
@@ -60,7 +64,7 @@ class Vector
 		// * Iterators
 
 		// TODO iterator				begin(){
-		// TODO 	return (iterator(_data));
+		// TODO 	return (iterator(_start));
 		// TODO }
 		// TODO const iterator 			begin() const;
 		// TODO iterator				end();
@@ -73,18 +77,18 @@ class Vector
 
 		// * Capacity
 
-		bool			empty();
-		ssize_t			size();
-		ssize_t			max_size();
+		bool			empty() const;
+		ssize_t			size() const;
+		ssize_t			max_size() const;
 		void			reserve(size_type n);
-		ssize_t			capacity();
+		ssize_t			capacity() const;
 
 		// * Modifiers
 
-		// TODO void			clear();
+		void			clear();
 
 		// TODO iterator insert( iterator pos, const T& value );
-		//void insert( iterator pos, size_type count, const int& value );
+		// TODO void insert( iterator pos, size_type count, const int& value );
 		// TODO template< class InputIt >
 			// TODO void insert( iterator pos, InputIt first, InputIt last );
 
@@ -122,77 +126,118 @@ class Vector
 // TODO template< class T, class Alloc >bool			operator>
 //TODO			( const std::vector<T,Alloc>& lhs,
 //TODO			const std::vector<T,Alloc>& rhs );
-// TODOVector::Vector(const std::allocator<int>& alloc){
-// TODO	alloc.construct(_data,NULL);
+
+
+// TODOVector::Vector(const allocator_type& alloc){
+// TODO	alloc.construct(_start,NULL);
 // TODO}
 
 Vector::Vector(){
-	std::allocator<int> _mem;
-	_data = _mem.allocate(0,NULL);
-	_capacity = _size = _data;
+	allocator_type _mem;
+	_start = _mem.allocate(0,NULL);
+	_capacity_end = _end = _start;
 }
 
 Vector::Vector(ssize_t size) {
-	std::allocator<int> _mem;
-	_data = _mem.allocate(size, NULL);
-	_capacity = _data + 40;
-	_size = _capacity;
+	allocator_type _mem;
+	_start = _mem.allocate(size, NULL);
+	_capacity_end = _start + 10;
+	_end = _capacity_end;
 }
 Vector::~Vector() {
-	std::allocator<int> _mem;
-	if (_capacity != _data)
-		_mem.deallocate(_data,this->capacity());
+	allocator_type _mem;
+	if (_capacity_end != _start)
+		_mem.deallocate(_start,this->capacity());
 }
 
 int *Vector::data(){
-	return(this->_data);
+	return(this->_start);
 }
 
 const int *Vector::data() const{
-	return(this->_data);
+	return(this->_start);
 }
 
-ssize_t	Vector::max_size(){
-	std::allocator<int> mem;
+ssize_t	Vector::max_size() const{
+	allocator_type mem;
 	return(mem.max_size());
 }
 
 void	Vector::reserve(size_type n){
 	if (n > Vector::capacity())
 	{
-		std::cout << "\033[35mHOULOULOU\033[0m" << std::endl;
-		int * ptr = _data;
+		int * ptr = _start;
 		size_t size = Vector::size();
-		std::allocator<int> mem;
-		_data = mem.allocate(n, NULL);
+		allocator_type mem;
+		_start = mem.allocate(n, NULL);
 		for(size_t i = 0; i < size; i++){
-			_data[i] = ptr[i];
+			_start[i] = ptr[i];
 		}
 		mem.deallocate(ptr, size);
-		_size = _data + size * sizeof(int);
-		_capacity = _data + n * sizeof(int);
+		_end = _start + size;
+		_capacity_end = _start + n;
 	}
 }
 
-ssize_t		Vector::capacity(){
-	return( ((int *)_capacity - _data) / sizeof(int));
+ssize_t		Vector::capacity() const{
+	return((_capacity_end - _start));
 }
 
-bool		Vector::empty(){
-	if (_data == _capacity)
+bool		Vector::empty() const{
+	if (_start == _capacity_end)
 		return (true);
 	return (false);
 }
 
-ssize_t		Vector::size(){
-	return(((int *)_size - _data) / sizeof(int));
+
+void	Vector::clear(){
+	std::allocator<value_type> mem;
+	while (_end != _start)
+	{
+		--_end;
+		mem.destroy(_end);
+	}
+}
+
+ssize_t		Vector::size() const{
+	return(_end - _start);
 }
 
 Vector::reference Vector::operator[]( size_type pos ){
-	return (*(_data + pos * sizeof(value_type)));
+	return (*(_start + pos));
 }
 
 Vector::const_reference Vector::operator[] (size_type n) const{
-	return (*(_data + n * sizeof(value_type)));
+	return (*(_start + n));
 }
+
+
+Vector::reference Vector::front(){
+	return(*_start);
+}
+
+Vector::const_reference Vector::front() const{
+	return(*_start);
+}
+
+
+Vector::reference Vector::back(){
+	return(*(_end - 1));
+}
+Vector::const_reference Vector::back() const{
+	return(*(_end - 1));
+}
+
+Vector::reference Vector::at( size_type pos ){
+	if (pos >= Vector::size())
+		throw std::out_of_range ("Out Of Bounds Exceptions Thrown");
+	return(*(_start + pos));
+}
+
+Vector::const_reference Vector::at(size_type n) const{
+	if (Vector::size() < n)
+		throw std::out_of_range::exception();
+	return(*(_start + n));
+}
+
 #endif

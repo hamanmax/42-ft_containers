@@ -6,6 +6,7 @@
 #include <iostream>
 #include <iterator>
 #include <cstdlib>
+#include "Iterator.hpp"
 
 class Vector
 {
@@ -22,11 +23,11 @@ class Vector
 		typedef std::allocator<int>	allocator_type;
 		typedef size_t				size_type;
 		typedef ptrdiff_t 			difference_type;
+		typedef value_type*			pointer;
 		typedef value_type&			reference;
 		typedef const value_type&	const_reference;
-		//typedef pointer
-		typedef std::iterator<struct random_access_iterator_tag,int>	iterator;
-		typedef std::reverse_iterator<iterator>							reverse_iterator;
+		typedef Iterator<Vector>	iterator;
+		typedef const Iterator<Vector>	const_iterator;
 
 		// * Constructeur / Destructeur
 
@@ -63,12 +64,14 @@ class Vector
 
 		// * Iterators
 
-		// TODO iterator				begin(){
-		// TODO 	return (iterator(_start));
-		// TODO }
-		// TODO const iterator 			begin() const;
-		// TODO iterator				end();
-		// TODO const iterator			end() const;
+		iterator				begin(){
+			return (iterator(_start));}
+		iterator				end(){
+			return (iterator(_end));}
+		const_iterator 			begin() const{
+			return (iterator(_start));}
+		const_iterator 			end() const{
+			return (iterator(_end));}
 		// TODO reverse_iterator		rbegin();
 		// TODO const reverse_iterator	rbegin() const;
 
@@ -262,9 +265,7 @@ void Vector::push_back( Vector::const_reference value ){
 }
 
 void Vector::pop_back(){
-	std::allocator<value_type> mem;
-	if (_end != _start)
-		_end--;
-	mem.destroy(_end);
+(void)(_end - 1);
+_end = _end - 1;
 }
 #endif

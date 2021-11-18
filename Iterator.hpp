@@ -2,30 +2,55 @@
 #define ITERATOR_HPP
 
 #include <cstddef>
-
-template<
-	class Category,
-	class T,
-	class Distance = std::ptrdiff_t,
-	class Pointer = T*,
-	class Reference = T&
->
+template<typename T>
 class Iterator
 {
-    typedef T			value_type;
-    typedef Distance	difference_type;
-    typedef Pointer		pointer;
-    typedef Reference	reference;
-    typedef Category	iterator_category;
+	public:
+    typedef typename T::value_type		value_type;
+    typedef typename T::pointer			pointer;
+    typedef typename T::reference		reference;
+    typedef typename T::const_reference	const_reference;
 	private:
-		/*Arg*/
+		pointer _mptr;
 	protected:
 		/*Arg*/
 	public:
-		Iterator();
+		Iterator(pointer ptr):_mptr(ptr){};
+		Iterator(){};
 		Iterator(Iterator const & copy);
 		Iterator & operator=(Iterator const & op);
-		~Iterator();
+		~Iterator(){};
+		reference operator*(){
+			return *_mptr;
+		}
+		bool operator!=(const Iterator& Other) const
+		{
+			return !(this->_mptr == Other._mptr);
+		}
+		bool operator==(const Iterator& Other) const
+		{
+			return this->_mptr == Other._mptr;
+		}
+		Iterator&	operator++()
+		{
+			_mptr++;
+			return(*this);
+		}
+		Iterator&	operator++(int)
+		{
+			_mptr++;
+			return(*this);
+		}
+		Iterator&	operator--()
+		{
+			_mptr--;
+			return(*this);
+		}
+		Iterator&	operator--(int)
+		{
+			_mptr--;
+			return(*this);
+		}
 };
 
 #endif

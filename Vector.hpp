@@ -1,5 +1,5 @@
-#ifndef vector_HPP
-#define vector_HPP
+#ifndef Vector_HPP
+#define Vector_HPP
 
 #include <memory>
 #include <string>
@@ -10,19 +10,19 @@
 
 namespace ft
 {
-template<class T,class Alloc = std::allocator<T>>
-class vector
+template<class T,class Alloc = std::allocator<T> >
+class Vector
 {
 	public:
 		typedef T					value_type;
 		typedef Alloc				alloc_type;
 		typedef size_t				size_type;
-		typedef typename alloc_type::pointer			pointer;
-		typedef typename alloc_type::const_pointer		const_pointer;
-		typedef typename alloc_type::reference&			reference;
-		typedef const value_type&	const_reference;
-		typedef Iterator<vector>						iterator;
-		typedef const Iterator<vector>					const_iterator;
+		typedef typename alloc_type::pointer		pointer;
+		typedef typename alloc_type::const_pointer	const_pointer;
+		typedef typename alloc_type::reference&		reference;
+		typedef const value_type&					const_reference;
+		typedef VectorIterator<RandomAccessIteratorTag ,Vector>				iterator;
+		typedef const VectorIterator<RandomAccessIteratorTag, Vector>		const_iterator;
 	private:
 		pointer	_start;
 		pointer	_capacity_end;
@@ -31,10 +31,10 @@ class vector
 
 		// * Constructeur / Destructeur
 
-		//TODO vector (InputIterator first, InputIterator last,
+		//TODO Vector (InputIterator first, InputIterator last,
 		//TODO	const alloc_type& alloc = alloc_type());
 
-		vector (size_type n, const value_type& val = value_type(), const alloc_type& alloc = alloc_type()) {
+		Vector (size_type n, const value_type& val = value_type(), const alloc_type& alloc = alloc_type()) {
 			alloc_type	mem;
 			mem = alloc;
 			_start = mem.allocate(n, NULL);
@@ -43,19 +43,19 @@ class vector
 				_start[i] = val;
 			_end = _capacity_end;}
 
-		vector<T,Alloc>( const vector& other );
+		Vector<T,Alloc>( const Vector& other );
 
-		~vector<T,Alloc>() {
+		~Vector<T,Alloc>() {
 			alloc_type _mem;
 			if (_capacity_end != _start)
 				_mem.deallocate(_start,this->capacity());
 		}
-		vector<T,Alloc>(const alloc_type& alloc = alloc_type()){
+		Vector<T,Alloc>(const alloc_type& alloc = alloc_type()){
 		_start = alloc.allocate(0,NULL);
 		_capacity_end = _end = _start;
 		}
 
-		vector & operator=(vector const & op);
+		Vector & operator=(Vector const & op);
 
 		// * Element access
 
@@ -147,23 +147,18 @@ class vector
 				Alloc	mem;
 				ptr = mem.allocate(capacity() * 2,NULL);
 				value_type i = 0;
-				for (iterator it = begin(); it != end();)
+				iterator it = begin();
+				while (i < actualsize)
 				{
 					if (it != pos)
-						ptr[i] = *it;
+						ptr[i++] = *it;
 					else
 					{
-						ptr[i] = value;
+						ptr[i++] = value;
 					}
-					it++;
-					i++;
-					if ( it == end())
-					{
-						it--;
-						ptr[i] = *it;
-						break;
-					}
+						it++;
 				}
+				ptr[i] = *--it;
 				mem.deallocate(_start,capacity());
 				_start = ptr;
 				_end = _start + actualsize + 1;
@@ -179,7 +174,7 @@ class vector
 				pos++;
 			}
 		}
-		void insert( iterator pos, iterator first, iterator last );
+		void insert( iterator pos, InputIteratorTag first, InputIteratorTag last );
 
 		// TODO iterator erase( iterator pos );
 		// TODO iterator erase( iterator first, iterator last );
@@ -215,27 +210,27 @@ class vector
 
 // * Non-member Functions
 
-// TODO bool			operator==(const vector& lhs, const vector& rhs ){
+// TODO bool			operator==(const Vector& lhs, const Vector& rhs ){
 // TODO 	return(false);
 // TODO 	}
 
 // TODO template< class T, class Alloc >bool			operator!=
-// TODO			(const std::vector<T,Alloc>& lhs,
-// TODO			const std::vector<T,Alloc>& rhs );
+// TODO			(const std::Vector<T,Alloc>& lhs,
+// TODO			const std::Vector<T,Alloc>& rhs );
 
 // TODO template< class T, class Alloc >bool			operator<
-//TODO			( const std::vector<T,Alloc>& lhs,
-//TODO			const std::vector<T,Alloc>& rhs );
+//TODO			( const std::Vector<T,Alloc>& lhs,
+//TODO			const std::Vector<T,Alloc>& rhs );
 
 // TODO template< class T, class Alloc >bool			operator<=
-//TODO			( const std::vector<T,Alloc>& lhs,
-//TODO			const std::vector<T,Alloc>& rhs );
+//TODO			( const std::Vector<T,Alloc>& lhs,
+//TODO			const std::Vector<T,Alloc>& rhs );
 
 // TODO template< class T, class Alloc >bool			operator>
-//TODO			( const std::vector<T,Alloc>& lhs,
-//TODO			const std::vector<T,Alloc>& rhs );
+//TODO			( const std::Vector<T,Alloc>& lhs,
+//TODO			const std::Vector<T,Alloc>& rhs );
 
 // TODO template< class T, class Alloc >bool			operator>
-//TODO			( const std::vector<T,Alloc>& lhs,
-//TODO			const std::vector<T,Alloc>& rhs );
+//TODO			( const std::Vector<T,Alloc>& lhs,
+//TODO			const std::Vector<T,Alloc>& rhs );
 #endif

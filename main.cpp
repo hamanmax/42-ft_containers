@@ -3,32 +3,24 @@
 #include <iomanip>
 #include <string>
 #include <limits>
+#include <map>
 #include "Vector.hpp"
-
-void test(int *data, size_t size)
-{
-	for (size_t i = 0; i < size; i++)
-	{
-		std::cout << *data << std::endl;
-		data++;
-	}
-}
 
 int main(int argc, char **argv)
 {
-	std::vector<int> t(11);
-	std::vector<int> p(2);
+	std::vector<int> b(15,100);
+	std::vector<int> t2(8,0);
+	ft::vector<int> t(15,100);
 
-	Vector b(20);
-	for(Vector::iterator it = b.begin(); it != b.end();it++)
-	{
-		*it = random() % 35652;
+	// ft::vector<int>::iterator it = b.begin();
+	//int myarray [] = { 501,502,503 };
+	//t.reserve(250);
+	t.insert(t.begin(), 250);
+	for(ft::vector<int>::iterator it = t.begin(); it != t.end();it++)
 		std::cout << *it << std::endl;
-	}
-
-	std::cout << b.size() << std::endl;
-	b.push_back(12);
-
+	//t.push_back(12);
+	std::cout << "t.size = " << t.size() << "\tt.capacity = " << t.capacity() << std::endl;
+	//std::cout << "b.capacity = " << b.capacity() << "\tt.capacity = " << t.capacity() << std::endl;
 	//uint64_t *x = (uint64_t *)(void *)&p;
 	//std::cout << std::hex << x[0] << ' ' << x[1] << ' ' << x[2] << std::endl;
 	//p.push

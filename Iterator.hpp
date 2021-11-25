@@ -51,22 +51,37 @@ class VectorIterator : public Iterator<Category,T>
 		reference operator*(){
 			return *_mptr;
 		}
+		pointer operator->(){
+			return &(operator*());
+		}
 		bool operator!=(const VectorIterator& Other) const{
 			return !(this->_mptr == Other._mptr);}
 		bool operator==(const VectorIterator& Other) const{
 			return this->_mptr == Other._mptr;}
 		VectorIterator&	operator++(){
-			_mptr++;
+			++_mptr;
 			return(*this);}
 		VectorIterator&	operator++(int){
 			_mptr++;
 			return(*this);}
 		VectorIterator&	operator--(){
-			_mptr--;
+			--_mptr;
 			return(*this);}
 		VectorIterator&	operator--(int){
 			_mptr--;
 			return(*this);}
+		reference operator[](const ssize_t n)const {
+			return(_mptr[n]);}
+		VectorIterator &operator+=(const ssize_t n){
+			_mptr += n;
+			return *this;}
+		VectorIterator operator+(const ssize_t n)const {
+			return (_mptr + n);}
+		VectorIterator &operator-=(const ssize_t n){
+			_mptr -= n;
+			return *this;}
+		VectorIterator operator-(const ssize_t n)const {
+			return (_mptr - n);}
 };
 
 #endif

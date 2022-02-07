@@ -7,6 +7,7 @@
 #include <iterator>
 #include <cstdlib>
 #include "Iterator.hpp"
+#include "Utility.hpp"
 
 namespace ft
 {
@@ -31,10 +32,13 @@ class Vector
 
 		// * Constructeur / Destructeur
 
-		//TODO Vector (InputIterator first, InputIterator last,
-		//TODO	const alloc_type& alloc = alloc_type());
 
-		Vector (size_type n, const value_type& val = value_type(), const alloc_type& alloc = alloc_type()) {
+		explicit Vector(const alloc_type& alloc = alloc_type()){
+		_start = alloc.allocate(0,NULL);
+		_capacity_end = _end = _start;
+		}
+
+		explicit Vector(size_type n, const value_type& val = value_type(), const alloc_type& alloc = alloc_type()) {
 			alloc_type	mem;
 			mem = alloc;
 			_start = mem.allocate(n, NULL);
@@ -43,16 +47,29 @@ class Vector
 				_start[i] = val;
 			_end = _capacity_end;}
 
-		Vector<T,Alloc>( const Vector& other );
+				template<class InputIterator>
+		Vector(InputIterator first, InputIterator last,const alloc_type& alloc = alloc_type(),typename ft::enable_if<!ft::is_integral<InputIterator>::value >::type* = 0){
+			alloc_type mem;
+			mem = alloc;
+			size_type i = 0;
+			InputIterator it(first);
+			while (it != last){
+				i++;
+				it++;
+			};
+			_start = mem.allocate(i, NULL);
+			_capacity_end = _start + i;
+			for (size_type i = 0; first != last; ++first,++i){
+				_start[i] = *first;}
+			_end = _capacity_end;
+		}
+
+		//TODO Vector<T,Alloc>( const Vector& other );
 
 		~Vector<T,Alloc>() {
 			alloc_type _mem;
 			if (_capacity_end != _start)
-				_mem.deallocate(_start,this->capacity());
-		}
-		Vector<T,Alloc>(const alloc_type& alloc = alloc_type()){
-		_start = alloc.allocate(0,NULL);
-		_capacity_end = _end = _start;
+				_mem.deallocate(_start,capacity());
 		}
 
 		Vector & operator=(Vector const & op);
@@ -176,7 +193,19 @@ class Vector
 		}
 		void insert( iterator pos, InputIteratorTag first, InputIteratorTag last );
 
-		// TODO iterator erase( iterator pos );
+		iterator erase( iterator pos ){
+			size_type i = 0;
+			for (iterator it = pos; it != end(); it++)
+			{
+				if (it + 1 == end())
+				{
+					_end -= 1;
+					break ;
+				}
+				*it = *(it + 1);
+			}
+			return pos;
+		}
 		// TODO iterator erase( iterator first, iterator last );
 
 

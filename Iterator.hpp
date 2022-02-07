@@ -49,39 +49,67 @@ class VectorIterator : public Iterator<Category,T>
 		VectorIterator & operator=(VectorIterator const & op){_mptr = op._mptr; return this;};
 		~VectorIterator(){};
 		reference operator*(){
-			return *_mptr;
-		}
+			return *_mptr;}
+
 		pointer operator->(){
-			return &(operator*());
-		}
+			return &(operator*());}
+
 		bool operator!=(const VectorIterator& Other) const{
 			return !(this->_mptr == Other._mptr);}
+
 		bool operator==(const VectorIterator& Other) const{
 			return this->_mptr == Other._mptr;}
+
+		reference operator[](const ssize_t n)const {
+			return(_mptr[n]);}
+
 		VectorIterator&	operator++(){
 			++_mptr;
 			return(*this);}
+
 		VectorIterator&	operator++(int){
 			_mptr++;
 			return(*this);}
-		VectorIterator&	operator--(){
-			--_mptr;
-			return(*this);}
-		VectorIterator&	operator--(int){
-			_mptr--;
-			return(*this);}
-		reference operator[](const ssize_t n)const {
-			return(_mptr[n]);}
+
 		VectorIterator &operator+=(const ssize_t n){
 			_mptr += n;
 			return *this;}
+
 		VectorIterator operator+(const ssize_t n)const {
-			return (_mptr + n);}
+			VectorIterator it(*this);
+			if (n < 0)
+				for (ssize_t i = 0; i > n; i--)
+					it--;
+			else
+				for (ssize_t i = 0; i < n; i++)
+					it++;
+			return (it);}
+
+		VectorIterator&	operator--(){
+			--_mptr;
+			return(*this);}
+
+		VectorIterator&	operator--(int){
+			_mptr--;
+			return(*this);}
+
 		VectorIterator &operator-=(const ssize_t n){
 			_mptr -= n;
 			return *this;}
-		VectorIterator operator-(const ssize_t n)const {
-			return (_mptr - n);}
+
+		VectorIterator operator-(ssize_t n)const {
+			VectorIterator it(*this);
+			if (n > 0)
+				for (ssize_t i = 0; i < n; i++)
+					it--;
+			else
+				for (ssize_t i = 0; i > n; i--)
+					it++;
+			return (it);}
+
+		Distance	operator-(VectorIterator it)const {
+			return (this->_mptr - it._mptr);
+		}
 };
 
 #endif

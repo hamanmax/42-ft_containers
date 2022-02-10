@@ -25,9 +25,9 @@ class Vector
 		typedef VectorIterator<RandomAccessIteratorTag ,Vector>				iterator;
 		typedef const VectorIterator<RandomAccessIteratorTag, Vector>		const_iterator;
 	private:
-		pointer	_start;
-		pointer	_capacity_end;
-		pointer	_end;
+		pointer	_start; // Start
+		pointer	_capacity_end; //Capacity
+		pointer	_end; //Size
 	public:
 
 		// * Constructeur / Destructeur
@@ -47,7 +47,7 @@ class Vector
 				_start[i] = val;
 			_end = _capacity_end;}
 
-				template<class InputIterator>
+		template<class InputIterator>
 		Vector(InputIterator first, InputIterator last,const alloc_type& alloc = alloc_type(),typename ft::enable_if<!ft::is_integral<InputIterator>::value >::type* = 0){
 			alloc_type mem;
 			mem = alloc;
@@ -64,15 +64,43 @@ class Vector
 			_end = _capacity_end;
 		}
 
-		//TODO Vector<T,Alloc>( const Vector& other );
+		Vector<T,Alloc>( const Vector& other ){
+			alloc_type mem;
+			_start = mem.allocate(other.capacity());
+			_capacity_end = _start + other.capacity();
+			for (ft::pair<Vector::iterator,int> i(other.begin(),0);i.first  != other.end();i.first++,i.second++)
+			{
+				_start[i.second] = *i.first;
+			}
+			_end = _start + other.size();
+		}
 
 		~Vector<T,Alloc>() {
-			alloc_type _mem;
+			Alloc _mem;
 			if (_capacity_end != _start)
 				_mem.deallocate(_start,capacity());
 		}
 
-		Vector & operator=(Vector const & op);
+		Vector & operator=(Vector const & op){
+			alloc_type mem;
+			if (op.size() > capacity())
+			{
+				mem.deallocate(_start,capacity());
+				_start = mem.allocate(op.size(), NULL);
+				_end = _start + op.size();
+				_capacity_end = _end;
+			}
+			else
+			{
+				for (size_t i = 0; i < op.size();i++)
+				{
+					_start[i] = op[i];
+				}
+				_end = _start + op.size();
+				_capacity_end = _end;
+			}
+			return *this;
+		}
 
 		// * Element access
 
@@ -148,7 +176,7 @@ class Vector
 		// * Modifiers
 
 		void	clear(){
-			std::allocator<value_type> mem;
+			alloc_type mem;
 			while (_end != _start)
 			{
 				--_end;
@@ -157,41 +185,44 @@ class Vector
 		}
 
 		iterator insert( iterator pos, const_reference value ){
+			size_type spos = 0;
+			for (iterator i = begin(); i != pos;i++,spos++){}
 			if (size() == capacity())
-			{
-				value_type	*ptr;
-				size_type actualsize = size();
-				Alloc	mem;
-				ptr = mem.allocate(capacity() * 2,NULL);
-				value_type i = 0;
-				iterator it = begin();
-				while (i < actualsize)
-				{
-					if (it != pos)
-						ptr[i++] = *it;
-					else
-					{
-						ptr[i++] = value;
-					}
-						it++;
-				}
-				ptr[i] = *--it;
-				mem.deallocate(_start,capacity());
-				_start = ptr;
-				_end = _start + actualsize + 1;
-				_capacity_end = _start + (actualsize * 2);
-			}
-			return begin();
+				reserve(capacity() * 2);
+			for (size_t i = size(); i > spos;i--)
+				_start[i] = _start[i - 1];
+			_start[spos] = value;
+			_end++;
+			return begin() + spos;
 		}
 
-		void insert( iterator pos, size_type count, const_reference value ){
-			for (size_type i = 0;i != count;i++)
-			{
-				*pos = value;
-				pos++;
-			}
+		void insert( iterator pos, size_type count, const_reference value){
+			size_type spos = 0;
+			for (iterator i = begin(); i != pos;i++,spos++){}
+			if ( size() + count > capacity())
+				reserve (size() + count);
+			for (size_type i = size() + count - 1; i > spos + count - 1; i-- )
+				_start[i] = _start[i - count];
+			for (size_type i = 0; i < count; i++)
+				_start[i + spos] = value;
+			_end += count;
 		}
-		void insert( iterator pos, InputIteratorTag first, InputIteratorTag last );
+
+
+		template< class InputIterator >
+		void insert( iterator pos, InputIterator first, InputIterator last, typename ft::enable_if<!ft::is_integral<InputIterator>::value >::type* = 0){
+			size_type spos = 0;
+			size_type count = 0;
+			for (iterator i = begin(); i != pos;i++,spos++){}
+			for (InputIterator i = first; i != last;i++,count++){}
+			if ( size() + count > capacity())
+				reserve (size() + count);
+			for (size_type i = size() + count - 1; i > spos + count - 1; i-- )
+				_start[i] = _start[i - count];
+			for (ft::pair<size_type,InputIterator> i(0,first); i.first < count; i.second++,i.first++)
+				_start[i.first + spos] = *i.second;
+			_end += count;
+		}
 
 		iterator erase( iterator pos ){
 			size_type i = 0;
@@ -206,7 +237,6 @@ class Vector
 			}
 			return pos;
 		}
-		// TODO iterator erase( iterator first, iterator last );
 
 
 		void push_back( const_reference value ){
@@ -225,14 +255,31 @@ class Vector
 				_end = _start + _size;
 				_capacity_end = _start + (_capacity * 2);
 			}
-			_end++;
 			*_end = value;
+			_end++;
 		}
 
 		void pop_back(){
 		(void)(_end - 1);
 		_end = _end - 1;
 		}
+
+		void swap (Vector& Other){
+			pointer ptr[3];
+			ptr[0] = Other._start;
+			ptr[1] = Other._end;
+			ptr[2] = Other._capacity_end;
+			Other._start = this->_start;
+			Other._end = this->_end;
+			Other._capacity_end = this->_capacity_end;
+			_start = ptr[0];
+			_end = ptr[1];
+			_capacity_end = ptr[2];
+		}
+
+		// TODO template <class InputIterator> void assign (InputIterator first, InputIterator last);
+		// TODO void assign (size_type n, const value_type& val);
+		// TODO Resize
 
 };
 }

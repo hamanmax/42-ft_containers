@@ -110,6 +110,7 @@ class VectorIterator : public Iterator<Category,T>
 		Distance	operator-(VectorIterator it)const {
 			return (this->_mptr - it._mptr);
 		}
+		// TODO Regarder ce qu'il manque dans la liste des operation (les friend + les operation de comparaison)
 };
 
 #endif

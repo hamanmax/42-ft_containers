@@ -8,6 +8,7 @@
 #include <cstdlib>
 #include "Iterator.hpp"
 #include "Utility.hpp"
+#include "ReverseVectorIterator.hpp"
 
 namespace ft
 {
@@ -24,6 +25,8 @@ class Vector
 		typedef const value_type&					const_reference;
 		typedef VectorIterator<RandomAccessIteratorTag ,Vector>				iterator;
 		typedef const VectorIterator<RandomAccessIteratorTag, Vector>		const_iterator;
+		typedef ReverseVectorIterator<RandomAccessIteratorTag ,Vector>				reverse_iterator;
+		typedef const ReverseVectorIterator<RandomAccessIteratorTag, Vector>		const_reverse_iterator;
 	private:
 		pointer	_start; // Start
 		pointer	_capacity_end; //Capacity
@@ -34,7 +37,9 @@ class Vector
 
 
 		explicit Vector(const alloc_type& alloc = alloc_type()){
-		_start = alloc.allocate(0,NULL);
+		alloc_type	mem;
+		mem = alloc;
+		_start = mem.allocate(0, NULL);
 		_capacity_end = _end = _start;
 		}
 
@@ -44,7 +49,7 @@ class Vector
 			_start = mem.allocate(n, NULL);
 			_capacity_end = _start + n;
 			for (size_type i = 0;i < n; i++)
-				_start[i] = val;
+				mem.construct(_start + i, val);
 			_end = _capacity_end;}
 
 		template<class InputIterator>
@@ -60,7 +65,7 @@ class Vector
 			_start = mem.allocate(i, NULL);
 			_capacity_end = _start + i;
 			for (size_type i = 0; first != last; ++first,++i){
-				_start[i] = *first;}
+				mem.construct(_start + i, *first);}
 			_end = _capacity_end;
 		}
 
@@ -77,8 +82,7 @@ class Vector
 
 		~Vector<T,Alloc>() {
 			Alloc _mem;
-			if (_capacity_end != _start)
-				_mem.deallocate(_start,capacity());
+			_mem.deallocate(_start,capacity());
 		}
 
 		Vector & operator=(Vector const & op){
@@ -133,16 +137,22 @@ class Vector
 		iterator				end(){
 			return (iterator(_end));}
 		const_iterator 			begin() const{
-			return (iterator(_start));}
+			return (const_iterator(_start));}
 		const_iterator 			end() const{
-			return (iterator(_end));}
-		// TODO reverse_iterator		rbegin();
-		// TODO const reverse_iterator	rbegin() const;
+			return (const_iterator(_end));}
 
-		// TODO reverse_iterator	rend();
-		// TODO const reverse_iterator	rend() const;
+		reverse_iterator		rbegin(){
+			return (reverse_iterator(_end - 1));}
+
+		const reverse_iterator	rbegin() const{
+			return (const_reverse_iterator(_end - 1));}
+		reverse_iterator	rend(){
+			return (reverse_iterator(_start - 1));}
+		const reverse_iterator	rend() const{
+			return (const_reverse_iterator(_start - 1));}
 
 		// * Capacity
+
 		bool		empty() const{
 			if (_start == _capacity_end)
 				return (true);
@@ -162,8 +172,8 @@ class Vector
 				size_type actual_size = size();
 				alloc_type mem;
 				_start = mem.allocate(n, NULL);
-				for(value_type i = 0; i < actual_size; i++){
-					_start[i] = ptr[i];
+				for(size_type i = 0; i < actual_size; i++){
+					mem.construct(_start + i, ptr[i]);
 				}
 				mem.deallocate(ptr, actual_size);
 				_end = _start + actual_size;
@@ -240,22 +250,22 @@ class Vector
 
 
 		void push_back( const_reference value ){
+			std::allocator<value_type> mem;
 			if (size() == capacity())
 			{
-				value_type _size = size();
-				value_type _capacity = capacity();
-				value_type *ptr;
-				std::allocator<value_type> mem;
+				size_type _size = size();
+				size_type _capacity = capacity();
+				pointer ptr;
 				ptr = mem.allocate(capacity() * 2, NULL);
-				for(value_type i = 0; i < size(); i++){
-					ptr[i] = data()[i];
+				for(size_type i = 0; i < _size; i++){
+					mem.construct(ptr + i, data()[i]);
 				}
 				mem.deallocate(_start, _capacity);
 				_start = ptr;
 				_end = _start + _size;
 				_capacity_end = _start + (_capacity * 2);
 			}
-			*_end = value;
+			mem.construct(_end,value);
 			_end++;
 		}
 
@@ -277,36 +287,66 @@ class Vector
 			_capacity_end = ptr[2];
 		}
 
-		// TODO template <class InputIterator> void assign (InputIterator first, InputIterator last);
-		// TODO void assign (size_type n, const value_type& val);
-		// TODO Resize
+		template <class InputIterator>
+		void assign (InputIterator first, InputIterator last){
+			size_type n = 0;
+			for (InputIterator i = first; i != last;i++,n++){}
+			if (n > capacity())
+				reserve(n);
+			for (ft::pair<size_type,InputIterator> i(0,first); i.first < n;i.first++,i.second++){
+				_start[i.first] = *i.second;
+			}
+			_end = _start + n;
+		}
+
+		void assign (size_type n, const value_type& val){
+			if (n > capacity())
+				reserve(n);
+			for (size_type i = 0; i < n;i++){
+				_start[i] = val;
+			}
+			_end = _start + n;
+		}
+
+		void resize (size_type n, value_type val = value_type()){
+			if (n > capacity())
+				reserve(n);
+			while (n > size())
+				push_back(val);
+			while (n < size())
+				pop_back();
+		}
+
+friend bool			operator==(const Vector& lhs, const Vector& rhs ){
+	if (lhs.size() != rhs.size())
+		return false;
+
+	for (size_type i = 0; i < lhs.size();i++) {
+		if (lhs[i] != rhs[i])
+			return false;
+	}
+	return true;
+}
+
+friend bool			operator!=(const Vector& lhs, const Vector& rhs ){return !(lhs == rhs);}
+
+friend bool	operator<(const Vector& lhs, const Vector& rhs ){
+
+	for (ft::pair<iterator, iterator> it(lhs.begin(), rhs.begin());
+	it.first != lhs.end() && it.second != rhs.end(); it.first++, it.second++)
+	{
+		std::cout << "tutu" << std::endl;
+		if (*(it.first) < *(it.second))
+			return true;
+	}
+	return (lhs.size() < rhs.size());}
+
+friend bool	operator>(const Vector& lhs, const Vector& rhs){return (rhs < lhs);}
+
+friend bool	operator<=(const Vector& lhs, const Vector& rhs){return (!(rhs < lhs));}
+
+friend bool	operator>=(const Vector& lhs, const Vector& rhs){return (!(lhs < rhs));}
 
 };
 }
-
-// * Non-member Functions
-
-// TODO bool			operator==(const Vector& lhs, const Vector& rhs ){
-// TODO 	return(false);
-// TODO 	}
-
-// TODO template< class T, class Alloc >bool			operator!=
-// TODO			(const std::Vector<T,Alloc>& lhs,
-// TODO			const std::Vector<T,Alloc>& rhs );
-
-// TODO template< class T, class Alloc >bool			operator<
-//TODO			( const std::Vector<T,Alloc>& lhs,
-//TODO			const std::Vector<T,Alloc>& rhs );
-
-// TODO template< class T, class Alloc >bool			operator<=
-//TODO			( const std::Vector<T,Alloc>& lhs,
-//TODO			const std::Vector<T,Alloc>& rhs );
-
-// TODO template< class T, class Alloc >bool			operator>
-//TODO			( const std::Vector<T,Alloc>& lhs,
-//TODO			const std::Vector<T,Alloc>& rhs );
-
-// TODO template< class T, class Alloc >bool			operator>
-//TODO			( const std::Vector<T,Alloc>& lhs,
-//TODO			const std::Vector<T,Alloc>& rhs );
 #endif

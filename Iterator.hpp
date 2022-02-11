@@ -46,7 +46,7 @@ class VectorIterator : public Iterator<Category,T>
 		VectorIterator(pointer ptr):_mptr(ptr){};
 		VectorIterator():_mptr(0){};
 		VectorIterator(VectorIterator const & copy){_mptr = copy._mptr;}
-		VectorIterator & operator=(VectorIterator const & op){_mptr = op._mptr; return this;};
+		VectorIterator & operator=(VectorIterator const & op){_mptr = op._mptr; return *this;};
 		~VectorIterator(){};
 		reference operator*(){
 			return *_mptr;}
@@ -54,11 +54,18 @@ class VectorIterator : public Iterator<Category,T>
 		pointer operator->(){
 			return &(operator*());}
 
-		bool operator!=(const VectorIterator& Other) const{
-			return !(this->_mptr == Other._mptr);}
 
-		bool operator==(const VectorIterator& Other) const{
-			return this->_mptr == Other._mptr;}
+		bool operator!=(const VectorIterator& Other) const{return !(_mptr == Other._mptr);}
+
+		bool operator==(const VectorIterator& Other) const{return _mptr == Other._mptr;}
+
+		bool operator<(const VectorIterator& Other) const{return Other._mptr > _mptr;}
+
+		bool operator>(const VectorIterator& Other) const{return Other._mptr < _mptr;}
+
+		bool operator<=(const VectorIterator& Other) const{return Other._mptr >= _mptr;}
+
+		bool operator>=(const VectorIterator& Other) const{return Other._mptr <= _mptr;}
 
 		reference operator[](const ssize_t n)const {
 			return(_mptr[n]);}
@@ -67,9 +74,10 @@ class VectorIterator : public Iterator<Category,T>
 			++_mptr;
 			return(*this);}
 
-		VectorIterator&	operator++(int){
-			_mptr++;
-			return(*this);}
+		VectorIterator	operator++(int){
+			VectorIterator Old(*this);
+			this->_mptr++;
+			return(Old);}
 
 		VectorIterator &operator+=(const ssize_t n){
 			_mptr += n;
@@ -89,9 +97,10 @@ class VectorIterator : public Iterator<Category,T>
 			--_mptr;
 			return(*this);}
 
-		VectorIterator&	operator--(int){
-			_mptr--;
-			return(*this);}
+		VectorIterator	operator--(int){
+			VectorIterator Old(*this);
+			this->_mptr--;
+			return(Old);}
 
 		VectorIterator &operator-=(const ssize_t n){
 			_mptr -= n;
@@ -110,7 +119,16 @@ class VectorIterator : public Iterator<Category,T>
 		Distance	operator-(VectorIterator it)const {
 			return (this->_mptr - it._mptr);
 		}
-		// TODO Regarder ce qu'il manque dans la liste des operation (les friend + les operation de comparaison)
+
+		friend VectorIterator operator+(int nb,const VectorIterator& it) {
+			VectorIterator New(it);
+			return (New += nb);
+		}
+
+		friend VectorIterator operator-(int nb,const VectorIterator& it) {
+			VectorIterator New(it);
+			return (New -= nb);
+		}
 };
 
 #endif

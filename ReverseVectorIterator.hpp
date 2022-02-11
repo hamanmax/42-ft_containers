@@ -34,17 +34,33 @@ class ReverseVectorIterator: public Iterator<Category, T>
 		pointer operator->(){
 			return &(operator*());}
 
+		bool operator!=(const ReverseVectorIterator& Other) const{return !(_mptr == Other._mptr);}
+
+		bool operator==(const ReverseVectorIterator& Other) const{return _mptr == Other._mptr;}
+
+		bool operator<(const ReverseVectorIterator& Other) const{return Other._mptr > _mptr;}
+
+		bool operator>(const ReverseVectorIterator& Other) const{return Other._mptr < _mptr;}
+
+		bool operator<=(const ReverseVectorIterator& Other) const{return Other._mptr >= _mptr;}
+
+		bool operator>=(const ReverseVectorIterator& Other) const{return Other._mptr <= _mptr;}
+
 		ReverseVectorIterator&	operator++(){
 			--_mptr;
 			return(*this);}
 
-		ReverseVectorIterator&	operator++(int){
-			_mptr--;
-			return(*this);}
+		ReverseVectorIterator	operator++(int){
+			ReverseVectorIterator Old(*this);
+			this->_mptr--;
+			return(Old);}
 
 		ReverseVectorIterator &operator+=(const ssize_t n){
 			_mptr -= n;
 			return *this;}
+
+		reference operator[](const ssize_t n)const {
+			return(_mptr[n]);}
 
 		ReverseVectorIterator operator+(const ssize_t n)const {
 			ReverseVectorIterator it(*this);
@@ -60,9 +76,10 @@ class ReverseVectorIterator: public Iterator<Category, T>
 			++_mptr;
 			return(*this);}
 
-		ReverseVectorIterator&	operator--(int){
-			_mptr++;
-			return(*this);}
+		ReverseVectorIterator	operator--(int){
+			ReverseVectorIterator Old(*this);
+			this->_mptr++;
+			return(Old);}
 
 		ReverseVectorIterator &operator-=(const ssize_t n){
 			_mptr += n;
@@ -81,6 +98,14 @@ class ReverseVectorIterator: public Iterator<Category, T>
 		Distance	operator-(ReverseVectorIterator it)const {
 			return (this->_mptr - it._mptr);
 		}
+		friend ReverseVectorIterator operator+(int nb,const ReverseVectorIterator& it) {
+			ReverseVectorIterator New(it);
+			return (New += nb);
+		}
 
+		friend ReverseVectorIterator operator-(int nb,const ReverseVectorIterator& it) {
+			ReverseVectorIterator New(it);
+			return (New -= nb);
+		}
 };
 #endif

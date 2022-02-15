@@ -5,22 +5,24 @@
 #include <limits>
 #include <map>
 #include "Vector.hpp"
+#include "Stack.hpp"
+#include "Map.hpp"
+#include <stack>
 #include <vector>
 #include <string>
 
-int main(int argc, char **argv)
+int main(void)
 {
-	ft::Vector<int> f(15);
-	for (ft::Vector<int>::iterator it = f.begin(); it != f.end();it++) {*it = it - f.begin();}
-	std::vector<int> s(15);
-	for (std::vector<int>::iterator it = s.begin(); it != s.end();it++) {*it = it - s.begin();}
-
-	std::cout << *f.erase(f.begin() + 2,f.begin() + 5) << std::endl;
-	std::cout << *s.erase(s.begin() + 2,s.begin() + 5) << std::endl;
-	f.pop_back();
-	s.pop_back();
-	for (ft::pair<std::vector<int>::iterator, ft::Vector<int>::iterator> i(s.begin(),f.begin());
-	i.first != s.end() && i.second != f.end();i.first++,i.second++)
-	{std::cout << "S = " << *i.first << " F = " << *i.second << std::endl;}
-	std::cout << s.capacity() << std::endl;
+	std::map<int, std::string> map1;
+	map1[0] = "Bonjour";
+	map1[1] = "a";
+	map1[2] = "tous";
+	map1[30] = "les";
+	map1[15] = "humains";
+	map1[17] = "beau";
+	map1[25] = "goss";
+	for (std::map<int, std::string>::iterator it = map1.begin(); it != map1.end();it++) {
+		std::cout << it->first << std::endl;
+	}
+	std::cout << sizeof(map1) << std::endl;
 }

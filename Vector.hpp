@@ -98,19 +98,17 @@ class Vector
 		Vector & operator=(Vector const & op){
 			alloc_type mem;
 			if (op.size() > capacity())
-			{
+{
 				mem.deallocate(_start,capacity());
 				_start = mem.allocate(op.size(), NULL);
 				_end = _start + op.size();
-				_capacity_end = _end;
-			}
-			for (size_t i = 0; i < op.size();i++){mem.construct(_start + i, op.at(i));}
+				_capacity_end = _end;}
+			for (size_t i = 0; i < op.size();i++){
+				mem.construct(_start + i, op.at(i));}
 			_end = _start + op.size();
 			_capacity_end = _end;
 			return *this;
 		}
-
-		// ! A verifier
 
 		template <class InputIterator>
 		void assign (InputIterator first, InputIterator last){
@@ -236,6 +234,7 @@ class Vector
 		// Inserts elements value at the specified pos in the container.
 
 		iterator insert( iterator pos, const_reference value ){
+			alloc_type mem;
 			size_type spos = 0;
 			for (iterator i = begin(); i != pos;i++,spos++){}
 			if (size() == capacity() && size() > 0)
@@ -243,37 +242,41 @@ class Vector
 			if (size() == 0)
 				reserve(1);
 			for (size_t i = size(); i > spos;i--)
-				_start[i] = _start[i - 1];
-			_start[spos] = value;
+				mem.construct(_start + i, _start[i - 1]);
+			mem.construct(_start + spos, value);
 			_end++;
 			return begin() + spos;}
 
 		// Inserts counts of elements value at the specified pos in the container.
-		// ! A verifier avec les mem.construct()
+
 		void insert( iterator pos, size_type count, const_reference value){
+			alloc_type mem;
 			size_type spos = 0;
+			if (count == 0){return ;}
 			for (iterator i = begin(); i != pos;i++,spos++){}
 			if ( size() + count > capacity())
 				reserve (size() + count);
 			for (size_type i = size() + count - 1; i > spos + count - 1; i-- )
-				_start[i] = _start[i - count];
+				mem.construct(_start + i, _start[i - count]);
 			for (size_type i = 0; i < count; i++)
-				_start[i + spos] = value;
+				mem.construct(_start + i + spos, value);
 			_end += count;}
 
 		// Inserts a range (first and last) of elements value at the specified pos in the container.
 
 		template< class InputIterator >
 		void insert( iterator pos, InputIterator first, InputIterator last, typename ft::enable_if<!ft::is_integral<InputIterator>::value >::type* = 0){
+			alloc_type mem;
 			size_type spos,count = 0;
+			if (first == last) return ;
 			for (iterator i = begin(); i != pos;i++,spos++){}
 			for (InputIterator i = first; i != last;i++,count++){}
 			if (size() + count > capacity())
 				reserve (size() + count);
 			for (size_type i = size() + count - 1; i > spos + count - 1; i-- )
-				_start[i] = _start[i - count];
+				mem.construct(_start + i, _start[i - count]);
 			for (ft::pair<size_type,InputIterator> i(0,first); i.first < count; i.second++,i.first++)
-				_start[i.first + spos] = *i.second;
+				mem.construct(_start + i.first + spos, *i.second);
 			_end += count;}
 
 		// Erases the specified elements pos from the container.

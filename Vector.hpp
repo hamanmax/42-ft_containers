@@ -11,6 +11,7 @@
 #include "Utility.hpp"
 #include "ReverseVectorIterator.hpp"
 
+// ! STD::SWAP A VERIFIER
 namespace ft
 {
 template<class T,class Alloc = std::allocator<T> >
@@ -81,7 +82,7 @@ class Vector
 			_start = mem.allocate(other.capacity());
 			_capacity_end = _start + other.capacity();
 			for (ft::pair<Vector::iterator,int> i(other.begin(),0);
-			i.first  != other.end();i.first++,i.second++){
+			i.first    != other.end();i.first++,i.second++){
 				mem.construct(_start + i.second, *i.first);}
 			_end = _start + other.size();
 		}

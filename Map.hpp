@@ -2,12 +2,9 @@
 #define MAP_HPP
 
 #include "Utility.hpp"
+#include "RedBlackTree.hpp"
 #include <memory>
 #include <functional>
-#define LEFT 0;
-#define RIGHT 1;
-#define left child[LEFT];
-#define right child[RIGHT];
 namespace ft
 {
 	template<
@@ -20,7 +17,7 @@ namespace ft
 		public:
 			typedef Key									key_type;
 			typedef T									mapped_type;
-			typedef std::pair<const Key,T>				value_type;
+			typedef ft::pair<Key,T>						value_type;
 			typedef size_t								size_type;
 			typedef ptrdiff_t							difference_type;
 			typedef Compare								key_compare;
@@ -34,30 +31,114 @@ namespace ft
 			// TODO typedef ReverseMapIterator<BidirectionalIteratorTag,Map>	reverse_iterator;
 			// TODO typedef const ReverseMapIterator<BidirectionalIteratorTag,Map>	const_reverse_iterator;
 		private:
-		enum color_t {BLACK, RED};
-		struct Node
-		{
-			value_type			content;
-			Node*				parent;
-			Node*				child[2];
-			color_t				color;
-		};
-		struct RbTree{
-			Node *	root;
-		};
-		RbTree		_data;
-		size_type	size;
+		RBTree<Key,T>	tree;
 		allocator_type	allocator;
 		key_compare v;
-		std::allocator<Node> Alloc;
 		public:
 
-		// TODO map();
-		// TODO explicit map(const Compare& comp, const Allocator & alloc = Allocator() );
+		Map():allocator(Allocator()),tree(RBTree<Key,T>()),v(Compare()){
+		};
+		explicit Map(const Compare& comp, const Allocator & alloc = Allocator()):allocator(alloc),tree(RBTree<Key,T>()),v(comp){}
 
-		// TODO template< class InputIterator > map(InputIterator first, InputIterator last,const Compare& comp = Compare(),const Allocator & alloc = Allocator() );
+		template< class InputIterator >
+		Map(InputIterator first, InputIterator last,const Compare& comp = Compare(),const Allocator & alloc = Allocator() ):v(comp), allocator(alloc){
+			while (first != last)
+			{
+				tree.insert(*first);
+				first++;
+			}
+		};
 
-		// TODO map(const map& other);
+		Map(const Map& other){
+			allocator = other.allocator;
+			v = other.v;
+		}
+
+		~Map(){
+			while (tree.getSize() != 0){
+				//std::cout << tree.getSize() << std::endl;
+				tree.deleteNode(tree.getRoot());
+			}
+		}
+
+		// TODO operator=( const map& other );
+
+		// TODO allocator_type get_allocator() const {};
+
+		// * Element Acces
+
+		// TODO mapped_value& at(const Key& key){};
+		// TODO const mapped_value& at(const Key& key) const {};
+
+		// TODO mapped_value& operator[]( const Key& key ) {};
+
+		// * Iterators
+
+		// TODO iterator begin(){};
+		// TODO const_iterator begin() const {};
+
+		// TODO iterator end() const {};
+		// TODO const_iterator end() const {};
+
+		//TODO reverse_iterator rbegin(){};
+		//TODO const_reverse_iterator rbegin() const {};
+
+		//TODO reverse_iterator rend(){};
+		//TODO const_reverse_iterator rend() const {};
+
+		// * Capacity
+
+		// TODO bool empty() const {};
+
+		// TODO size_type size() const{};
+
+		// TODO size_type max_size() const{};
+
+		// * Modifiers
+
+		// TODO void clear(){};
+
+		// TODO ft::pair<iterator, bool> insert( const value_type& value) {};
+		// TODO iterator insert(iterator hint, const value_type& value) {};
+		// TODO template < class InputIt > void insert(InputIt first, InputIt Last){};
+
+		// TODO void erase(iterator pos){};
+		// TODO void erase(iterator first, iterator last){};
+		// TODO size_type erase(conset Key& key){};
+
+		// TODO void swap(Map& other);
+
+		// * Lookup
+
+		// TODO size_type count(conset Key& key) const {};
+
+		// TODO iterator find(const Key& key){};
+		// TODO const_iterator find(const Key& key) const {};
+
+		// TODO ft::pair<iterator, iterator> equal_range(const Key& key){};
+		// TODO ft::pair<const_iterator, const_iterator> equal_range(const Key& key) const {};
+
+		// TODO iterator lower_bound(const Key& key){};
+		// TODO const_iterator lower_bound(const Key& key) const {};
+
+		// TODO iterator upper_bound(const Key& key){};
+		// TODO const_iterator upper_bound(const Key& key) const {};
+
+		// * Observers
+
+		// TODO key_compare key_comp() const {};
+		// TODO ft::Map::value_compare value_comp() const {};
+
+		// * Operators
+
+		// TODO bool operator==(const Map& lhs, const Map& rhs) {};
+		// TODO bool operator!=(const Map& lhs, const Map& rhs) {};
+		// TODO bool operator<(const Map& lhs, const Map& rhs) {};
+		// TODO bool operator<=(const Map& lhs, const Map& rhs) {};
+		// TODO bool operator>(const Map& lhs, const Map& rhs) {};
+		// TODO bool operator>=(const Map& lhs, const Map& rhs) {};
+
+		// TODO void swap(Map& lhs, Map& rhs){};
 	};
 };
 

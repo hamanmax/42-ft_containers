@@ -27,7 +27,7 @@ namespace ft
 
 		~Stack(){};
 
-		Stack& operator=( const Stack& other ){_Container  = other._Container;return *this;};
+		Stack& operator=( const Stack& other ){_Container    = other._Container;return *this;};
 
 		reference top(){return _Container.back();}
 		const_reference top()const {return _Container.back();}

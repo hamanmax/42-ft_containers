@@ -6,275 +6,131 @@
 
 namespace ft
 {
-    /**
-    * ------------------------------------------------------------- *
-    * ------------------------- FT::PAIR -------------------------- *
-    *
-    * - Coplien form:
-    * (constructor):        Construct pair
-    * (destructor):         Pair destructor
-    * operator=:            Assign content
-    *
-    * - Public member variables:
-    * T1:                   First pair's member variable
-    * T2:                   Second pair's member variable
-    * ------------------------------------------------------------- *
-    */
-
-    template <typename T1, typename T2>
-    class pair
-    {
-        public:
-
-            /* ------------------------------------------------------------- */
-            /* ------------------------ COPLIEN FORM ----------------------- */
-
-            /**
-            *   Default constructor, value initialized first and second.
-            */
-            pair() : first(), second() {};
-
-            /**
-            *   Initialization constructor.
-            *
-            *   @param a    Will initialize first.
-            *   @param b    Will initialize second.
-            */
-            pair(const T1& a, const T2& b) : first(a), second(b) {};
-
-            /**
-            *   Copy constructor, creates a pair with the same member variables.
-            *
-            *   @param copy     The pair that will be copied.
-            */
-            pair(const pair<T1, T2>& copy) : first(copy.first), second(copy.second) {};
-
-            /**
-            *   Copy constructor, creates a pair with the same member variables.
-            *
-            *   @param copy     The pair that will be copied.
-            */
-            template <typename U, typename V>
-            pair(const pair<U, V>& copy) : first(copy.first), second(copy.second) {};
-
-            ~pair() {};
-
-            /**
-            *   Assigns a pair to this pair.
-            *
-            *   @param assign   The pair that will be assigned.
-            */
-            pair& operator=(const pair& assign)
-            {
-                if (this != &assign)
-                {
-                    first = assign.first;
-                    second = assign.second;
-                }
-                return (*this);
-            }
 
 
-            /* ------------------------------------------------------------- */
-            /* ------------------ PUBLIC MEMBER VARIABLES ------------------ */
+	template <class InputIterator1, class InputIterator2>
+		bool lexicographical_compare (InputIterator1 first1, InputIterator1 last1,
+										InputIterator2 first2, InputIterator2 last2)
+	{
+		while (first1 != last1)
+		{
+			if (first2 == last2 || *first2 < *first1) return false;
+			else if (*first1 < *first2) return true;
+			++first1; ++first2;
+		}
+		return (first2!=last2);
+	}
+	template<class InputIt1, class InputIt2, class Compare>
+	bool lexicographical_compare(InputIt1 first1, InputIt1 last1,
+								InputIt2 first2, InputIt2 last2,
+								Compare comp)
+	{
+	for ( ; (first1 != last1) && (first2 != last2); ++first1, (void) ++first2 ) {
+		if (comp(*first1, *first2)) return true;
+		if (comp(*first2, *first1)) return false;
+	}
+	return (first1 == last1) && (first2 != last2);
+}
+	template <typename T1, typename T2>
+	class pair
+	{
+		public:
+			T1 first;
+			T2 second;
 
-            T1 first;
-            T2 second;
+			pair() : first(), second() {};
+			pair(const T1& a, const T2& b) : first(a), second(b) {};
+			pair(const pair& copy) : first(copy.first), second(copy.second) {};
 
-    }; // pair
+			~pair() {};
 
-
-    /**
-    * ------------------------------------------------------------- *
-    * ---------------------- FT::ALLOCATOR ------------------------ *
-    * - Coplien form:
-    * (constructor)     Creates a new allocator instance
-    * (destructor)      Destructs an allocator instance
-    *
-    * - Member functions:
-    * Address           Obtains the address of an object
-    * Allocate          Allocates uninitialized storage
-    * Deallocate        Deallocates storage
-    * Construct         Constructs an object in allocated storage
-    * Destroy           Destroys an object in allocated storage
-    * ------------------------------------------------------------- *
-    */
-
-    // template <class T>
-    // class allocator
-    // {
-    //     /* ------------------------------------------------------------- */
-    //     /* --------------------------- ALIASES ------------------------- */
-
-    //     public:
-
-    //         typedef T           value_type;
-    //         typedef T*          pointer;
-    //         typedef T&          reference;
-    //         typedef const T*    const_pointer;
-    //         typedef const T&    const_reference;
-    //         typedef size_t      size_type;
-    //         typedef long int    difference_type;
-
-
-    //     /* ------------------------------------------------------------- */
-    //     /* ------------------------ COPLIEN FORM ----------------------- */
-
-    //     allocator() throw() {};
-
-    //     allocator(const allocator&) throw() {};
-
-    //     template <class U>
-    //     allocator(const allocator<U>&) throw() {};
-
-    //     ~allocator() throw() {};
+			pair& operator=(const pair& assign)
+			{
+				if (this != &assign)
+				{
+					first = assign.first;
+					second = assign.second;
+				}
+				return (*this);
+			}
 
 
-    //     /* ------------------------------------------------------------- */
-    //     /* ---------------------- MEMBER FUNCTIONS --------------------- */
+			friend bool operator==(const pair& lhs, const pair& rhs){
+				return ((lhs.first == rhs.first and lhs.second == rhs.second));}
 
-    //     /**
-    //     *   @return The address of x object.
-    //     */
-    //     pointer address(reference x) const              { return &x; }
+			friend bool operator!=(const pair& lhs, const pair& rhs){
+				return (!(lhs == rhs));}
 
-    //     /**
-    //     *   @return The address of x object.
-    //     */
-    //     const_pointer address(const_reference x) const  { return &x; }
+			friend bool operator<(const pair& lhs, const pair& rhs){
+				if (lhs.first < rhs.first)
+					return true;
+				if (lhs.second < rhs.second)
+					return true;
+				return false;
+			}
 
+			friend bool operator<=(const pair& lhs, const pair& rhs){
+				if (lhs < rhs)
+					return true;
+				if (lhs == rhs)
+					return true;
+				return false;
+			}
+			friend bool operator>(const pair& lhs, const pair& rhs){return !(lhs <= rhs);}
 
-    //     /**
-    //     *   Allocates uninitialized storage.
-    //     *
-    //     *   @param n    The number of objects to allocates.
-    //     *   @return     A pointer to the newly allocated area.
-    //     */
-    //     pointer allocate(size_type n)
-    //     {
-    //         pointer ret;
-    //         size_t size = n * sizeof(value_type);
+			friend bool operator>=(const pair& lhs, const pair& rhs){return !(lhs < rhs);}
 
-    //         try
-    //         {
-    //             ret = reinterpret_cast<pointer>(::operator new(size));
-    //         }
-    //         catch(const std::exception& e)
-    //         {
-    //             std::cerr << e.what() << '\n';
-    //         }
+	}; // pair
 
-    //         return ret;
-    //     }
+	template<typename T1, typename T2>
+	pair<T1,T2>make_pair(T1 t,T2 u){
+		return pair<T1,T2>(t,u);
+	}
 
-    //     /**
-    //     *   Deallocates storage (this doesn't call destructors for the objects present
-    //     *   in this storage).
-    //     *
-    //     *   @param p    The address of a previously allocated area with allocate.
-    //     *   @param n    The size of the area to deallocate.
-    //     *   @return     A pointer to the newly allocated area.
-    //     */
-    //     void deallocate (pointer p, size_type n)
-    //     {
-    //         (void)n;
-    //         ::operator delete(p);
-    //     }
+	template <class T>
+	void swap ( T& a, T& b )
+	{
+		T c(a); a=b; b=c;
+	}
+	template <bool B>
+	struct enable_if {};
 
-    //     /**
-    //     *   Constructs an object in allocated storage.
-    //     *
-    //     *   @param p    A pointer to an unintialized allocated storage.
-    //     *   @param v    The value to use as the copy constructor argument.
-    //     */
-    //     void construct(pointer p, const T& v) { new((void*)p)T(v); }
+	template <>
+	struct enable_if<true> { typedef int type; };	template <typename T>
+	struct is_integral { static const bool value = false; };
 
-    //     /**
-    //     *   Destroy an object in allocated storage.
-    //     *
-    //     *   @param p    A pointer to the object that is going to be destroyed.
-    //     */
-    //     void destroy(pointer p) { p->~T(); }
+	template <>
+	struct is_integral<bool> { static const bool value = true; };
 
-    // }; // allocator
+	template <>
+	struct is_integral<char> { static const bool value = true; };
 
+	template <>
+	struct is_integral<short> { static const bool value = true; };
 
-    /**
-    * ------------------------------------------------------------- *
-    * ------------------------- FT::LESS -------------------------- *
-    */
+	template <>
+	struct is_integral<int> { static const bool value = true; };
 
-    template <class T>
-    struct less
-    {
-        typedef T       first_argument_type;
-        typedef T       second_argument_type;
-        typedef bool    result_type;
+	template <>
+	struct is_integral<long> { static const bool value = true; };
 
-        bool operator() (const T& x, const T& y) const {return x<y;}
+	template <>
+	struct is_integral<long long> { static const bool value = true; };
 
-    }; // less
+	template <>
+	struct is_integral<unsigned char> { static const bool value = true; };
 
+	template <>
+	struct is_integral<unsigned short> { static const bool value = true; };
 
-    /**
-    * ------------------------------------------------------------- *
-    * ---------------------- FT::ENABLE_IF ------------------------ *
-    */
+	template <>
+	struct is_integral<unsigned int> { static const bool value = true; };
 
-    /**
-    *   Typedef an int into type only if B is true.
-    */
+	template <>
+	struct is_integral<unsigned long> { static const bool value = true; };
 
-    template <bool B>
-    struct enable_if {};
-
-    template <>
-    struct enable_if<true> { typedef int type; };
-
-
-    /**
-    * ------------------------------------------------------------- *
-    * --------------------- FT::IS_INTEGRAL ----------------------- *
-    */
-
-    /**
-    *   Value will be true if T is an integral, false otherwise.
-    */
-    template <typename T>
-    struct is_integral { static const bool value = false; };
-
-    template <>
-    struct is_integral<bool> { static const bool value = true; };
-
-    template <>
-    struct is_integral<char> { static const bool value = true; };
-
-    template <>
-    struct is_integral<short> { static const bool value = true; };
-
-    template <>
-    struct is_integral<int> { static const bool value = true; };
-
-    template <>
-    struct is_integral<long> { static const bool value = true; };
-
-    template <>
-    struct is_integral<long long> { static const bool value = true; };
-
-    template <>
-    struct is_integral<unsigned char> { static const bool value = true; };
-
-    template <>
-    struct is_integral<unsigned short> { static const bool value = true; };
-
-    template <>
-    struct is_integral<unsigned int> { static const bool value = true; };
-
-    template <>
-    struct is_integral<unsigned long> { static const bool value = true; };
-
-    template <>
-    struct is_integral<unsigned long long> { static const bool value = true; };
+	template <>
+	struct is_integral<unsigned long long> { static const bool value = true; };
 
 } // namespace ft
 

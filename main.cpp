@@ -11,18 +11,24 @@
 #include <vector>
 #include <string>
 
+typedef std::map<int,std::string> smap;
+typedef ft::Map<int,std::string> fmap;
+typedef std::pair<int,std::string> spair;
+typedef ft::pair<int,std::string> fpair;
+
 int main(void)
 {
-	ft::pair<int,std::string> pair[5];
-	pair[1] = ft::pair<int,std::string>(4,"4");
-	pair[2] = ft::pair<int,std::string>(2,"2");
-	pair[3] = ft::pair<int,std::string>(12,"3");
-	pair[4] = ft::pair<int,std::string>(4,"4");
-	pair[0] = ft::pair<int,std::string>(5,"0");
-	//std::map<int, std::string> map1(pair,pair+4);
-	ft::Map<int, std::string> map2(pair,pair + 4);
-	ft::Map<int, std::string> map3(map2);
-	// 	std::cout << it->first << std::endl;
-	// }
-	// std::cout << sizeof(map1) << std::endl;
+	std::string str("Bonjour");
+	std::string str2("Bonsour");
+	fmap map;
+	//map.end();
+	fpair spr[4];
+	spr[0] = fpair(1,"tutu");
+	spr[1] = fpair(2,"tutu");
+	spr[2] = fpair(3,"tutu");
+	spr[3] = fpair(4,"tutu");
+	fmap fap(spr, spr + 3);
+	fmap tap(spr, spr + 4);
+	tap.value_comp();
+	return 0;
 }

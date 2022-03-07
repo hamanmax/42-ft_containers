@@ -3,6 +3,8 @@
 
 #include "Utility.hpp"
 #include "RedBlackTree.hpp"
+#include "MapIterator.hpp"
+#include "ReverseMapIterator.hpp"
 #include <memory>
 #include <functional>
 namespace ft
@@ -26,18 +28,35 @@ namespace ft
 			typedef const value_type&					const_reference;
 			typedef typename Allocator::pointer			pointer;
 			typedef typename Allocator::const_pointer	const_pointer;
-			// TODO typedef MapIterator<BidirectionalIteratorTag,Map>		iterator;
-			// TODO typedef const MapIterator<BidirectionalIteratorTag,Map>	const_iterator;
-			// TODO typedef ReverseMapIterator<BidirectionalIteratorTag,Map>	reverse_iterator;
-			// TODO typedef const ReverseMapIterator<BidirectionalIteratorTag,Map>	const_reverse_iterator;
+			typedef MapIterator<BidirectionalIteratorTag,Map>		iterator;
+			typedef const MapIterator<BidirectionalIteratorTag,Map>	const_iterator;
+			typedef ReverseMapIterator<BidirectionalIteratorTag,Map>	reverse_iterator;
+			typedef const ReverseMapIterator<BidirectionalIteratorTag,Map>	const_reverse_iterator;
 		private:
 		RBTree<Key,T>	tree;
 		allocator_type	allocator;
 		key_compare v;
 		public:
 
-		Map():allocator(Allocator()),tree(RBTree<Key,T>()),v(Compare()){
+		class value_compare
+		{
+			friend class Map;
+			protected:
+				value_compare(key_compare c) : comp(c) {}
+				key_compare comp;
+			public:
+			typedef bool result_type;
+			typedef value_type first_value_type;
+			typedef value_type second_value_type;
+
+			result_type operator()(const value_type& x,value_type& y) const
+			{
+				return comp(x.first,y.first);
+			}
 		};
+
+		Map():allocator(Allocator()),tree(RBTree<Key,T>()),v(Compare()){}
+
 		explicit Map(const Compare& comp, const Allocator & alloc = Allocator()):allocator(alloc),tree(RBTree<Key,T>()),v(comp){}
 
 		template< class InputIterator >
@@ -47,98 +66,284 @@ namespace ft
 				tree.insert(*first);
 				first++;
 			}
-		};
+		}
 
 		Map(const Map& other){
 			allocator = other.allocator;
 			v = other.v;
+			for (Map::iterator it = other.begin(); it != other.end();it++){
+				tree.insert(*it);
+			}
 		}
 
 		~Map(){
 			while (tree.getSize() != 0){
-				//std::cout << tree.getSize() << std::endl;
 				tree.deleteNode(tree.getRoot());
 			}
 		}
 
-		// TODO operator=( const map& other );
+		Map& operator=( const Map& other ){
+			allocator = other.allocator;
+			v = other.v;
+			for (Map::iterator it = other.begin(); it != other.end();it++){
+				tree.insert(*it);
+			}
+			return  *this;
+		}
 
-		// TODO allocator_type get_allocator() const {};
+		allocator_type get_allocator() const {return allocator;}
 
 		// * Element Acces
 
-		// TODO mapped_value& at(const Key& key){};
-		// TODO const mapped_value& at(const Key& key) const {};
+		mapped_type& at(const Key& key){
+			if (tree.searchAt(key) == NULL)
+			{
+				throw std::out_of_range ("Out Of Bounds Exceptions Thrown");
+			}
+			return tree.searchAt(key)->val.second;
+		}
+		const mapped_type& at(const Key& key) const {
+			if (tree.searchAt(key) == NULL)
+			{
+				throw std::out_of_range ("Out Of Bounds Exceptions Thrown");
+			}
+			return tree.searchAt(key)->val.second;
+		}
 
-		// TODO mapped_value& operator[]( const Key& key ) {};
+		mapped_type& operator[]( const Key& key ) {
+			Node<Key,T> *tmp = tree.searchAt(key);
+			if (tmp)
+				return tmp->val.second;
+			value_type val = ft::pair<key_type,mapped_type>(key,mapped_type());
+
+			return tree.insert(val)->val.second;
+		}
 
 		// * Iterators
 
-		// TODO iterator begin(){};
-		// TODO const_iterator begin() const {};
+		iterator begin(){
+			if (size() == 0) return iterator(tree.getDummy(),tree.getDummy());
+			Node<Key,T> *begin = tree.getRoot();
+			while (begin->left != NULL)
+				begin = begin->left;
+			return (iterator(begin,tree.getDummy()));
+		}
+		const_iterator begin() const {
+			if (size() == 0) return end();
+			Node<Key,T> *begin = tree.getRoot();
+			while (begin->left != NULL)
+				begin = begin->left;
+			return (iterator(begin,tree.getDummy()));
+		}
 
-		// TODO iterator end() const {};
-		// TODO const_iterator end() const {};
+		iterator end() {
+			if (size() == 0) return iterator(tree.getDummy(),tree.getDummy());
+			Node<Key,T> *dummy = tree.getDummy();
+			dummy->parent = dummy->right;
+			dummy->right = NULL;
+			return (iterator(dummy,dummy));}
+		const_iterator end() const {
+			if (size() == 0) return iterator(tree.getDummy(),tree.getDummy());
+			Node<Key,T> *dummy = tree.getDummy();
+			dummy->parent = dummy->right;
+			dummy->right = NULL;
+			return (iterator(dummy,dummy));}
 
-		//TODO reverse_iterator rbegin(){};
-		//TODO const_reverse_iterator rbegin() const {};
+		reverse_iterator rbegin(){
+			if (size() == 0) return rend();
+			Node<Key,T> *rbegin = tree.getRoot();
+			while (rbegin->right != NULL)
+				rbegin = rbegin->right;
+			return (reverse_iterator(rbegin,tree.getDummy()));
+		}
 
-		//TODO reverse_iterator rend(){};
-		//TODO const_reverse_iterator rend() const {};
+		const_reverse_iterator rbegin() const {
+			if (size() == 0) return rend();
+			Node<Key,T> *rbegin = tree.getRoot();
+			while (rbegin->right != NULL)
+				rbegin = rbegin->right;
+			return (reverse_iterator(rbegin,tree.getDummy()));
+		}
+
+		reverse_iterator rend() {
+			if (size() == 0) return reverse_iterator();
+			Node<Key,T> *dummy = tree.getDummy();
+			dummy->parent = dummy->left;
+			dummy->left = NULL;
+			return (reverse_iterator(dummy,dummy));}
+
+		const_reverse_iterator rend() const {
+			Node<Key,T> *dummy = tree.getDummy();
+			dummy->parent = dummy->left;
+			dummy->left = NULL;
+			return (reverse_iterator(dummy,dummy));}
 
 		// * Capacity
 
-		// TODO bool empty() const {};
+		bool empty() const {return (size() > 0)? false : true;}
 
-		// TODO size_type size() const{};
+		size_type size() const{return tree.getSize();}
 
-		// TODO size_type max_size() const{};
+		size_type max_size() const{return allocator.max_size();}
 
 		// * Modifiers
 
-		// TODO void clear(){};
+		void clear(){
+			while (tree.getSize() != 0){
+				allocator.destroy(&tree.getRoot()->val);
+				tree.deleteNode(tree.getRoot());
+			}
+		}
 
-		// TODO ft::pair<iterator, bool> insert( const value_type& value) {};
-		// TODO iterator insert(iterator hint, const value_type& value) {};
-		// TODO template < class InputIt > void insert(InputIt first, InputIt Last){};
+		ft::pair<iterator, bool> insert( const value_type& value) {
+			Node<Key,T> *n = tree.insert(value);
+			if (n == NULL)
+				return (ft::pair<iterator, bool>(tree.search(value.first),false));
+			return (ft::pair<iterator, bool>(n,true));
+		}
 
-		// TODO void erase(iterator pos){};
-		// TODO void erase(iterator first, iterator last){};
-		// TODO size_type erase(conset Key& key){};
+		iterator insert(iterator hint, const value_type& value) {
+			Node<Key,T> *n = tree.insert(value,hint._mptr);
+			if (n == NULL)
+				return (tree.searchAt(value.first));
+			return (iterator(n,tree.getDummy()));
+		}
 
-		// TODO void swap(Map& other);
+		template < class InputIt >
+		void insert(InputIt first, InputIt last){
+			while (first != last)
+			{
+				tree.insert(*first);
+				first++;
+			}
+		}
+
+		void erase(iterator pos){
+			tree.deleteNode(pos._mptr);
+		}
+
+		void erase(iterator first, iterator last){
+			while (first != last)
+			{
+				tree.deleteNode(first._mptr);
+				first++;
+			}
+		}
+
+		size_type erase(const Key& key){
+			size_type i = size();
+			tree.deleteByVal(key);
+			if (size() != i)
+				return 1;
+			return 0;
+		}
+
+		void swap(Map& other){
+			Map *tmp = other;
+			other.tree = this->tree;
+			other.v = this->v;
+			other.allocator = this->allocator;
+			this->tree = other.tree;
+			this->v = other.v;
+			this->allocator = other.allocator;
+		}
 
 		// * Lookup
 
-		// TODO size_type count(conset Key& key) const {};
+		size_type count(const key_type& key) const {
+			Node<Key,T> *n = tree.searchAt(key);
+			return n ? true : false;
+		}
 
-		// TODO iterator find(const Key& key){};
-		// TODO const_iterator find(const Key& key) const {};
+		iterator find(const Key& key){
+			Node<Key,T> *n = tree.searchAt(key);
+			if (n == NULL)
+				return (end());
+			return n;
+		}
 
-		// TODO ft::pair<iterator, iterator> equal_range(const Key& key){};
-		// TODO ft::pair<const_iterator, const_iterator> equal_range(const Key& key) const {};
+		const_iterator find(const Key& key) const {
+			Node<Key,T> *n = tree.searchAt(key);
+			if (n == NULL)
+				return (end());
+			return n;
+		}
 
-		// TODO iterator lower_bound(const Key& key){};
-		// TODO const_iterator lower_bound(const Key& key) const {};
+		ft::pair<iterator, iterator> equal_range(const Key& key){return ft::Map<iterator, iterator>(lower_bound(), upper_bound());};
+		ft::pair<const_iterator, const_iterator> equal_range(const Key& key) const {return ft::Map<iterator, iterator>(lower_bound(), upper_bound());};
 
-		// TODO iterator upper_bound(const Key& key){};
-		// TODO const_iterator upper_bound(const Key& key) const {};
+		iterator lower_bound(const Key& key){
+			iterator n(tree.search(key),tree.getDummy());
+			while (n->first < key && n != end())
+				n++;
+			return (n);
+		}
+
+		const_iterator lower_bound(const Key& key) const {
+			iterator n(tree.search(key),tree.getDummy());
+			while (n->first < key && n != end())
+				n++;
+			return (n);
+		}
+
+		iterator upper_bound(const Key& key){
+			iterator n(tree.search(key),tree.getDummy());
+			while (n->first <= key && n != end())
+				n++;
+			return (n);
+		}
+		const_iterator upper_bound(const Key& key) const {
+			iterator n(tree.search(key),tree.getDummy());
+			while (n->first <= key && n != end())
+				n++;
+			return (n);
+		}
 
 		// * Observers
 
-		// TODO key_compare key_comp() const {};
-		// TODO ft::Map::value_compare value_comp() const {};
+		key_compare key_comp() const {return v;}
+		value_compare value_comp() const {return value_compare(v);}
 
 		// * Operators
 
-		// TODO bool operator==(const Map& lhs, const Map& rhs) {};
-		// TODO bool operator!=(const Map& lhs, const Map& rhs) {};
-		// TODO bool operator<(const Map& lhs, const Map& rhs) {};
-		// TODO bool operator<=(const Map& lhs, const Map& rhs) {};
-		// TODO bool operator>(const Map& lhs, const Map& rhs) {};
-		// TODO bool operator>=(const Map& lhs, const Map& rhs) {};
+		friend bool operator==(const Map& lhs, const Map& rhs) {
+			if (lhs.size() != rhs.size())
+				return false;
+			for (ft::pair<iterator, iterator> it(lhs.begin(), rhs.begin()); it.first != lhs.end(),it.second != rhs.end(); it.first++,it.second++)
+			{
+				if (*it.first != *it.second)
+				{
+					return false;
+				}
+			}
+			return true;
+		}
 
-		// TODO void swap(Map& lhs, Map& rhs){};
+		friend bool operator!=(const Map& lhs, const Map& rhs) {return !(lhs == rhs);}
+
+		friend bool operator<(const Map& lhs, const Map& rhs) {
+			if (lhs.size() < rhs.size())
+				return true;
+			for (ft::pair<iterator, iterator> it(lhs.begin(), rhs.begin()); it.first != lhs.end(),it.second != rhs.end(); it.first++,it.second++)
+			{
+				if (*it.first < *it.second)
+				{
+					return false;
+				}
+			}
+			return false;
+		}
+		friend bool operator<=(const Map& lhs, const Map& rhs) {
+			if (lhs < rhs) return true;
+			if (lhs == rhs) return true;
+			return false;
+		}
+
+		friend bool operator>(const Map& lhs, const Map& rhs) {return !(lhs <= rhs);}
+
+		friend bool operator>=(const Map& lhs, const Map& rhs) {return !(lhs < rhs);}
+
+		friend void swap(Map& lhs, Map& rhs){lhs.swap(rhs);}
 	};
 };
 

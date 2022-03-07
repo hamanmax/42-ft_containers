@@ -7,7 +7,7 @@
 #include <iterator>
 #include <cstdlib>
 #include <cstddef>
-#include "Iterator.hpp"
+#include "VectorIterator.hpp"
 #include "Utility.hpp"
 #include "ReverseVectorIterator.hpp"
 
@@ -378,6 +378,8 @@ friend bool	operator>(const Vector& lhs, const Vector& rhs){return (rhs < lhs);}
 friend bool	operator<=(const Vector& lhs, const Vector& rhs){return (!(rhs < lhs));}
 
 friend bool	operator>=(const Vector& lhs, const Vector& rhs){return (!(lhs < rhs));}
+
+friend void swap(Vector& x,Vector&y){x.swap(y);}
 
 };
 }

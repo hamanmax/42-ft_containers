@@ -2,34 +2,36 @@
 #define VECTOR_ITERATOR_HPP
 #include "Iterator.hpp"
 
-template<	class Category,
+template<
 			class T,
-			class Distance = ptrdiff_t,
 			class Pointer = T*,
-			class Reference = T&
+			class Reference = T&,
+			class Category = RandomAccessIteratorTag,
+			class Distance = ptrdiff_t
 		>
-class VectorIterator : public Iterator<Category,T>
+class VectorIterator : public ft::Iterator<Category, T>
 {
 	public:
-	typedef typename T::value_type		value_type;
-	typedef typename T::pointer			pointer;
-	typedef typename T::reference		reference;
-	typedef typename T::const_reference	const_reference;
+	typedef Pointer pointer;
+	typedef Reference		reference;
 	private:
 		pointer _mptr;
 	protected:
-		/*Arg*/
 	public:
 		VectorIterator(pointer ptr):_mptr(ptr){};
 		VectorIterator():_mptr(0){};
-		VectorIterator(VectorIterator const & copy){_mptr = copy._mptr;}
 		VectorIterator & operator=(VectorIterator const & op){_mptr = op._mptr; return *this;};
+		template<typename U>
+		VectorIterator( const VectorIterator<U>  & copy) {_mptr = copy.getptr();}
+
 		~VectorIterator(){};
 		reference operator*(){
 			return *_mptr;}
 
 		pointer operator->(){
 			return &(operator*());}
+
+		const pointer& getptr()const {return _mptr;}
 
 		bool operator!=(const VectorIterator& Other) const{return !(_mptr == Other._mptr);}
 
@@ -46,13 +48,13 @@ class VectorIterator : public Iterator<Category,T>
 		reference operator[](const ssize_t n)const {
 			return(_mptr[n]);}
 
-		VectorIterator&	operator++(){
+		VectorIterator&	operator++() {
 			++_mptr;
 			return(*this);}
 
-		VectorIterator	operator++(int){
+		VectorIterator	operator++(int) {
 			VectorIterator Old(*this);
-			this->_mptr++;
+			++(this->_mptr);
 			return(Old);}
 
 		VectorIterator &operator+=(const ssize_t n){
@@ -106,5 +108,4 @@ class VectorIterator : public Iterator<Category,T>
 			return (New -= nb);
 		}
 };
-
 #endif

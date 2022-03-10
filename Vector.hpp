@@ -11,7 +11,6 @@
 #include "Utility.hpp"
 #include "ReverseVectorIterator.hpp"
 
-// ! STD::SWAP A VERIFIER
 namespace ft
 {
 template<class T,class Alloc = std::allocator<T> >
@@ -25,10 +24,10 @@ class Vector
 		typedef const T*	const_pointer;
 		typedef T&			reference;
 		typedef const T&	const_reference;
-		typedef VectorIterator<RandomAccessIteratorTag ,Vector>				iterator;
-		typedef const VectorIterator<RandomAccessIteratorTag, Vector>		const_iterator;
-		typedef ReverseVectorIterator<RandomAccessIteratorTag ,Vector>				reverse_iterator;
-		typedef const ReverseVectorIterator<RandomAccessIteratorTag, Vector>		const_reverse_iterator;
+		typedef VectorIterator<T>				iterator;
+		typedef VectorIterator<T, const_pointer, const_reference>		const_iterator;
+		typedef ReverseVectorIterator<T>				reverse_iterator;
+		typedef ReverseVectorIterator<T, const_pointer, const_reference>	const_reverse_iterator;
 	private:
 		pointer	_start; // Start
 		pointer	_capacity_end; //Capacity
@@ -81,8 +80,8 @@ class Vector
 			alloc_type mem;
 			_start = mem.allocate(other.capacity());
 			_capacity_end = _start + other.capacity();
-			for (ft::pair<Vector::iterator,int> i(other.begin(),0);
-			i.first    != other.end();i.first++,i.second++){
+			for (ft::pair<Vector::const_iterator,int> i(other.begin(),0);
+			i.first != other.end();i.first++,i.second++){
 				mem.construct(_start + i.second, *i.first);}
 			_end = _start + other.size();
 		}
@@ -168,10 +167,10 @@ class Vector
 
 		iterator				begin(){
 			return (iterator(_start));}
+		const_iterator 			begin() const {
+			return const_iterator(_start);}
 		iterator				end(){
 			return (iterator(_end));}
-		const_iterator 			begin() const{
-			return (const_iterator(_start));}
 		const_iterator 			end() const{
 			return (const_iterator(_end));}
 		reverse_iterator		rbegin(){

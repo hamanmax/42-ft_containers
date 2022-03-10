@@ -28,10 +28,10 @@ namespace ft
 			typedef const value_type&					const_reference;
 			typedef typename Allocator::pointer			pointer;
 			typedef typename Allocator::const_pointer	const_pointer;
-			typedef MapIterator<BidirectionalIteratorTag,Map>		iterator;
-			typedef const MapIterator<BidirectionalIteratorTag,Map>	const_iterator;
-			typedef ReverseMapIterator<BidirectionalIteratorTag,Map>	reverse_iterator;
-			typedef const ReverseMapIterator<BidirectionalIteratorTag,Map>	const_reverse_iterator;
+			typedef MapIterator<value_type, Map>		iterator;
+			typedef MapIterator<value_type, Map, const_pointer, const_reference>	const_iterator;
+			typedef ReverseMapIterator<value_type, Map>	reverse_iterator;
+			typedef ReverseMapIterator<value_type, Map, const_pointer, const_reference>	const_reverse_iterator;
 		private:
 		RBTree<Key,T>	tree;
 		allocator_type	allocator;
@@ -55,7 +55,7 @@ namespace ft
 			}
 		};
 
-		Map():allocator(Allocator()),tree(RBTree<Key,T>()),v(Compare()){}
+		Map():tree(RBTree<Key,T>()),allocator(Allocator()),v(Compare()){}
 
 		explicit Map(const Compare& comp, const Allocator & alloc = Allocator()):allocator(alloc),tree(RBTree<Key,T>()),v(comp){}
 
@@ -162,7 +162,7 @@ namespace ft
 			Node<Key,T> *rbegin = tree.getRoot();
 			while (rbegin->right != NULL)
 				rbegin = rbegin->right;
-			return (reverse_iterator(rbegin,tree.getDummy()));
+			return (const_reverse_iterator(rbegin,tree.getDummy()));
 		}
 
 		reverse_iterator rend() {
@@ -176,7 +176,7 @@ namespace ft
 			Node<Key,T> *dummy = tree.getDummy();
 			dummy->parent = dummy->left;
 			dummy->left = NULL;
-			return (reverse_iterator(dummy,dummy));}
+			return (const_reverse_iterator(dummy,dummy));}
 
 		// * Capacity
 
@@ -269,8 +269,8 @@ namespace ft
 			return n;
 		}
 
-		ft::pair<iterator, iterator> equal_range(const Key& key){return ft::Map<iterator, iterator>(lower_bound(), upper_bound());};
-		ft::pair<const_iterator, const_iterator> equal_range(const Key& key) const {return ft::Map<iterator, iterator>(lower_bound(), upper_bound());};
+		ft::pair<iterator, iterator> equal_range(const Key& key){return ft::pair<iterator, iterator>(lower_bound(), upper_bound());Key k = key;};
+		ft::pair<const_iterator, const_iterator> equal_range(const Key& key) const {return ft::Map<iterator, iterator>(lower_bound(), upper_bound());Key k = key;};
 
 		iterator lower_bound(const Key& key){
 			iterator n(tree.search(key),tree.getDummy());

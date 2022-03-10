@@ -15,19 +15,19 @@ namespace ft
 		typedef typename container_type::reference reference;
 		typedef typename container_type::const_reference const_reference;
 
-		protected:
+		private:
 		container_type _Container;
 
 		public:
 
 		// Constructors
 
-		explicit Stack( const Container& cont = Container() ):_Container(cont){};
-		Stack(const Stack& other){_Container(other);};
+		explicit Stack( const Container& cont = Container() ):_Container(cont){}
+		Stack(const Stack& other):_Container(other._Container){};
 
-		~Stack(){};
+		~Stack(){}
 
-		Stack& operator=( const Stack& other ){_Container    = other._Container;return *this;};
+		Stack& operator=( const Stack& other ){_Container = other._Container;return *this;};
 
 		reference top(){return _Container.back();}
 		const_reference top()const {return _Container.back();}

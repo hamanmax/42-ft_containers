@@ -78,9 +78,9 @@ class RBTree {
 	typedef size_t size_type;
 	typedef ft::pair<Key,T> value_type;
 	typedef Node<Key,T>* node_pointer;
+	size_type size;
 	node_pointer root;
 	node_pointer dummy;
-	size_type size;
 
 	// left rotates the given node
 	void leftRotate(node_pointer x) {

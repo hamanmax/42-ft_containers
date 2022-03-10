@@ -2,37 +2,45 @@
 #define REVERSE_MAP_ITERATOR_HPP
 #include "Iterator.hpp"
 
-template<	class Category,
+template<
 			class T,
-			class Distance = ptrdiff_t,
+			class Map,
 			class Pointer = T*,
-			class Reference = T&
+			class Reference = T&,
+			class Category = BidirectionalIteratorTag,
+			class Distance = ptrdiff_t
 		>
-class ReverseMapIterator: public Iterator<Category,T>
+class ReverseMapIterator: public ft::Iterator<Category,T>
 {
 public:
-typedef typename T::mapped_type		mapped_type;
-typedef typename T::key_type			key_type;
-typedef typename T::value_type value_type;
-typedef typename T::value_type*		pointer;
-typedef typename T::value_type&		reference;
-typedef Node<key_type, mapped_type>* NodePointer;
+	typedef Pointer					pointer;
+	typedef Reference				reference;
+typedef typename Map::mapped_type		mapped_type;
+typedef typename Map::key_type		key_type;
+typedef Node<key_type, mapped_type>*	NodePointer;
 private:
 	NodePointer _dummy;
-public:
 	NodePointer _mptr;
+public:
 	ReverseMapIterator(NodePointer ptr,NodePointer dummy):_mptr(ptr),_dummy(dummy){};
 	ReverseMapIterator():_mptr(0),_dummy(0){};
 	ReverseMapIterator(ReverseMapIterator const & copy):_mptr(copy._mptr),_dummy(copy._dummy){};
+	template <typename U,typename V>
+	ReverseMapIterator( const ReverseMapIterator<U,V>  & copy) {_mptr = copy.getptr();_dummy = copy.getdummy();}
+
 	ReverseMapIterator & operator=(ReverseMapIterator const & copy){_mptr = copy._mptr;_dummy = copy._dummy;return *this;};
 	~ReverseMapIterator(){};
 
 	bool operator==(const ReverseMapIterator& Other) const {return _mptr == Other._mptr;}
 	bool operator!=(const ReverseMapIterator& Other) const {return !(_mptr == Other._mptr);}
 
+
+	NodePointer getptr()const {return _mptr;}
+	NodePointer getdummy()const {return _dummy;}
+
 	reference operator*(){return _mptr->val;}
 
-	pointer operator->(){return &(operator*());}
+	pointer operator->(){return (&_mptr->val);}
 
 	NodePointer Minimum(){
 		NodePointer mini = _mptr;

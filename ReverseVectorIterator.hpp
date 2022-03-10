@@ -1,32 +1,37 @@
 #ifndef REVERSE_VECTOR_ITERATOR_HPP
 #define REVERSE_VECTOR_ITERATOR_HPP
 #include "Iterator.hpp"
+#include "ReverseIterator.hpp"
 
-template<	class Category,
+template<
 			class T,
-			class Distance = ptrdiff_t,
 			class Pointer = T*,
-			class Reference = T&
+			class Reference = T&,
+			class Category = RandomAccessIteratorTag,
+			class Distance = ptrdiff_t
 		>
-class ReverseVectorIterator: public Iterator<Category, T>
+class ReverseVectorIterator: public ft::Iterator<Category,T>
 {
 	public:
-	typedef typename T::value_type		value_type;
-	typedef typename T::pointer			pointer;
-	typedef typename T::reference		reference;
-	typedef typename T::const_reference	const_reference;
+	typedef Pointer						pointer;
+	typedef Reference					reference;
 	private:
 		pointer	_mptr;
 	public:
+
 		ReverseVectorIterator(pointer ptr):_mptr(ptr){};
 
 		ReverseVectorIterator():_mptr(0){};
 
-		ReverseVectorIterator(ReverseVectorIterator const & copy){_mptr = copy._mptr;}
+		ReverseVectorIterator(ReverseVectorIterator const & copy):_mptr(copy._mptr){}
+		template <typename U>
+		ReverseVectorIterator( const ReverseVectorIterator<U>  & copy) {_mptr = copy.getptr();}
 
-		ReverseVectorIterator & operator=(ReverseVectorIterator const & op){_mptr = op._mptr; return this;};
+		ReverseVectorIterator & operator=(ReverseVectorIterator const & op){_mptr = op._mptr; return *this;};
 
 		~ReverseVectorIterator(){};
+
+		const pointer& getptr()const {return _mptr;}
 
 		reference operator*(){
 			return *_mptr;}

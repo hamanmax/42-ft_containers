@@ -2,29 +2,32 @@
 #define MAP_ITERATOR_HPP
 #include "Iterator.hpp"
 
-template<	class Category,
+template<
 			class T,
-			class Distance = ptrdiff_t,
+			class Map,
 			class Pointer = T*,
-			class Reference = T&
+			class Reference = T&,
+			class Category = BidirectionalIteratorTag,
+			class Distance = ptrdiff_t
 		>
-class MapIterator: public Iterator<Category,T>
+class MapIterator: public ft::Iterator<Category,T>
 {
 public:
-typedef typename T::mapped_type		mapped_type;
-typedef typename T::key_type			key_type;
-typedef typename T::value_type value_type;
-typedef typename T::value_type*		pointer;
-typedef typename T::value_type&		reference;
-typedef Node<key_type, mapped_type>* NodePointer;
+	typedef Pointer					pointer;
+	typedef Reference				reference;
+typedef typename Map::mapped_type		mapped_type;
+typedef typename Map::key_type		key_type;
+typedef Node<key_type, mapped_type>*	NodePointer;
 private:
+	NodePointer _mptr;
 	NodePointer _dummy;
 public:
-	NodePointer _mptr;
 	MapIterator(NodePointer ptr,NodePointer dummy):_mptr(ptr),_dummy(dummy){
 	};
 	MapIterator():_mptr(0),_dummy(0){};
 	MapIterator(MapIterator const & copy):_mptr(copy._mptr),_dummy(copy._dummy){};
+	template <typename U,typename V>
+	MapIterator( const MapIterator<U,V>  & copy) {_mptr = copy.getptr();_dummy = copy.getdummy();}
 	MapIterator & operator=(MapIterator const & copy){_mptr = copy._mptr;_dummy = copy._dummy;return *this;};
 	~MapIterator(){
 	};
@@ -33,7 +36,11 @@ public:
 	bool operator!=(const MapIterator& Other) const {return !(_mptr == Other._mptr);}
 	reference operator*(){return _mptr->val;}
 
-	pointer operator->(){return &(operator*());}
+
+	NodePointer getptr()const {return _mptr;}
+	NodePointer getdummy()const {return _dummy;}
+
+	pointer operator->(){return (&_mptr->val);}
 
 	NodePointer Minimum(){
 		NodePointer mini = _mptr;

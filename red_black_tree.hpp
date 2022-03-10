@@ -1,29 +1,29 @@
 #include <iostream>
-#include "Utility.hpp"
+#include "utility.hpp"
 using namespace std;
 
 enum COLOR { RED, BLACK };
 template<class Key,class T, class pair = ft::pair<Key,T> >
-class Node {
+class node {
 public:
 	typedef pair value_type;
 	value_type val;
 	COLOR color;
-	Node *left, *right, *parent;
+	node *left, *right, *parent;
 
-	Node(value_type val) : val(val) {
+	node(value_type val) : val(val) {
 	parent = left = right = NULL;
 
-	// Node is created during insertion
-	// Node is red at insertion
+	// node is created during insertion
+	// node is red at insertion
 	color = RED;
 	}
-	Node(){
+	node(){
 		parent = left = right = NULL;
 	}
 
 // returns pointer to uncle
-Node *uncle() {
+node *uncle() {
 	// If no parent or grandparent, then no uncle
 	if (parent == NULL or parent->parent == NULL)
 		return NULL;
@@ -40,7 +40,7 @@ Node *uncle() {
 	bool isOnLeft() { return this == parent->left; }
 
 	// returns pointer to sibling
-	Node *sibling() {
+	node *sibling() {
 	// sibling null if no parent
 	if (parent == NULL)
 		return NULL;
@@ -52,7 +52,7 @@ Node *uncle() {
 	}
 
 	// moves node down and moves given node in its place
-	void moveDown(Node *nParent) {
+	void moveDown(node *nParent) {
 	if (parent != NULL) {
 		if (isOnLeft()) {
 			parent->left = nParent;
@@ -77,7 +77,7 @@ template<class Key, class T>
 class RBTree {
 	typedef size_t size_type;
 	typedef ft::pair<Key,T> value_type;
-	typedef Node<Key,T>* node_pointer;
+	typedef node<Key,T>* node_pointer;
 	size_type size;
 	node_pointer root;
 	node_pointer dummy;
@@ -375,7 +375,7 @@ class RBTree {
 public:
 	// constructor
 	// initialize root
-	RBTree():size(0), root(NULL), dummy(new Node<Key,T>()) {}
+	RBTree():size(0), root(NULL), dummy(new node<Key,T>()) {}
 	~RBTree(){delete dummy;}
 
 	node_pointer getRoot() const { return root; }
@@ -467,7 +467,7 @@ public:
 
 	// inserts the given value to tree
 	node_pointer insert(value_type n, node_pointer hint) {
-	node_pointer newNode = new Node<Key, T>(n);
+	node_pointer newNode = new node<Key, T>(n);
 	if (root == NULL) {
 		// when root is null
 		// simply insert value at root
@@ -503,7 +503,7 @@ public:
 
 	// inserts the given value to tree
 	node_pointer insert(value_type n) {
-	node_pointer newNode = new Node<Key, T>(n);
+	node_pointer newNode = new node<Key, T>(n);
 	if (root == NULL) {
 		// when root is null
 		// simply insert value at root

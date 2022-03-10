@@ -3,13 +3,13 @@
 #include <string>
 #include <limits>
 #include <map>
-#include "Vector.hpp"
-#include "Stack.hpp"
-#include "Map.hpp"
+#include "vector.hpp"
+#include "stack.hpp"
+#include "map.hpp"
 #include <stack>
 #include <vector>
 #include <string>
-#include "ReverseIterator.hpp"
+#include "reverse_iterator.hpp"
 
 typedef std::map<
 int,std::string> smap;
@@ -19,10 +19,10 @@ typedef ft::pair<int,std::string> fpair;
 
 int main(void)
 {
-	ft::Vector<int> vector(12);
+	ft::vector<int> vector(12);
 	vector[11] = 12;
 	vector[9] = 25;
-	ft::Vector<int>::reverse_iterator it = vector.rbegin();
+	ft::vector<int>::reverse_iterator it = vector.rbegin();
 	it = it - 2;
 	std::cout << *it << std::endl;
 	return 0;

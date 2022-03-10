@@ -1,10 +1,10 @@
 #ifndef MAP_HPP
 #define MAP_HPP
 
-#include "Utility.hpp"
-#include "RedBlackTree.hpp"
-#include "MapIterator.hpp"
-#include "ReverseMapIterator.hpp"
+#include "utility.hpp"
+#include "red_black_tree.hpp"
+#include "map_iterator.hpp"
+#include "reverse_map_iterator.hpp"
 #include <memory>
 #include <functional>
 namespace ft
@@ -30,8 +30,8 @@ namespace ft
 			typedef typename Allocator::const_pointer	const_pointer;
 			typedef MapIterator<value_type, map>		iterator;
 			typedef MapIterator<value_type, map, const_pointer, const_reference>	const_iterator;
-			typedef ReverseMapIterator<value_type, map>	reverse_iterator;
-			typedef ReverseMapIterator<value_type, map, const_pointer, const_reference>	const_reverse_iterator;
+			typedef reverse_map_iterator<value_type, map>	reverse_iterator;
+			typedef reverse_map_iterator<value_type, map, const_pointer, const_reference>	const_reverse_iterator;
 		private:
 		RBTree<Key,T>	tree;
 		allocator_type	allocator;
@@ -111,7 +111,7 @@ namespace ft
 		}
 
 		mapped_type& operator[]( const Key& key ) {
-			Node<Key,T> *tmp = tree.searchAt(key);
+			node<Key,T> *tmp = tree.searchAt(key);
 			if (tmp)
 				return tmp->val.second;
 			value_type val = ft::pair<key_type,mapped_type>(key,mapped_type());
@@ -123,14 +123,14 @@ namespace ft
 
 		iterator begin(){
 			if (size() == 0) return iterator(tree.getDummy(),tree.getDummy());
-			Node<Key,T> *begin = tree.getRoot();
+			node<Key,T> *begin = tree.getRoot();
 			while (begin->left != NULL)
 				begin = begin->left;
 			return (iterator(begin,tree.getDummy()));
 		}
 		const_iterator begin() const {
 			if (size() == 0) return end();
-			Node<Key,T> *begin = tree.getRoot();
+			node<Key,T> *begin = tree.getRoot();
 			while (begin->left != NULL)
 				begin = begin->left;
 			return (iterator(begin,tree.getDummy()));
@@ -138,20 +138,20 @@ namespace ft
 
 		iterator end() {
 			if (size() == 0) return iterator(tree.getDummy(),tree.getDummy());
-			Node<Key,T> *dummy = tree.getDummy();
+			node<Key,T> *dummy = tree.getDummy();
 			dummy->parent = dummy->right;
 			dummy->right = NULL;
 			return (iterator(dummy,dummy));}
 		const_iterator end() const {
 			if (size() == 0) return iterator(tree.getDummy(),tree.getDummy());
-			Node<Key,T> *dummy = tree.getDummy();
+			node<Key,T> *dummy = tree.getDummy();
 			dummy->parent = dummy->right;
 			dummy->right = NULL;
 			return (iterator(dummy,dummy));}
 
 		reverse_iterator rbegin(){
 			if (size() == 0) return rend();
-			Node<Key,T> *rbegin = tree.getRoot();
+			node<Key,T> *rbegin = tree.getRoot();
 			while (rbegin->right != NULL)
 				rbegin = rbegin->right;
 			return (reverse_iterator(rbegin,tree.getDummy()));
@@ -159,7 +159,7 @@ namespace ft
 
 		const_reverse_iterator rbegin() const {
 			if (size() == 0) return rend();
-			Node<Key,T> *rbegin = tree.getRoot();
+			node<Key,T> *rbegin = tree.getRoot();
 			while (rbegin->right != NULL)
 				rbegin = rbegin->right;
 			return (const_reverse_iterator(rbegin,tree.getDummy()));
@@ -167,13 +167,13 @@ namespace ft
 
 		reverse_iterator rend() {
 			if (size() == 0) return reverse_iterator();
-			Node<Key,T> *dummy = tree.getDummy();
+			node<Key,T> *dummy = tree.getDummy();
 			dummy->parent = dummy->left;
 			dummy->left = NULL;
 			return (reverse_iterator(dummy,dummy));}
 
 		const_reverse_iterator rend() const {
-			Node<Key,T> *dummy = tree.getDummy();
+			node<Key,T> *dummy = tree.getDummy();
 			dummy->parent = dummy->left;
 			dummy->left = NULL;
 			return (const_reverse_iterator(dummy,dummy));}
@@ -196,14 +196,14 @@ namespace ft
 		}
 
 		ft::pair<iterator, bool> insert( const value_type& value) {
-			Node<Key,T> *n = tree.insert(value);
+			node<Key,T> *n = tree.insert(value);
 			if (n == NULL)
 				return (ft::pair<iterator, bool>(tree.search(value.first),false));
 			return (ft::pair<iterator, bool>(n,true));
 		}
 
 		iterator insert(iterator hint, const value_type& value) {
-			Node<Key,T> *n = tree.insert(value,hint._mptr);
+			node<Key,T> *n = tree.insert(value,hint._mptr);
 			if (n == NULL)
 				return (tree.searchAt(value.first));
 			return (iterator(n,tree.getDummy()));
@@ -251,19 +251,19 @@ namespace ft
 		// * Lookup
 
 		size_type count(const key_type& key) const {
-			Node<Key,T> *n = tree.searchAt(key);
+			node<Key,T> *n = tree.searchAt(key);
 			return n ? true : false;
 		}
 
 		iterator find(const Key& key){
-			Node<Key,T> *n = tree.searchAt(key);
+			node<Key,T> *n = tree.searchAt(key);
 			if (n == NULL)
 				return (end());
 			return n;
 		}
 
 		const_iterator find(const Key& key) const {
-			Node<Key,T> *n = tree.searchAt(key);
+			node<Key,T> *n = tree.searchAt(key);
 			if (n == NULL)
 				return (end());
 			return n;

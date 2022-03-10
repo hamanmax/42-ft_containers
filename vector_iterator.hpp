@@ -1,6 +1,6 @@
 #ifndef VECTOR_ITERATOR_HPP
 #define VECTOR_ITERATOR_HPP
-#include "Iterator.hpp"
+#include "iterator.hpp"
 
 template<
 			class T,
@@ -9,7 +9,7 @@ template<
 			class Category = RandomAccessIteratorTag,
 			class Distance = ptrdiff_t
 		>
-class VectorIterator : public ft::Iterator<Category, T>
+class vector_iterator : public ft::iterator<Category, T>
 {
 	public:
 	typedef Pointer pointer;
@@ -18,13 +18,13 @@ class VectorIterator : public ft::Iterator<Category, T>
 		pointer _mptr;
 	protected:
 	public:
-		VectorIterator(pointer ptr):_mptr(ptr){};
-		VectorIterator():_mptr(0){};
-		VectorIterator & operator=(VectorIterator const & op){_mptr = op._mptr; return *this;};
+		vector_iterator(pointer ptr):_mptr(ptr){};
+		vector_iterator():_mptr(0){};
+		vector_iterator & operator=(vector_iterator const & op){_mptr = op._mptr; return *this;};
 		template<typename U>
-		VectorIterator( const VectorIterator<U>  & copy) {_mptr = copy.getptr();}
+		vector_iterator( const vector_iterator<U>  & copy) {_mptr = copy.getptr();}
 
-		~VectorIterator(){};
+		~vector_iterator(){};
 		reference operator*(){
 			return *_mptr;}
 
@@ -33,36 +33,36 @@ class VectorIterator : public ft::Iterator<Category, T>
 
 		const pointer& getptr()const {return _mptr;}
 
-		bool operator!=(const VectorIterator& Other) const{return !(_mptr == Other._mptr);}
+		bool operator!=(const vector_iterator& Other) const{return !(_mptr == Other._mptr);}
 
-		bool operator==(const VectorIterator& Other) const{return _mptr == Other._mptr;}
+		bool operator==(const vector_iterator& Other) const{return _mptr == Other._mptr;}
 
-		bool operator<(const VectorIterator& Other) const{return Other._mptr > _mptr;}
+		bool operator<(const vector_iterator& Other) const{return Other._mptr > _mptr;}
 
-		bool operator>(const VectorIterator& Other) const{return Other._mptr < _mptr;}
+		bool operator>(const vector_iterator& Other) const{return Other._mptr < _mptr;}
 
-		bool operator<=(const VectorIterator& Other) const{return Other._mptr >= _mptr;}
+		bool operator<=(const vector_iterator& Other) const{return Other._mptr >= _mptr;}
 
-		bool operator>=(const VectorIterator& Other) const{return Other._mptr <= _mptr;}
+		bool operator>=(const vector_iterator& Other) const{return Other._mptr <= _mptr;}
 
 		reference operator[](const ssize_t n)const {
 			return(_mptr[n]);}
 
-		VectorIterator&	operator++() {
+		vector_iterator&	operator++() {
 			++_mptr;
 			return(*this);}
 
-		VectorIterator	operator++(int) {
-			VectorIterator Old(*this);
+		vector_iterator	operator++(int) {
+			vector_iterator Old(*this);
 			++(this->_mptr);
 			return(Old);}
 
-		VectorIterator &operator+=(const ssize_t n){
+		vector_iterator &operator+=(const ssize_t n){
 			_mptr += n;
 			return *this;}
 
-		VectorIterator operator+(const ssize_t n)const {
-			VectorIterator it(*this);
+		vector_iterator operator+(const ssize_t n)const {
+			vector_iterator it(*this);
 			if (n < 0)
 				for (ssize_t i = 0; i > n; i--)
 					it--;
@@ -71,21 +71,21 @@ class VectorIterator : public ft::Iterator<Category, T>
 					it++;
 			return (it);}
 
-		VectorIterator&	operator--(){
+		vector_iterator&	operator--(){
 			--_mptr;
 			return(*this);}
 
-		VectorIterator	operator--(int){
-			VectorIterator Old(*this);
+		vector_iterator	operator--(int){
+			vector_iterator Old(*this);
 			this->_mptr--;
 			return(Old);}
 
-		VectorIterator &operator-=(const ssize_t n){
+		vector_iterator &operator-=(const ssize_t n){
 			_mptr -= n;
 			return *this;}
 
-		VectorIterator operator-(ssize_t n)const {
-			VectorIterator it(*this);
+		vector_iterator operator-(ssize_t n)const {
+			vector_iterator it(*this);
 			if (n > 0)
 				for (ssize_t i = 0; i < n; i++)
 					it--;
@@ -94,17 +94,17 @@ class VectorIterator : public ft::Iterator<Category, T>
 					it++;
 			return (it);}
 
-		Distance	operator-(VectorIterator it)const {
+		Distance	operator-(vector_iterator it)const {
 			return (this->_mptr - it._mptr);
 		}
 
-		friend VectorIterator operator+(int nb,const VectorIterator& it) {
-			VectorIterator New(it);
+		friend vector_iterator operator+(int nb,const vector_iterator& it) {
+			vector_iterator New(it);
 			return (New += nb);
 		}
 
-		friend VectorIterator operator-(int nb,const VectorIterator& it) {
-			VectorIterator New(it);
+		friend vector_iterator operator-(int nb,const vector_iterator& it) {
+			vector_iterator New(it);
 			return (New -= nb);
 		}
 };

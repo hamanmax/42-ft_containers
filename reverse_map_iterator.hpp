@@ -1,6 +1,6 @@
 #ifndef REVERSE_MAP_ITERATOR_HPP
 #define REVERSE_MAP_ITERATOR_HPP
-#include "Iterator.hpp"
+#include "iterator.hpp"
 
 template<
 			class T,
@@ -10,53 +10,53 @@ template<
 			class Category = BidirectionalIteratorTag,
 			class Distance = ptrdiff_t
 		>
-class ReverseMapIterator: public ft::Iterator<Category,T>
+class reverse_map_iterator: public ft::iterator<Category,T>
 {
 public:
 	typedef Pointer					pointer;
 	typedef Reference				reference;
 typedef typename map::mapped_type		mapped_type;
 typedef typename map::key_type		key_type;
-typedef Node<key_type, mapped_type>*	NodePointer;
+typedef node<key_type, mapped_type>*	node_pointer;
 private:
-	NodePointer _dummy;
-	NodePointer _mptr;
+	node_pointer _dummy;
+	node_pointer _mptr;
 public:
-	ReverseMapIterator(NodePointer ptr,NodePointer dummy):_mptr(ptr),_dummy(dummy){};
-	ReverseMapIterator():_mptr(0),_dummy(0){};
-	ReverseMapIterator(ReverseMapIterator const & copy):_mptr(copy._mptr),_dummy(copy._dummy){};
+	reverse_map_iterator(node_pointer ptr,node_pointer dummy):_mptr(ptr),_dummy(dummy){};
+	reverse_map_iterator():_mptr(0),_dummy(0){};
+	reverse_map_iterator(reverse_map_iterator const & copy):_mptr(copy._mptr),_dummy(copy._dummy){};
 	template <typename U,typename V>
-	ReverseMapIterator( const ReverseMapIterator<U,V>  & copy) {_mptr = copy.getptr();_dummy = copy.getdummy();}
+	reverse_map_iterator( const reverse_map_iterator<U,V>  & copy) {_mptr = copy.getptr();_dummy = copy.getdummy();}
 
-	ReverseMapIterator & operator=(ReverseMapIterator const & copy){_mptr = copy._mptr;_dummy = copy._dummy;return *this;};
-	~ReverseMapIterator(){};
+	reverse_map_iterator & operator=(reverse_map_iterator const & copy){_mptr = copy._mptr;_dummy = copy._dummy;return *this;};
+	~reverse_map_iterator(){};
 
-	bool operator==(const ReverseMapIterator& Other) const {return _mptr == Other._mptr;}
-	bool operator!=(const ReverseMapIterator& Other) const {return !(_mptr == Other._mptr);}
+	bool operator==(const reverse_map_iterator& Other) const {return _mptr == Other._mptr;}
+	bool operator!=(const reverse_map_iterator& Other) const {return !(_mptr == Other._mptr);}
 
 
-	NodePointer getptr()const {return _mptr;}
-	NodePointer getdummy()const {return _dummy;}
+	node_pointer getptr()const {return _mptr;}
+	node_pointer getdummy()const {return _dummy;}
 
 	reference operator*(){return _mptr->val;}
 
 	pointer operator->(){return (&_mptr->val);}
 
-	NodePointer Minimum(){
-		NodePointer mini = _mptr;
+	node_pointer Minimum(){
+		node_pointer mini = _mptr;
 		while (mini->parent != NULL) mini = mini->parent;
 		while (mini->left != NULL) mini = mini->left;
 		return mini;
 	}
-	NodePointer Maximum(){
-		NodePointer max = _mptr;
+	node_pointer Maximum(){
+		node_pointer max = _mptr;
 		while (max->parent != NULL) max = max->parent;
 		while (max->right != NULL) max = max->right;
 		return max;}
 
-	ReverseMapIterator& operator++(){
-		NodePointer OldPtr = _mptr;
-		NodePointer NewPtr = NULL;
+	reverse_map_iterator& operator++(){
+		node_pointer OldPtr = _mptr;
+		node_pointer NewPtr = NULL;
 
 		if (_mptr->val.first == Minimum()->val.first){
 			_dummy->parent = _dummy->left;
@@ -80,10 +80,10 @@ public:
 		return *this;
 	}
 
-	ReverseMapIterator operator++(int){
-		ReverseMapIterator Ret(*this);
-		NodePointer OldPtr = _mptr;
-		NodePointer NewPtr = NULL;
+	reverse_map_iterator operator++(int){
+		reverse_map_iterator Ret(*this);
+		node_pointer OldPtr = _mptr;
+		node_pointer NewPtr = NULL;
 
 		if (_mptr->val.first == Minimum()->val.first){
 			_dummy->parent = _dummy->left;
@@ -108,9 +108,9 @@ public:
 	}
 
 
-	ReverseMapIterator& operator--(){
-		NodePointer OldPtr = _mptr;
-		NodePointer NewPtr = NULL;
+	reverse_map_iterator& operator--(){
+		node_pointer OldPtr = _mptr;
+		node_pointer NewPtr = NULL;
 
 		if (_mptr == _dummy) {
 			_mptr = _dummy->parent;
@@ -134,10 +134,10 @@ public:
 		return *this;
 	}
 
-	ReverseMapIterator operator--(int){
-		ReverseMapIterator Ret(*this);
-		NodePointer OldPtr = _mptr;
-		NodePointer NewPtr = NULL;
+	reverse_map_iterator operator--(int){
+		reverse_map_iterator Ret(*this);
+		node_pointer OldPtr = _mptr;
+		node_pointer NewPtr = NULL;
 
 		if (_mptr == _dummy) {
 			_mptr = _dummy->parent;

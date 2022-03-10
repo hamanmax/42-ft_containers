@@ -19,7 +19,7 @@ template<	class Category,
 			class Pointer = T*,
 			class Reference = T&
 		>
-class Iterator{
+class iterator{
 	public:
 	typedef T			value_type;
 	typedef Distance	difference_type;

@@ -1,6 +1,6 @@
 #ifndef MAP_ITERATOR_HPP
 #define MAP_ITERATOR_HPP
-#include "Iterator.hpp"
+#include "iterator.hpp"
 
 template<
 			class T,
@@ -10,19 +10,19 @@ template<
 			class Category = BidirectionalIteratorTag,
 			class Distance = ptrdiff_t
 		>
-class MapIterator: public ft::Iterator<Category,T>
+class MapIterator: public ft::iterator<Category,T>
 {
 public:
 	typedef Pointer					pointer;
 	typedef Reference				reference;
 typedef typename map::mapped_type		mapped_type;
 typedef typename map::key_type		key_type;
-typedef Node<key_type, mapped_type>*	NodePointer;
+typedef node<key_type, mapped_type>*	node_pointer;
 private:
-	NodePointer _mptr;
-	NodePointer _dummy;
+	node_pointer _mptr;
+	node_pointer _dummy;
 public:
-	MapIterator(NodePointer ptr,NodePointer dummy):_mptr(ptr),_dummy(dummy){
+	MapIterator(node_pointer ptr,node_pointer dummy):_mptr(ptr),_dummy(dummy){
 	};
 	MapIterator():_mptr(0),_dummy(0){};
 	MapIterator(MapIterator const & copy):_mptr(copy._mptr),_dummy(copy._dummy){};
@@ -37,26 +37,26 @@ public:
 	reference operator*(){return _mptr->val;}
 
 
-	NodePointer getptr()const {return _mptr;}
-	NodePointer getdummy()const {return _dummy;}
+	node_pointer getptr()const {return _mptr;}
+	node_pointer getdummy()const {return _dummy;}
 
 	pointer operator->(){return (&_mptr->val);}
 
-	NodePointer Minimum(){
-		NodePointer mini = _mptr;
+	node_pointer Minimum(){
+		node_pointer mini = _mptr;
 		while (mini->parent != NULL) mini = mini->parent;
 		while (mini->left != NULL) mini = mini->left;
 		return mini;
 	}
-	NodePointer Maximum(){
-		NodePointer max = _mptr;
+	node_pointer Maximum(){
+		node_pointer max = _mptr;
 		while (max->parent != NULL) max = max->parent;
 		while (max->right != NULL) max = max->right;
 		return max;}
 
 	MapIterator& operator++(){
-		NodePointer OldPtr = _mptr;
-		NodePointer NewPtr = NULL;
+		node_pointer OldPtr = _mptr;
+		node_pointer NewPtr = NULL;
 
 		if (_mptr->val.first == Maximum()->val.first){
 			_dummy->parent = _dummy->right;
@@ -82,8 +82,8 @@ public:
 
 	MapIterator operator++(int){
 		MapIterator Ret(*this);
-		NodePointer OldPtr = _mptr;
-		NodePointer NewPtr = NULL;
+		node_pointer OldPtr = _mptr;
+		node_pointer NewPtr = NULL;
 
 		if (_mptr->val.first == Maximum()->val.first){
 			_dummy->parent = _dummy->right;
@@ -108,8 +108,8 @@ public:
 	}
 
 	MapIterator& operator--(){
-		NodePointer OldPtr = _mptr;
-		NodePointer NewPtr = NULL;
+		node_pointer OldPtr = _mptr;
+		node_pointer NewPtr = NULL;
 		if (_mptr == _dummy)
 		{
 			_mptr = _dummy->parent;
@@ -135,8 +135,8 @@ public:
 
 	MapIterator operator--(int){
 		MapIterator Ret(*this);
-		NodePointer OldPtr = _mptr;
-		NodePointer NewPtr = NULL;
+		node_pointer OldPtr = _mptr;
+		node_pointer NewPtr = NULL;
 		if (_mptr == _dummy)
 		{
 			_mptr = _dummy->parent;

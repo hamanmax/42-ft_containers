@@ -7,14 +7,14 @@
 #include <iterator>
 #include <cstdlib>
 #include <cstddef>
-#include "VectorIterator.hpp"
-#include "Utility.hpp"
-#include "ReverseVectorIterator.hpp"
+#include "vector_iterator.hpp"
+#include "utility.hpp"
+#include "reverse_vector_iterator.hpp"
 
 namespace ft
 {
 template<class T,class Alloc = std::allocator<T> >
-class Vector
+class vector
 {
 	public:
 		typedef T			value_type;
@@ -24,10 +24,10 @@ class Vector
 		typedef const T*	const_pointer;
 		typedef T&			reference;
 		typedef const T&	const_reference;
-		typedef VectorIterator<T>				iterator;
-		typedef VectorIterator<T, const_pointer, const_reference>		const_iterator;
-		typedef ReverseVectorIterator<T>				reverse_iterator;
-		typedef ReverseVectorIterator<T, const_pointer, const_reference>	const_reverse_iterator;
+		typedef vector_iterator<T>				iterator;
+		typedef vector_iterator<T, const_pointer, const_reference>		const_iterator;
+		typedef reverse_vector_iterator<T>				reverse_iterator;
+		typedef reverse_vector_iterator<T, const_pointer, const_reference>	const_reverse_iterator;
 	private:
 		pointer	_start; // Start
 		pointer	_capacity_end; //Capacity
@@ -38,21 +38,21 @@ class Vector
 
 		// 1) Default constructor. Constructs an empty container with a default-constructed allocator.
 
-		Vector(){
+		vector(){
 		alloc_type	mem;
 		_start = mem.allocate(0, NULL);
 		_capacity_end = _end = _start;}
 
 		// 2) Constructs an empty container with the given allocator alloc.
 
-		explicit Vector(const alloc_type& alloc){
+		explicit vector(const alloc_type& alloc){
 		alloc_type	mem(alloc);
 		_start = mem.allocate(0, NULL);
 		_capacity_end = _end = _start;}
 
 		// 3) Constructs the container with count copies of elements with value value.
 
-		explicit Vector(size_type n, const value_type& val = value_type(), const alloc_type& alloc = alloc_type()) {
+		explicit vector(size_type n, const value_type& val = value_type(), const alloc_type& alloc = alloc_type()) {
 			alloc_type	mem(alloc);
 			_start = mem.allocate(n, NULL);
 			_capacity_end = _start + n;
@@ -63,7 +63,7 @@ class Vector
 		// 4) Constructs the container with the contents of the range [first, last).
 
 		template<class InputIterator>
-		Vector(InputIterator first, InputIterator last,const alloc_type& alloc = alloc_type(),typename ft::enable_if<!ft::is_integral<InputIterator>::value >::type* = 0){
+		vector(InputIterator first, InputIterator last,const alloc_type& alloc = alloc_type(),typename ft::enable_if<!ft::is_integral<InputIterator>::value >::type* = 0){
 			alloc_type mem(alloc);
 			size_type i = 0;
 			for (InputIterator it = first; it != last; ++it,i++){}
@@ -76,11 +76,11 @@ class Vector
 
 		// 5) Copy constructor. Constructs the container with the copy of the contents of other.
 
-		Vector<T,Alloc>( const Vector& other ){
+		vector<T,Alloc>( const vector& other ){
 			alloc_type mem;
 			_start = mem.allocate(other.capacity());
 			_capacity_end = _start + other.capacity();
-			for (ft::pair<Vector::const_iterator,int> i(other.begin(),0);
+			for (ft::pair<vector::const_iterator,int> i(other.begin(),0);
 			i.first != other.end();i.first++,i.second++){
 				mem.construct(_start + i.second, *i.first);}
 			_end = _start + other.size();
@@ -88,14 +88,14 @@ class Vector
 
 		// Destructs the vector. The destructors of the elements are called and the used storage is deallocated.
 
-		~Vector<T,Alloc>() {
+		~vector<T,Alloc>() {
 			Alloc _mem;
 			_mem.deallocate(_start,capacity());
 		}
 
 		// Copy assignment operator. Replaces the contents with a copy of the contents of other.
 
-		Vector & operator=(Vector const & op){
+		vector & operator=(vector const & op){
 			alloc_type mem;
 			if (op.size() > capacity())
 {
@@ -331,7 +331,7 @@ class Vector
 		// Exchanges the contents of the container with those of other.
 		// Does not invoke any move, copy, or swap operations on individual elements.
 
-		void swap (Vector& Other){
+		void swap (vector& Other){
 			pointer ptr[3];
 			ptr[0] = Other._start;
 			ptr[1] = Other._end;
@@ -354,7 +354,7 @@ class Vector
 			while (n < size())
 				pop_back();}
 
-friend bool			operator==(const Vector& lhs, const Vector& rhs ){
+friend bool			operator==(const vector& lhs, const vector& rhs ){
 	if (lhs.size() != rhs.size())
 		return false;
 
@@ -364,9 +364,9 @@ friend bool			operator==(const Vector& lhs, const Vector& rhs ){
 	}
 	return true;}
 
-friend bool			operator!=(const Vector& lhs, const Vector& rhs ){return !(lhs == rhs);}
+friend bool			operator!=(const vector& lhs, const vector& rhs ){return !(lhs == rhs);}
 
-friend bool	operator<(const Vector& lhs, const Vector& rhs ){
+friend bool	operator<(const vector& lhs, const vector& rhs ){
 	for (ft::pair<const_iterator, const_iterator> it(lhs.begin(), rhs.begin());
 	it.first != lhs.end() && it.second != rhs.end(); it.first++, it.second++)
 	{
@@ -375,13 +375,13 @@ friend bool	operator<(const Vector& lhs, const Vector& rhs ){
 	}
 	return (lhs.size() < rhs.size());}
 
-friend bool	operator>(const Vector& lhs, const Vector& rhs){return (rhs < lhs);}
+friend bool	operator>(const vector& lhs, const vector& rhs){return (rhs < lhs);}
 
-friend bool	operator<=(const Vector& lhs, const Vector& rhs){return (!(rhs < lhs));}
+friend bool	operator<=(const vector& lhs, const vector& rhs){return (!(rhs < lhs));}
 
-friend bool	operator>=(const Vector& lhs, const Vector& rhs){return (!(lhs < rhs));}
+friend bool	operator>=(const vector& lhs, const vector& rhs){return (!(lhs < rhs));}
 
-friend void swap(Vector& x,Vector&y){x.swap(y);}
+friend void swap(vector& x,vector&y){x.swap(y);}
 
 };
 }

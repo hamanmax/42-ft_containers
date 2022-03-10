@@ -1,7 +1,7 @@
-#include "Stack.hpp"
+#include "stack.hpp"
 #include "stdio.h"
-#include "Vector.hpp"
-#include "Utility.hpp"
+#include "vector.hpp"
+#include "utility.hpp"
 #include <stack>
 #include <vector>
 #include <string>
@@ -26,10 +26,10 @@ void test_stack_constructor_capacity(){
 
 	std::cout << "Default constructor with empty vector<int> :" << std::endl;
 	ft::Stack<int,std::vector<int> > test;
-	ft::Stack<ft::pair<int,int> > test0(ft::Vector<ft::pair<int,int> >(25));
+	ft::Stack<ft::pair<int,int> > test0(ft::vector<ft::pair<int,int> >(25));
 	std::cout << RIGHTARROW << "Stack." << LIGHTYELLOW << "empty" << END << (test.empty()?"\t= " LIGHTGREEN "True" END : "\t= " LIGHTRED "False" END)<<std::endl << RIGHTARROW << "Stack." << LIGHTYELLOW <<"size\t" << END << "= " << LIGHTORANGE << test.size() << END << std::endl;
 	std::cout << "\nDefault constructor with a size of 10 uninitialised with a ft::pair :" << std::endl;
-	ft::Stack<ft::pair<int,int> > test2(ft::Vector<ft::pair<int,int> >(10));
+	ft::Stack<ft::pair<int,int> > test2(ft::vector<ft::pair<int,int> >(10));
 	std::cout << RIGHTARROW << "Stack." << LIGHTYELLOW << "empty" << END << (test2.empty()?"\t= " LIGHTGREEN "True" END : "\t= " LIGHTRED "False" END)<<std::endl << RIGHTARROW << "Stack." << LIGHTYELLOW <<"size\t" << END << "= " << LIGHTORANGE << test2.size() << END << std::endl;
 	std::cout << "\nDefault copy constructor with a copy of the second stack :" << std::endl;
 	ft::Stack<ft::pair<int,int> > test3(test2);
@@ -88,12 +88,12 @@ std::cout << RIGHTARROW << "Stack." << LIGHTYELLOW << "operator>=" << END << (a 
 }
 
 void test_stack_operators(){
-	ft::Vector<int> vector(10);
+	ft::vector<int> vector(10);
 	ft::Stack<int> a(vector);
-	ft::Stack<int> b(ft::Vector<int>(10));
+	ft::Stack<int> b(ft::vector<int>(10));
 	vector[9] = 25;
 	ft::Stack<int> c(vector);
-	ft::Stack<int> d(ft::Vector<int>(8));
+	ft::Stack<int> d(ft::vector<int>(8));
 	std::cout << "Creating 4 stack a and b are equal, c is greater than a, b and d, d is the lesser of them all" << std::endl;
 	std::cout << "Testing comparison operator between a and b :" << std::endl;
 	print_stack_operators(a,b);
@@ -104,12 +104,12 @@ void test_stack_operators(){
 	std::cout<< std::endl << "Testing comparison operator between c and d :" << std::endl;
 	print_stack_operators(c,d);
 
-	ft::Vector<ft::pair<int,std::string> > string(10);
+	ft::vector<ft::pair<int,std::string> > string(10);
 	ft::Stack<ft::pair<int,std::string> > e(string);
-	ft::Stack<ft::pair<int,std::string> > f(ft::Vector<ft::pair<int,std::string> >(10));
+	ft::Stack<ft::pair<int,std::string> > f(ft::vector<ft::pair<int,std::string> >(10));
 	string[9] = ft::make_pair<int,std::string>(0,"Bonjour");
 	ft::Stack<ft::pair<int,std::string> > g(string);
-	ft::Stack<ft::pair<int,std::string> > h(ft::Vector<ft::pair<int,std::string> >(8));
+	ft::Stack<ft::pair<int,std::string> > h(ft::vector<ft::pair<int,std::string> >(8));
 	std::cout << std::endl << "Creating the same 4 stack but with ft::pair" << std::endl;
 	std::cout << "Testing comparison operator between a and b :" << std::endl;
 	print_stack_operators(e,f);

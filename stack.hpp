@@ -1,11 +1,11 @@
 #ifndef STACK_HPP
 #define STACK_HPP
-#include "Vector.hpp"
+#include "vector.hpp"
 
 
 namespace ft
 {
-	template<class T, class Container = ft::Vector<T> >
+	template<class T, class Container = ft::vector<T> >
 	class Stack
 	{
 		public: // ALiases

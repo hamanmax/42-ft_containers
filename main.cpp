@@ -13,7 +13,7 @@
 
 typedef std::map<
 int,std::string> smap;
-typedef ft::Map<int,std::string> fmap;
+typedef ft::map<int,std::string> fmap;
 typedef std::pair<int,std::string> spair;
 typedef ft::pair<int,std::string> fpair;
 

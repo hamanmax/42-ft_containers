@@ -4,7 +4,7 @@
 
 template<
 			class T,
-			class Map,
+			class map,
 			class Pointer = T*,
 			class Reference = T&,
 			class Category = BidirectionalIteratorTag,
@@ -15,8 +15,8 @@ class MapIterator: public ft::Iterator<Category,T>
 public:
 	typedef Pointer					pointer;
 	typedef Reference				reference;
-typedef typename Map::mapped_type		mapped_type;
-typedef typename Map::key_type		key_type;
+typedef typename map::mapped_type		mapped_type;
+typedef typename map::key_type		key_type;
 typedef Node<key_type, mapped_type>*	NodePointer;
 private:
 	NodePointer _mptr;

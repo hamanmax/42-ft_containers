@@ -187,7 +187,7 @@ class Vector
 		// Returns whether the vector is empty (i.e. whether its size is 0).
 
 		bool		empty() const{
-			if (_start == _capacity_end)
+			if (_start == _end)
 				return (true);
 			return (false);}
 
@@ -321,8 +321,11 @@ class Vector
 		// Removes the last element of the container.
 
 		void pop_back(){
-		(void)(_end - 1);
-		_end = _end - 1;
+		if (size() != 0)
+		{
+			(void)(_end - 1);
+			_end = _end - 1;
+		}
 		}
 
 		// Exchanges the contents of the container with those of other.
@@ -364,7 +367,7 @@ friend bool			operator==(const Vector& lhs, const Vector& rhs ){
 friend bool			operator!=(const Vector& lhs, const Vector& rhs ){return !(lhs == rhs);}
 
 friend bool	operator<(const Vector& lhs, const Vector& rhs ){
-	for (ft::pair<iterator, iterator> it(lhs.begin(), rhs.begin());
+	for (ft::pair<const_iterator, const_iterator> it(lhs.begin(), rhs.begin());
 	it.first != lhs.end() && it.second != rhs.end(); it.first++, it.second++)
 	{
 		if (*(it.first) < *(it.second))

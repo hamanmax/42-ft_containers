@@ -14,7 +14,7 @@ namespace ft
 		class T,
 		class Compare = std::less<Key>,
 		class Allocator = std::allocator<ft::pair<Key,T> > >
-	class Map
+	class map
 	{
 		public:
 			typedef Key									key_type;
@@ -28,10 +28,10 @@ namespace ft
 			typedef const value_type&					const_reference;
 			typedef typename Allocator::pointer			pointer;
 			typedef typename Allocator::const_pointer	const_pointer;
-			typedef MapIterator<value_type, Map>		iterator;
-			typedef MapIterator<value_type, Map, const_pointer, const_reference>	const_iterator;
-			typedef ReverseMapIterator<value_type, Map>	reverse_iterator;
-			typedef ReverseMapIterator<value_type, Map, const_pointer, const_reference>	const_reverse_iterator;
+			typedef MapIterator<value_type, map>		iterator;
+			typedef MapIterator<value_type, map, const_pointer, const_reference>	const_iterator;
+			typedef ReverseMapIterator<value_type, map>	reverse_iterator;
+			typedef ReverseMapIterator<value_type, map, const_pointer, const_reference>	const_reverse_iterator;
 		private:
 		RBTree<Key,T>	tree;
 		allocator_type	allocator;
@@ -40,7 +40,7 @@ namespace ft
 
 		class value_compare
 		{
-			friend class Map;
+			friend class map;
 			protected:
 				value_compare(key_compare c) : comp(c) {}
 				key_compare comp;
@@ -55,12 +55,12 @@ namespace ft
 			}
 		};
 
-		Map():tree(RBTree<Key,T>()),allocator(Allocator()),v(Compare()){}
+		map():tree(RBTree<Key,T>()),allocator(Allocator()),v(Compare()){}
 
-		explicit Map(const Compare& comp, const Allocator & alloc = Allocator()):allocator(alloc),tree(RBTree<Key,T>()),v(comp){}
+		explicit map(const Compare& comp, const Allocator & alloc = Allocator()):allocator(alloc),tree(RBTree<Key,T>()),v(comp){}
 
 		template< class InputIterator >
-		Map(InputIterator first, InputIterator last,const Compare& comp = Compare(),const Allocator & alloc = Allocator() ):v(comp), allocator(alloc){
+		map(InputIterator first, InputIterator last,const Compare& comp = Compare(),const Allocator & alloc = Allocator() ):v(comp), allocator(alloc){
 			while (first != last)
 			{
 				tree.insert(*first);
@@ -68,24 +68,24 @@ namespace ft
 			}
 		}
 
-		Map(const Map& other){
+		map(const map& other){
 			allocator = other.allocator;
 			v = other.v;
-			for (Map::iterator it = other.begin(); it != other.end();it++){
+			for (map::iterator it = other.begin(); it != other.end();it++){
 				tree.insert(*it);
 			}
 		}
 
-		~Map(){
+		~map(){
 			while (tree.getSize() != 0){
 				tree.deleteNode(tree.getRoot());
 			}
 		}
 
-		Map& operator=( const Map& other ){
+		map& operator=( const map& other ){
 			allocator = other.allocator;
 			v = other.v;
-			for (Map::iterator it = other.begin(); it != other.end();it++){
+			for (map::iterator it = other.begin(); it != other.end();it++){
 				tree.insert(*it);
 			}
 			return  *this;
@@ -238,8 +238,8 @@ namespace ft
 			return 0;
 		}
 
-		void swap(Map& other){
-			Map *tmp = other;
+		void swap(map& other){
+			map *tmp = other;
 			other.tree = this->tree;
 			other.v = this->v;
 			other.allocator = this->allocator;
@@ -270,7 +270,7 @@ namespace ft
 		}
 
 		ft::pair<iterator, iterator> equal_range(const Key& key){return ft::pair<iterator, iterator>(lower_bound(), upper_bound());Key k = key;};
-		ft::pair<const_iterator, const_iterator> equal_range(const Key& key) const {return ft::Map<iterator, iterator>(lower_bound(), upper_bound());Key k = key;};
+		ft::pair<const_iterator, const_iterator> equal_range(const Key& key) const {return ft::map<iterator, iterator>(lower_bound(), upper_bound());Key k = key;};
 
 		iterator lower_bound(const Key& key){
 			iterator n(tree.search(key),tree.getDummy());
@@ -306,7 +306,7 @@ namespace ft
 
 		// * Operators
 
-		friend bool operator==(const Map& lhs, const Map& rhs) {
+		friend bool operator==(const map& lhs, const map& rhs) {
 			if (lhs.size() != rhs.size())
 				return false;
 			for (ft::pair<iterator, iterator> it(lhs.begin(), rhs.begin()); it.first != lhs.end(),it.second != rhs.end(); it.first++,it.second++)
@@ -319,9 +319,9 @@ namespace ft
 			return true;
 		}
 
-		friend bool operator!=(const Map& lhs, const Map& rhs) {return !(lhs == rhs);}
+		friend bool operator!=(const map& lhs, const map& rhs) {return !(lhs == rhs);}
 
-		friend bool operator<(const Map& lhs, const Map& rhs) {
+		friend bool operator<(const map& lhs, const map& rhs) {
 			if (lhs.size() < rhs.size())
 				return true;
 			for (ft::pair<iterator, iterator> it(lhs.begin(), rhs.begin()); it.first != lhs.end(),it.second != rhs.end(); it.first++,it.second++)
@@ -333,17 +333,17 @@ namespace ft
 			}
 			return false;
 		}
-		friend bool operator<=(const Map& lhs, const Map& rhs) {
+		friend bool operator<=(const map& lhs, const map& rhs) {
 			if (lhs < rhs) return true;
 			if (lhs == rhs) return true;
 			return false;
 		}
 
-		friend bool operator>(const Map& lhs, const Map& rhs) {return !(lhs <= rhs);}
+		friend bool operator>(const map& lhs, const map& rhs) {return !(lhs <= rhs);}
 
-		friend bool operator>=(const Map& lhs, const Map& rhs) {return !(lhs < rhs);}
+		friend bool operator>=(const map& lhs, const map& rhs) {return !(lhs < rhs);}
 
-		friend void swap(Map& lhs, Map& rhs){lhs.swap(rhs);}
+		friend void swap(map& lhs, map& rhs){lhs.swap(rhs);}
 	};
 };
 

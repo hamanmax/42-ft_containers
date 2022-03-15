@@ -10,16 +10,6 @@ namespace ft
 	template <class InputIt1, class InputIt2>
 	bool equal ( InputIt1 first1, InputIt1 last1, InputIt2 first2){
 		for (; first1 != last1; ++first1, ++first2) {
-			if (!p(*first1, *first2)) {
-				return false;
-			}
-		}
-	return true;
-	}
-
-	template<class InputIt1, class InputIt2, class BinaryPredicate>
-	bool equal ( InputIt1 first1, InputIt1 last1, InputIt2 first2, BinaryPredicate p){
-		for (; first1 != last1; ++first1, ++first2) {
 			if (!(*first1 == *first2)) {
 				return false;
 			}
@@ -27,6 +17,16 @@ namespace ft
 	return true;
 	}
 
+	template<class InputIt1, class InputIt2, class BinaryPredicate>
+	bool equal ( InputIt1 first1, InputIt1 last1, InputIt2 first2, BinaryPredicate p)
+{
+		for (; first1 != last1; ++first1, ++first2) {
+			if (!p(*first1, *first2)) {
+				return false;
+			}
+		}
+	return true;
+	}
 	template <class InputIterator1, class InputIterator2>
 		bool lexicographical_compare (InputIterator1 first1, InputIterator1 last1,
 										InputIterator2 first2, InputIterator2 last2){
@@ -50,7 +50,7 @@ namespace ft
 	return (first1 == last1) && (first2 != last2);
 	}
 	template <typename T1, typename T2>
-	class pair
+	struct pair
 	{
 		public:
 			T1 first;
@@ -58,20 +58,10 @@ namespace ft
 
 			pair() : first(), second() {};
 			pair(const T1& a, const T2& b) : first(a), second(b) {};
-			pair(const pair& copy) : first(copy.first), second(copy.second) {};
+			template<class U,class V>
+			pair(const pair<U, V>& copy) : first(copy.first), second(copy.second) {};
 
 			~pair() {};
-
-			pair& operator=(const pair& assign)
-			{
-				if (this != &assign)
-				{
-					first = assign.first;
-					second = assign.second;
-				}
-				return (*this);
-			}
-
 
 			friend bool operator==(const pair& lhs, const pair& rhs){
 				return ((lhs.first == rhs.first and lhs.second == rhs.second));}

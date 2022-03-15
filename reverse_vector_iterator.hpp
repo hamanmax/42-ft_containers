@@ -2,6 +2,7 @@
 #define REVERSE_VECTOR_ITERATOR_HPP
 #include "iterator.hpp"
 #include "reverse_iterator.hpp"
+#include "vector_iterator.hpp"
 
 template<
 			class T,
@@ -16,22 +17,24 @@ class reverse_vector_iterator: public ft::iterator<Category,T>
 	typedef Pointer						pointer;
 	typedef Reference					reference;
 	private:
+	protected:
 		pointer	_mptr;
 	public:
+
 
 		reverse_vector_iterator(pointer ptr):_mptr(ptr){};
 
 		reverse_vector_iterator():_mptr(0){};
 
-		reverse_vector_iterator(reverse_vector_iterator const & copy):_mptr(copy._mptr){}
+		explicit reverse_vector_iterator(vector_iterator<T> copy):_mptr(copy._mptr){}
 		template <typename U>
-		reverse_vector_iterator( const reverse_vector_iterator<U>  & copy) {_mptr = copy.getptr();}
+		reverse_vector_iterator( const reverse_vector_iterator<U>  & copy) {_mptr = copy._mptr;}
 
 		reverse_vector_iterator & operator=(reverse_vector_iterator const & op){_mptr = op._mptr; return *this;};
 
 		~reverse_vector_iterator(){};
 
-		const pointer& getptr()const {return _mptr;}
+		vector_iterator base()const {return _mptr;}
 
 		reference operator*(){
 			return *_mptr;}
@@ -39,17 +42,17 @@ class reverse_vector_iterator: public ft::iterator<Category,T>
 		pointer operator->(){
 			return &(operator*());}
 
-		bool operator!=(const reverse_vector_iterator& Other) const{return !(_mptr == Other._mptr);}
+		bool operator==(const reverse_vector_iterator& Other) const{return (Other._mptr == this->_mptr);}
 
-		bool operator==(const reverse_vector_iterator& Other) const{return _mptr == Other._mptr;}
+		bool operator!=(const reverse_vector_iterator& Other) const{return (Other._mptr != this->_mptr);}
 
-		bool operator<(const reverse_vector_iterator& Other) const{return Other._mptr > _mptr;}
+		bool operator<(const reverse_vector_iterator& Other) const{return (Other._mptr > this->_mptr);}
 
-		bool operator>(const reverse_vector_iterator& Other) const{return Other._mptr < _mptr;}
+		bool operator>(const reverse_vector_iterator& Other) const{return (Other._mptr < this->_mptr);}
 
-		bool operator<=(const reverse_vector_iterator& Other) const{return Other._mptr >= _mptr;}
+		bool operator<=(const reverse_vector_iterator& Other) const{return (Other._mptr >= this->_mptr);}
 
-		bool operator>=(const reverse_vector_iterator& Other) const{return Other._mptr <= _mptr;}
+		bool operator>=(const reverse_vector_iterator& Other) const{return (Other._mptr <= this->_mptr);}
 
 		reverse_vector_iterator&	operator++(){
 			--_mptr;
@@ -61,7 +64,7 @@ class reverse_vector_iterator: public ft::iterator<Category,T>
 			return(Old);}
 
 		reverse_vector_iterator &operator+=(const ssize_t n){
-			_mptr -= n;
+			_mptr += n;
 			return *this;}
 
 		reference operator[](const ssize_t n)const {
@@ -71,11 +74,12 @@ class reverse_vector_iterator: public ft::iterator<Category,T>
 			reverse_vector_iterator it(*this);
 			if (n < 0)
 				for (ssize_t i = 0; i > n; i--)
-					it++;
+					it--;
 			else
 				for (ssize_t i = 0; i < n; i++)
-					it--;
+					it++;
 			return (it);}
+
 
 		reverse_vector_iterator&	operator--(){
 			++_mptr;
@@ -87,21 +91,21 @@ class reverse_vector_iterator: public ft::iterator<Category,T>
 			return(Old);}
 
 		reverse_vector_iterator &operator-=(const ssize_t n){
-			_mptr += n;
+			_mptr -= n;
 			return *this;}
 
 		reverse_vector_iterator operator-(ssize_t n)const {
 			reverse_vector_iterator it(*this);
 			if (n > 0)
 				for (ssize_t i = 0; i < n; i++)
-					it++;
+					it--;
 			else
 				for (ssize_t i = 0; i > n; i--)
-					it--;
+					it++;
 			return (it);}
 
 		Distance	operator-(reverse_vector_iterator it)const {
-			return (this->_mptr - it._mptr);
+			return (it._mptr - this->_mptr);
 		}
 		friend reverse_vector_iterator operator+(int nb,const reverse_vector_iterator& it) {
 			reverse_vector_iterator New(it);

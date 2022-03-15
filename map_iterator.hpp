@@ -1,3 +1,4 @@
+
 #ifndef MAP_ITERATOR_HPP
 #define MAP_ITERATOR_HPP
 #include "iterator.hpp"
@@ -10,37 +11,38 @@ template<
 			class Category = BidirectionalIteratorTag,
 			class Distance = ptrdiff_t
 		>
-class MapIterator: public ft::iterator<Category,T>
+class map_iterator: public ft::iterator<Category,T>
 {
 public:
 	typedef Pointer					pointer;
 	typedef Reference				reference;
 typedef typename map::mapped_type		mapped_type;
 typedef typename map::key_type		key_type;
+typedef T							value_type;
 typedef node<key_type, mapped_type>*	node_pointer;
 private:
 	node_pointer _mptr;
 	node_pointer _dummy;
 public:
-	MapIterator(node_pointer ptr,node_pointer dummy):_mptr(ptr),_dummy(dummy){
+	map_iterator(node_pointer const & ptr,node_pointer const &  dummy):_mptr(ptr),_dummy(dummy){
 	};
-	MapIterator():_mptr(0),_dummy(0){};
-	MapIterator(MapIterator const & copy):_mptr(copy._mptr),_dummy(copy._dummy){};
+	map_iterator():_mptr(0),_dummy(0){};
+	map_iterator(map_iterator const & copy):_mptr(copy.getptr()),_dummy(copy.getdummy()){};
 	template <typename U,typename V>
-	MapIterator( const MapIterator<U,V>  & copy) {_mptr = copy.getptr();_dummy = copy.getdummy();}
-	MapIterator & operator=(MapIterator const & copy){_mptr = copy._mptr;_dummy = copy._dummy;return *this;};
-	~MapIterator(){
+	map_iterator( const map_iterator<U,V>  & copy) {_mptr = copy.getptr();_dummy = copy.getdummy();}
+	map_iterator & operator=(map_iterator const & copy){_mptr = copy.getptr();_dummy = copy.getdummy();return *this;};
+	~map_iterator(){
 	};
 
-	bool operator==(const MapIterator& Other) const {return _mptr == Other._mptr;}
-	bool operator!=(const MapIterator& Other) const {return !(_mptr == Other._mptr);}
-	reference operator*(){return _mptr->val;}
+	bool operator==(const map_iterator& Other) const {return _mptr == Other.getptr();}
+	bool operator!=(const map_iterator& Other) const {return !(_mptr == Other.getptr());}
+	reference operator*() const{return _mptr->val;}
 
 
 	node_pointer getptr()const {return _mptr;}
 	node_pointer getdummy()const {return _dummy;}
 
-	pointer operator->(){return (&_mptr->val);}
+	pointer operator->() const {return (&_mptr->val);}
 
 	node_pointer Minimum(){
 		node_pointer mini = _mptr;
@@ -54,13 +56,10 @@ public:
 		while (max->right != NULL) max = max->right;
 		return max;}
 
-	MapIterator& operator++(){
+	map_iterator& operator++(){
 		node_pointer OldPtr = _mptr;
 		node_pointer NewPtr = NULL;
-
 		if (_mptr->val.first == Maximum()->val.first){
-			_dummy->parent = _dummy->right;
-			_dummy->right = NULL;
 			_mptr = _dummy;
 			return *this;
 		}
@@ -80,14 +79,12 @@ public:
 		return *this;
 	}
 
-	MapIterator operator++(int){
-		MapIterator Ret(*this);
+	map_iterator operator++(int){
+		map_iterator Ret(*this);
 		node_pointer OldPtr = _mptr;
 		node_pointer NewPtr = NULL;
 
 		if (_mptr->val.first == Maximum()->val.first){
-			_dummy->parent = _dummy->right;
-			_dummy->right = NULL;
 			_mptr = _dummy;
 			return Ret;
 		}
@@ -97,7 +94,7 @@ public:
 			while (NewPtr->left != NULL)
 			NewPtr = NewPtr->left;
 		}
-		if (OldPtr->left == NULL and OldPtr->right == NULL)
+		else
 		{
 			NewPtr = OldPtr->parent;
 			while (NewPtr->val.first < _mptr->val.first)
@@ -107,14 +104,17 @@ public:
 		return Ret;
 	}
 
-	MapIterator& operator--(){
+	map_iterator& operator--(){
 		node_pointer OldPtr = _mptr;
 		node_pointer NewPtr = NULL;
+		if (_mptr == Minimum())
+		{
+			_mptr = _dummy;
+			return *this;
+		}
 		if (_mptr == _dummy)
 		{
-			_mptr = _dummy->parent;
-			_dummy->right = _dummy->parent;
-			_dummy->parent = NULL;
+			_mptr = Maximum();
 			return *this;
 		}
 		if (OldPtr->left != NULL)
@@ -133,15 +133,18 @@ public:
 		return *this;
 	}
 
-	MapIterator operator--(int){
-		MapIterator Ret(*this);
+	map_iterator operator--(int){
+		map_iterator Ret(*this);
 		node_pointer OldPtr = _mptr;
 		node_pointer NewPtr = NULL;
+		if (_mptr == Minimum())
+		{
+			_mptr = _dummy;
+			return *this;
+		}
 		if (_mptr == _dummy)
 		{
-			_mptr = _dummy->parent;
-			_dummy->right = _dummy->parent;
-			_dummy->parent = NULL;
+			_mptr = Maximum();
 			return Ret;
 		}
 		if (OldPtr->left != NULL)
@@ -161,6 +164,4 @@ public:
 	}
 
 };
-
-
 #endif

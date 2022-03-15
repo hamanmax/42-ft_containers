@@ -103,18 +103,6 @@ class RBTree {
 	// connect new parent with x
 	nParent->left = x;
 	}
-	node_pointer minimum()const {
-		node_pointer n = root;
-		while(n->left != NULL)
-			n = n->left;
-		return n;
-	}
-	node_pointer maximum()const {
-		node_pointer n = root;
-		while(n->right != NULL)
-			n = n->right;
-		return n;
-	}
 	void rightRotate(node_pointer x) {
 	// new parent will be node's left child
 	node_pointer nParent = x->left;
@@ -145,9 +133,12 @@ class RBTree {
 
 	void swapValues(node_pointer u, node_pointer v) {
 	value_type temp;
-	temp = u->val;
-	u->val = v->val;
-	v->val = temp;
+	temp.first = u->val.first;
+	temp.second = u->val.second;
+	u->val.first = v->val.first;
+	u->val.second = v->val.second;
+	v->val.first = temp.first;
+	v->val.second = temp.second;
 }
 
 	// fix red red at given node
@@ -230,6 +221,18 @@ class RBTree {
 
 	// deletes the given node
 	public:
+	node_pointer minimum()const {
+		node_pointer n = root;
+		while(n->left != NULL)
+			n = n->left;
+		return n;
+	}
+	node_pointer maximum()const {
+		node_pointer n = root;
+		while(n->right != NULL)
+			n = n->right;
+		return n;
+	}
 	void deleteNode(node_pointer v) {
 	node_pointer u = BSTreplace(v);
 
@@ -270,7 +273,8 @@ class RBTree {
 		// v has 1 child
 		if (v == root) {
 		// v is root, assign the value of u to v, and delete u
-		v->val = u->val;
+		v->val.first = u->val.first;
+		v->val.second = u->val.second;
 		v->left = v->right = NULL;
 		delete u;
 		size--;
@@ -384,7 +388,7 @@ public:
 
 	node_pointer getDummy() const {
 		if (dummy->parent != NULL)
-			dummy->parent = NULL;
+			dummy->parent = root;
 		if (root != NULL)
 		{
 			dummy->left = minimum();
@@ -393,7 +397,7 @@ public:
 		return dummy;
 	}
 
-	node_pointer searchAt(const Key n)const {
+	node_pointer searchAt(Key n)const {
 		node_pointer temp = root;
 	while (temp != NULL) {
 		if (n < temp->val.first)
@@ -420,7 +424,7 @@ public:
 	// searches for given value
 	// if found returns the node (used for delete)
 	// else returns the last node while traversing (used in insert)
-	node_pointer search(Key n) {
+	node_pointer search(Key n)const  {
 	node_pointer temp = root;
 	while (temp != NULL) {
 		if (n < temp->val.first) {
@@ -442,7 +446,7 @@ public:
 	return temp;
 	}
 
-	node_pointer search(Key n, node_pointer hint) {
+	node_pointer search(Key n, node_pointer hint)const {
 	node_pointer temp = hint;
 	while (temp != NULL) {
 		if (n < temp->val.first) {
@@ -538,12 +542,12 @@ public:
 	}
 
 	// utility function that deletes the node with given value
-	void deleteByVal(Key n) {
+	void deleteByVal(const Key n) {
 	if (root == NULL)
 		// Tree is empty
 		return;
 
-	node_pointer v = search(n), *u;
+	node_pointer v = search(n);
 
 	if (v->val.first != n) {
 		cout << "No node found to delete with value: " << n << endl;

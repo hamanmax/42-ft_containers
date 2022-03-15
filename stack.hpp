@@ -6,7 +6,7 @@
 namespace ft
 {
 	template<class T, class Container = ft::vector<T> >
-	class Stack
+	class stack
 	{
 		public: // ALiases
 		typedef Container container_type;
@@ -22,12 +22,12 @@ namespace ft
 
 		// * Constructors
 
-		explicit Stack( const Container& cont = Container() ):_Container(cont){}
-		Stack(const Stack& other):_Container(other._Container){};
+		explicit stack( const Container& cont = Container() ):_Container(cont){}
+		stack(const stack& other):_Container(other._Container){};
 
-		~Stack(){}
+		~stack(){}
 
-		Stack& operator=( const Stack& other ){_Container = other._Container;return *this;};
+		stack& operator=( const stack& other ){_Container = other._Container;return *this;};
 
 		// * Element Access
 
@@ -47,12 +47,12 @@ namespace ft
 
 		// * Operators
 
-		friend bool operator==(const Stack& lhs, const Stack& rhs){return lhs._Container == rhs._Container;}
-		friend bool operator!=(const Stack& lhs, const Stack& rhs){return lhs._Container != rhs._Container;}
-		friend bool operator<(const Stack& lhs, const Stack& rhs){return lhs._Container < rhs._Container;}
-		friend bool operator<=(const Stack& lhs, const Stack& rhs){return lhs._Container <= rhs._Container;}
-		friend bool operator>(const Stack& lhs, const Stack& rhs){return lhs._Container > rhs._Container;}
-		friend bool operator>=(const Stack& lhs, const Stack& rhs){return lhs._Container >= rhs._Container;}
+		friend bool operator==(const stack& lhs, const stack& rhs){return lhs._Container == rhs._Container;}
+		friend bool operator!=(const stack& lhs, const stack& rhs){return lhs._Container != rhs._Container;}
+		friend bool operator<(const stack& lhs, const stack& rhs){return lhs._Container < rhs._Container;}
+		friend bool operator<=(const stack& lhs, const stack& rhs){return lhs._Container <= rhs._Container;}
+		friend bool operator>(const stack& lhs, const stack& rhs){return lhs._Container > rhs._Container;}
+		friend bool operator>=(const stack& lhs, const stack& rhs){return lhs._Container >= rhs._Container;}
 	};
 };
 

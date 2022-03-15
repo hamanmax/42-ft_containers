@@ -19,8 +19,8 @@ typedef typename map::mapped_type		mapped_type;
 typedef typename map::key_type		key_type;
 typedef node<key_type, mapped_type>*	node_pointer;
 private:
-	node_pointer _dummy;
 	node_pointer _mptr;
+	node_pointer _dummy;
 public:
 	reverse_map_iterator(node_pointer ptr,node_pointer dummy):_mptr(ptr),_dummy(dummy){};
 	reverse_map_iterator():_mptr(0),_dummy(0){};

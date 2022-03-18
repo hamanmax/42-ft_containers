@@ -5,7 +5,6 @@
 #include "utility.hpp"
 #include "red_black_tree.hpp"
 #include "map_iterator.hpp"
-#include "reverse_map_iterator.hpp"
 #include "reverse_iterator.hpp"
 #include <memory>
 #include <functional>

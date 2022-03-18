@@ -30,12 +30,12 @@ namespace ft
 			typedef const value_type&					const_reference;
 			typedef typename Allocator::pointer			pointer;
 			typedef typename Allocator::const_pointer	const_pointer;
-			typedef map_iterator<value_type, map>		iterator;
-			typedef map_iterator<value_type, map, const_pointer, const_reference>	const_iterator;
+			typedef map_iterator<value_type, map, key_compare>		iterator;
+			typedef map_iterator<value_type, map, key_compare, const_pointer, const_reference>	const_iterator;
 			typedef ft::reverse_iterator<iterator>	reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>	const_reverse_iterator;
 		private:
-		RBTree<Key,T>	tree;
+		RBTree<Key,T,Compare>	tree;
 		allocator_type	allocator;
 		key_compare v;
 		public:
@@ -44,25 +44,25 @@ namespace ft
 		{
 			friend class map;
 			protected:
-				value_compare(key_compare c) : comp(c) {}
 				key_compare comp;
+				value_compare(key_compare c) : comp(c) {}
 			public:
 			typedef bool result_type;
 			typedef value_type first_value_type;
 			typedef value_type second_value_type;
 
-			result_type operator()(const value_type& x,value_type& y) const
+			result_type operator()(const value_type& x,const value_type& y) const
 			{
 				return comp(x.first,y.first);
 			}
 		};
 
-		map():tree(RBTree<Key,T>()),allocator(Allocator()),v(Compare()){}
+		map():tree(RBTree<Key,T,Compare>()),allocator(Allocator()),v(Compare()){}
 
-		explicit map(const Compare& comp, const Allocator & alloc = Allocator()):allocator(alloc),tree(RBTree<Key,T>()),v(comp){}
+		explicit map(const Compare& comp, const Allocator & alloc = Allocator()):tree(RBTree<Key,T,Compare>()),allocator(alloc),v(comp){}
 
 		template< class InputIterator >
-		map(InputIterator first, InputIterator last,const Compare& comp = Compare(),const Allocator & alloc = Allocator() ):allocator(alloc),v(comp){
+		map(InputIterator first, InputIterator last,const Compare& comp = Compare(),const Allocator & alloc = Allocator() ):tree(RBTree<Key,T,Compare>()),allocator(alloc),v(comp){
 			while (first != last)
 			{
 				tree.insert(*first);
@@ -73,7 +73,7 @@ namespace ft
 		map(const map& other){
 			allocator = other.allocator;
 			v = other.v;
-			for (map::iterator it = other.begin(); it != other.end();it++){
+			for (map::const_iterator it = other.begin(); it != other.end();it++){
 				tree.insert(*it);
 			}
 		}
@@ -85,9 +85,10 @@ namespace ft
 		}
 
 		map& operator=( const map& other ){
+			this->clear();
 			allocator = other.allocator;
 			v = other.v;
-			for (map::iterator it = other.begin(); it != other.end();it++){
+			for (map::const_iterator it = other.begin(); it != other.end();it++){
 				tree.insert(*it);
 			}
 			return  *this;
@@ -112,12 +113,11 @@ namespace ft
 			return tree.searchAt(key)->val.second;
 		}
 
-		mapped_type& operator[]( Key& key ) {
-			node<Key,T> *tmp = tree.searchAt(key);
+		mapped_type& operator[](const Key& key ) {
+			node<Key,T,Compare> *tmp = tree.searchAt(key);
 			if (tmp)
 				return tmp->val.second;
 			value_type val = ft::pair<key_type,mapped_type>(key,mapped_type());
-
 			return tree.insert(val)->val.second;
 		}
 
@@ -134,6 +134,9 @@ namespace ft
 
 		iterator end() {
 			return (iterator(tree.getDummy(),tree.getDummy()));}
+
+		const_iterator end() const {
+			return (const_iterator(tree.getDummy(),tree.getDummy()));}
 
 		reverse_iterator rbegin(){
 			return (reverse_iterator(iterator(end())));
@@ -163,7 +166,6 @@ namespace ft
 
 		void clear(){
 			while (tree.getSize() != 0){
-				allocator.destroy(&tree.getRoot()->val);
 				tree.deleteNode(tree.getRoot());
 			}
 		}
@@ -176,14 +178,18 @@ namespace ft
 		}
 
 		iterator insert(iterator hint, const value_type& value) {
-			node<Key,T> *n = tree.insert(value,hint.getptr());
+			node<Key,T> *n = NULL;
+			if (lower_bound(value.first)->first == hint->first or upper_bound(value.first)->first == hint->first)
+				n = tree.insert(value,hint.getptr());
+			else
+				n = tree.insert(value);
 			if (n == NULL)
-				return (tree.searchAt(value.first));
+				return (iterator(tree.searchAt(value.first),tree.getDummy()));
 			return (iterator(n,tree.getDummy()));
 		}
 
 		template < class InputIt >
-		void insert(InputIt first, InputIt last){
+		void insert(InputIt first, InputIt last, typename ft::enable_if<!ft::is_integral<InputIt>::value >::type* = 0){
 			while (first != last)
 			{
 				tree.insert(*first);
@@ -196,10 +202,12 @@ namespace ft
 		}
 
 		void erase(iterator first, iterator last){
-			while (first != last)
-			{
-				tree.deleteNode(first.getptr());
-				first++;
+			size_type i = 0;
+			for (iterator tmp = first; tmp != last;tmp++,i++){}
+			Key range[i];
+			for (size_type j = 0; j < i;j++,first++){range[j] = first->first;}
+			for (size_type j = 0; j < i;j++){
+				tree.deleteByVal(range[j]);
 			}
 		}
 
@@ -212,63 +220,88 @@ namespace ft
 		}
 
 		void swap(map& other) {
-			map tmp(other);
-			other.tree = this->tree;
+			node<Key,T,Compare> *root = other.tree.root;
+			node<Key,T,Compare> *dummy = other.tree.dummy;
+			size_t size = other.tree.size;
+			key_compare v = other.v;
+			allocator_type alloc = other.allocator;
+			other.tree.dummy = this->tree.dummy;
+			other.tree.root = this->tree.root;
+			other.tree.size = this->tree.size;
 			other.v = this->v;
 			other.allocator = this->allocator;
-			this->tree = tmp.tree;
-			this->v = tmp.v;
-			this->allocator = tmp.allocator;
+			this->tree.dummy = dummy;
+			this->tree.root = root;
+			this->tree.size = size;
+			this->v = v;
+			this->allocator = alloc;
 		}
 
 		// * Lookup
 
 		size_type count(const key_type& key) const {
-			node<Key,T> *n = tree.searchAt(key);
+			node<Key,T,Compare> *n = tree.searchAt(key);
 			return n ? true : false;
 		}
 
-		iterator find(Key& key){
-			node<Key,T> *n = tree.searchAt(key);
+		iterator find(const Key& key){
+			node<Key,T,Compare> *n = tree.searchAt(key);
 			if (n == NULL)
 				return (end());
-			return n;
+			return iterator(n,tree.getDummy());
 		}
 
-		const_iterator find(Key& key) const {
-			node<Key,T> *n = tree.searchAt(key);
+		const_iterator find(const Key& key) const {
+			node<Key,T,Compare> *n = tree.searchAt(key);
 			if (n == NULL)
 				return (end());
-			return n;
+			return const_iterator(n,tree.getDummy());
 		}
 
-		ft::pair<iterator, iterator> equal_range(Key& key){return ft::pair<iterator, iterator>(lower_bound(key), upper_bound(key));};
-		ft::pair<const_iterator, const_iterator> equal_range(Key& key) const {return ft::map<const_iterator, const_iterator>(lower_bound(key), upper_bound(key));};
+		ft::pair<iterator, iterator> equal_range(const Key& key){return ft::pair<iterator, iterator>(lower_bound(key), upper_bound(key));};
 
-		iterator lower_bound(Key& key){
+		ft::pair<const_iterator, const_iterator> equal_range(const Key& key) const {return ft::pair<const_iterator, const_iterator>(lower_bound(key), upper_bound(key));};
+
+		iterator lower_bound(const Key& key){
 			iterator n(tree.search(key),tree.getDummy());
-			while (n->first < key && n != end())
+			if (size() != 0)
+			{
+			while (n != end() && n->first < key)
 				n++;
+			}
+			else return end();
 			return (n);
 		}
 
-		const_iterator lower_bound(Key& key) const {
+		const_iterator lower_bound(const Key& key) const {
 			const_iterator n(tree.search(key),tree.getDummy());
-			while (n->first < key && n != end())
+			if (size() != 0)
+			{
+			while (n != end() && n->first < key)
 				n++;
+			}
+			else return end();
 			return (n);
 		}
 
-		iterator upper_bound(Key& key){
+		iterator upper_bound(const Key& key){
 			iterator n(tree.search(key),tree.getDummy());
-			while (n->first <= key && n != end())
+			if (size() != 0)
+			{
+			while (n != end() && n->first <= key)
 				n++;
+			}
+			else return end();
 			return (n);
 		}
-		const_iterator upper_bound(Key& key) const {
+		const_iterator upper_bound(const Key& key) const {
 			const_iterator n(tree.search(key),tree.getDummy());
-			while (n->first <= key && n != end())
+			if (size() != 0)
+			{
+			while (n != end() && n->first <= key)
 				n++;
+			}
+			else return end();
 			return (n);
 		}
 
@@ -282,7 +315,7 @@ namespace ft
 		friend bool operator==(const map& lhs, const map& rhs) {
 			if (lhs.size() != rhs.size())
 				return false;
-			for (ft::pair<iterator, iterator> it(lhs.begin(), rhs.begin()); it.first != lhs.end(),it.second != rhs.end(); it.first++,it.second++)
+			for (ft::pair<const_iterator, const_iterator> it(lhs.begin(), rhs.begin()); it.first != lhs.end() or it.second != rhs.end(); it.first++,it.second++)
 			{
 				if (*it.first != *it.second)
 				{

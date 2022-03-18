@@ -60,7 +60,15 @@ namespace ft
 			pair(const T1& a, const T2& b) : first(a), second(b) {};
 			template<class U,class V>
 			pair(const pair<U, V>& copy) : first(copy.first), second(copy.second) {};
-
+			pair& operator=(const pair& assign)
+			{
+				if (this != &assign)
+				{
+					first = assign.first;
+					second = assign.second;
+				}
+				return (*this);
+			}
 			~pair() {};
 
 			friend bool operator==(const pair& lhs, const pair& rhs){

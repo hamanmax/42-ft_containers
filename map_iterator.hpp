@@ -6,6 +6,7 @@
 template<
 			class T,
 			class map,
+			class Compare,
 			class Pointer = T*,
 			class Reference = T&,
 			class Category = BidirectionalIteratorTag,
@@ -16,21 +17,23 @@ class map_iterator: public ft::iterator<Category,T>
 public:
 	typedef Pointer					pointer;
 	typedef Reference				reference;
+	typedef Compare					key_compare;
 typedef typename map::mapped_type		mapped_type;
 typedef typename map::key_type		key_type;
 typedef T							value_type;
-typedef node<key_type, mapped_type>*	node_pointer;
+typedef node<key_type, mapped_type,Compare>*	node_pointer;
 private:
+	key_compare _comp;
 	node_pointer _mptr;
 	node_pointer _dummy;
 public:
-	map_iterator(node_pointer const & ptr,node_pointer const &  dummy):_mptr(ptr),_dummy(dummy){
+	map_iterator(node_pointer const & ptr,node_pointer const &  dummy):_comp(Compare()),_mptr(ptr),_dummy(dummy){
 	};
-	map_iterator():_mptr(0),_dummy(0){};
-	map_iterator(map_iterator const & copy):_mptr(copy.getptr()),_dummy(copy.getdummy()){};
-	template <typename U,typename V>
-	map_iterator( const map_iterator<U,V>  & copy) {_mptr = copy.getptr();_dummy = copy.getdummy();}
-	map_iterator & operator=(map_iterator const & copy){_mptr = copy.getptr();_dummy = copy.getdummy();return *this;};
+	map_iterator():_comp(Compare()),_mptr(0),_dummy(0){};
+	map_iterator(map_iterator const & copy):_comp(copy.getcompare()),_mptr(copy.getptr()),_dummy(copy.getdummy()){};
+	template <typename U,typename V,typename X>
+	map_iterator( const map_iterator<U,V,X>  & copy){_comp = copy.getcompare();_mptr = copy.getptr();_dummy = copy.getdummy();}
+	map_iterator & operator=(map_iterator const & copy){_comp = copy.getcompare();_mptr = copy.getptr();_dummy = copy.getdummy();return *this;};
 	~map_iterator(){
 	};
 
@@ -41,6 +44,7 @@ public:
 
 	node_pointer getptr()const {return _mptr;}
 	node_pointer getdummy()const {return _dummy;}
+	key_compare getcompare()const {return _comp;}
 
 	pointer operator->() const {return (&_mptr->val);}
 
@@ -72,7 +76,7 @@ public:
 		else
 		{
 			NewPtr = OldPtr->parent;
-			while (NewPtr->val.first < _mptr->val.first)
+			while (_comp(NewPtr->val.first,_mptr->val.first))
 				NewPtr = NewPtr->parent;
 		}
 		_mptr = NewPtr;
@@ -97,7 +101,8 @@ public:
 		else
 		{
 			NewPtr = OldPtr->parent;
-			while (NewPtr->val.first < _mptr->val.first)
+			while (_comp(NewPtr->val.first,_mptr->val.first))
+			//while (NewPtr->val.first < _mptr->val.first)
 				NewPtr = NewPtr->parent;
 		}
 		_mptr = NewPtr;
@@ -126,7 +131,7 @@ public:
 		else
 		{
 			NewPtr = OldPtr->parent;
-			while (NewPtr->val.first > _mptr->val.first)
+			while (!_comp(NewPtr->val.first,_mptr->val.first))
 				NewPtr = NewPtr->parent;
 		}
 		_mptr = NewPtr;
@@ -156,7 +161,7 @@ public:
 		if (OldPtr->left == NULL)
 		{
 			NewPtr = OldPtr->parent;
-			while (NewPtr->val.first > _mptr->val.first)
+			while (!_comp(NewPtr->val.first,_mptr->val.first))
 				NewPtr = NewPtr->parent;
 		}
 		_mptr = NewPtr;

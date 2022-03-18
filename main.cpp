@@ -1,28 +1,54 @@
-#include <iostream>
-#include <iomanip>
-#include <string>
-#include <limits>
-#include <map>
-#include "vector.hpp"
-#include "stack.hpp"
-#include "map.hpp"
-#include <stack>
-#include <vector>
-#include <string>
-#include "reverse_iterator.hpp"
+#include "containers_test/srcs/map/common.hpp"
 
-typedef ft::map<double,double> ddmap;
-typedef ft::pair<double,double> ddpair;
-int main(void)
+#define T1 int
+#define T2 std::string
+typedef TESTED_NAMESPACE::map<T1, T2>::value_type T3;
+typedef TESTED_NAMESPACE::map<T1, T2>::iterator iterator;
+
+static int iter = 0;
+
+template <typename MAP, typename U>
+void	ft_insert(MAP &mp, U param)
 {
-	ft::map<int,int> map;
-	ft::map<int,int>::iterator it = map.end();
-	ddmap d;
-	ddpair ddrange[10] = {ddpair(12.89,25.214),ddpair(12.6,8456.51),ddpair(12.7,654.151),ddpair(12.8,45216.232),ddpair(12.9,8425785.22),ddpair(12.91,94655.256),ddpair(12.92,4451.23),ddpair(12.93,666.666),ddpair(12.94,123.321),ddpair(12.95,3.15149)};
-	ddmap d3(ddrange,ddrange + 10);
-	d.insert(ddpair(12.99,56.45));
-	d3.erase(12.7);
+	_pair<TESTED_NAMESPACE::map<T1, T2>::iterator, bool> tmp;
 
-	for (ddmap::iterator it = d3.begin(); it != d3.end();it++)std::cout << it->first << std::endl;
-	return 0;
+	std::cout << "\t-- [" << iter++ << "] --" << std::endl;
+	tmp = mp.insert(param);
+	std::cout << "insert return: " << printPair(tmp.first);
+	std::cout << "Created new node: " << tmp.second << std::endl;
+	printSize(mp);
+}
+
+template <typename MAP, typename U, typename V>
+void	ft_insert(MAP &mp, U param, V param2)
+{
+	TESTED_NAMESPACE::map<T1, T2>::iterator tmp;
+
+	std::cout << "\t-- [" << iter++ << "] --" << std::endl;
+	tmp = mp.insert(param, param2);
+	std::cout << "insert return: " << printPair(tmp);
+	printSize(mp);
+}
+
+int		main(void)
+{
+	TESTED_NAMESPACE::map<T1, T2> mp, mp2;
+
+	ft_insert(mp, T3(42, "lol"));
+	ft_insert(mp, T3(42, "mdr"));
+
+	ft_insert(mp, T3(50, "mdr"));
+	ft_insert(mp, T3(35, "funny"));
+
+	ft_insert(mp, T3(45, "bunny"));
+	ft_insert(mp, T3(21, "fizz"));
+	ft_insert(mp, T3(38, "buzz"));
+
+	ft_insert(mp, mp.begin(), T3(55, "fuzzy"));
+
+	ft_insert(mp2, mp2.begin(), T3(1337, "beauty"));
+	ft_insert(mp2, mp2.end(), T3(1000, "Hello"));
+	ft_insert(mp2, mp2.end(), T3(1500, "World"));
+
+	return (0);
 }

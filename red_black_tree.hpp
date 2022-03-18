@@ -1,9 +1,10 @@
+#include <iomanip>
 #include <iostream>
 #include "utility.hpp"
 using namespace std;
 
 enum COLOR { RED, BLACK };
-template<class Key,class T, class pair = ft::pair<Key,T> >
+template<class Key,class T,class comp = std::less<Key> , class pair = ft::pair<Key,T> >
 class node {
 public:
 	typedef pair value_type;
@@ -73,15 +74,18 @@ node *uncle() {
 
 // * RBTree
 
-template<class Key, class T>
+template<class Key, class T,class Comp = std::less<Key> >
 class RBTree {
+	public:
 	typedef size_t size_type;
+	typedef Comp key_compare;
 	typedef ft::pair<Key,T> value_type;
-	typedef node<Key,T>* node_pointer;
+	typedef node<Key,T,Comp>* node_pointer;
 	size_type size;
 	node_pointer root;
 	node_pointer dummy;
-
+	key_compare comp;
+	private:
 	// left rotates the given node
 	void leftRotate(node_pointer x) {
 	// new parent will be node's right child
@@ -133,12 +137,9 @@ class RBTree {
 
 	void swapValues(node_pointer u, node_pointer v) {
 	value_type temp;
-	temp.first = u->val.first;
-	temp.second = u->val.second;
-	u->val.first = v->val.first;
-	u->val.second = v->val.second;
-	v->val.first = temp.first;
-	v->val.second = temp.second;
+	temp = u->val;
+	u->val = v->val;
+	v->val = temp;
 }
 
 	// fix red red at given node
@@ -235,7 +236,6 @@ class RBTree {
 	}
 	void deleteNode(node_pointer v) {
 	node_pointer u = BSTreplace(v);
-
 	// True when u and v are both black
 	bool uvBlack = ((u == NULL or u->color == BLACK) and (v->color == BLACK));
 	node_pointer parent = v->parent;
@@ -264,29 +264,31 @@ class RBTree {
 			parent->right = NULL;
 		}
 		}
-		delete v;
 		size--;
+		delete v;
 		return;
 	}
 
 	if (v->left == NULL or v->right == NULL) {
 		// v has 1 child
 		if (v == root) {
-		// v is root, assign the value of u to v, and delete u
-		v->val.first = u->val.first;
-		v->val.second = u->val.second;
-		v->left = v->right = NULL;
-		delete u;
-		size--;
-		} else {
+			// v is root, assign the value of u to v, and delete u
+			v->val = u->val;
+			v->left = v->right = NULL;
+			delete u;
+			size--;
+		}
+		else {
 		// Detach v from tree and move u up
 		if (v->isOnLeft()) {
 			parent->left = u;
-		} else {
+		}
+		else
+		{
 			parent->right = u;
 		}
-		delete v;
 		size--;
+		delete v;
 		u->parent = parent;
 		if (uvBlack) {
 			// u and v both black, fix double black at u
@@ -304,6 +306,17 @@ class RBTree {
 	deleteNode(u);
 	}
 
+	void print_tree(node_pointer root, int depth) {
+	if (root)
+	{
+
+    if (root->right)
+        print_tree(root->right, depth + 1);
+    std::cout << std::setw(depth * 2) << "" << (root->color == 0?"\033[38;5;160m":"\033[38;5;20m") << root->val.first << "\033[0m" << std::endl;
+    if (root->left)
+        print_tree(root->left, depth + 1);
+	}
+}
 	void fixDoubleBlack(node_pointer x) {
 	if (x == root)
 		// Reached root
@@ -379,7 +392,7 @@ class RBTree {
 public:
 	// constructor
 	// initialize root
-	RBTree():size(0), root(NULL), dummy(new node<Key,T>()) {}
+	RBTree():size(0), root(NULL), dummy(new node<Key,T,Comp>()),comp(Comp()) {}
 	~RBTree(){delete dummy;}
 
 	node_pointer getRoot() const { return root; }
@@ -387,7 +400,6 @@ public:
 	size_type getSize() const { return size; }
 
 	node_pointer getDummy() const {
-		if (dummy->parent != NULL)
 			dummy->parent = root;
 		if (root != NULL)
 		{
@@ -400,7 +412,7 @@ public:
 	node_pointer searchAt(Key n)const {
 		node_pointer temp = root;
 	while (temp != NULL) {
-		if (n < temp->val.first)
+		if (comp(n,temp->val.first))
 		{
 			if (temp->left == NULL)
 				return NULL;
@@ -427,7 +439,8 @@ public:
 	node_pointer search(Key n)const  {
 	node_pointer temp = root;
 	while (temp != NULL) {
-		if (n < temp->val.first) {
+
+		if (comp(n,temp->val.first)) {
 		if (temp->left == NULL)
 			break;
 		else
@@ -449,7 +462,7 @@ public:
 	node_pointer search(Key n, node_pointer hint)const {
 	node_pointer temp = hint;
 	while (temp != NULL) {
-		if (n < temp->val.first) {
+		if (comp(n,temp->val.first)) {
 		if (temp->left == NULL)
 			break;
 		else
@@ -471,7 +484,7 @@ public:
 
 	// inserts the given value to tree
 	node_pointer insert(value_type n, node_pointer hint) {
-	node_pointer newNode = new node<Key, T>(n);
+	node_pointer newNode = new node<Key, T,Comp>(n);
 	if (root == NULL) {
 		// when root is null
 		// simply insert value at root
@@ -493,7 +506,7 @@ public:
 		// connect new node to correct node
 		newNode->parent = temp;
 
-		if (n.first < temp->val.first)
+		if (comp(n.first,temp->val.first))
 		temp->left = newNode;
 		else
 		temp->right = newNode;
@@ -507,7 +520,7 @@ public:
 
 	// inserts the given value to tree
 	node_pointer insert(value_type n) {
-	node_pointer newNode = new node<Key, T>(n);
+	node_pointer newNode = new node<Key, T,Comp>(n);
 	if (root == NULL) {
 		// when root is null
 		// simply insert value at root
@@ -529,7 +542,7 @@ public:
 		// connect new node to correct node
 		newNode->parent = temp;
 
-		if (n.first < temp->val.first)
+		if (comp(n.first,temp->val.first))
 		temp->left = newNode;
 		else
 		temp->right = newNode;
@@ -550,7 +563,6 @@ public:
 	node_pointer v = search(n);
 
 	if (v->val.first != n) {
-		cout << "No node found to delete with value: " << n << endl;
 		return;
 	}
 

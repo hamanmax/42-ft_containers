@@ -167,6 +167,5 @@ public:
 		_mptr = NewPtr;
 		return Ret;
 	}
-
 };
 #endif

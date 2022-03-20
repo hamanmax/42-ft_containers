@@ -2,10 +2,10 @@
 #ifndef MAP_HPP
 #define MAP_HPP
 
-#include "utility.hpp"
-#include "red_black_tree.hpp"
-#include "map_iterator.hpp"
-#include "reverse_iterator.hpp"
+#include "../template/utility.hpp"
+#include "../template/red_black_tree.hpp"
+#include "../iterator/map_iterator.hpp"
+#include "../iterator/reverse_iterator.hpp"
 #include <memory>
 #include <functional>
 namespace ft
@@ -97,14 +97,14 @@ namespace ft
 
 		// * Element Acces
 
-		mapped_type& at(Key& key){
+		mapped_type& at(const Key& key){
 			if (tree.searchAt(key) == NULL)
 			{
 				throw std::out_of_range ("Out Of Bounds Exceptions Thrown");
 			}
 			return tree.searchAt(key)->val.second;
 		}
-		const mapped_type& at(Key& key) const {
+		const mapped_type& at(const Key& key) const {
 			if (tree.searchAt(key) == NULL)
 			{
 				throw std::out_of_range ("Out Of Bounds Exceptions Thrown");
@@ -178,12 +178,13 @@ namespace ft
 
 		iterator insert(iterator hint, const value_type& value) {
 			node<Key,T> *n = NULL;
-			if (lower_bound(value.first)->first == hint->first or upper_bound(value.first)->first == hint->first)
-				n = tree.insert(value,hint.getptr());
-			else
-				n = tree.insert(value);
+			//if (lower_bound(value.first)->first == hint->first or upper_bound(value.first)->first == hint->first)
+			//	n = tree.insert(value,hint.getptr());
+			//else
+			//	n = tree.insert(value);
+			n = tree.insert(value,hint.getptr());
 			if (n == NULL)
-				return (iterator(tree.searchAt(value.first),tree.getDummy()));
+				return (iterator(tree.search(value.first),tree.getDummy()));
 			return (iterator(n,tree.getDummy()));
 		}
 
@@ -203,7 +204,7 @@ namespace ft
 		void erase(iterator first, iterator last){
 			size_type i = 0;
 			for (iterator tmp = first; tmp != last;tmp++,i++){}
-			Key range[i];
+			Key range[i] ;
 			for (size_type j = 0; j < i;j++,first++){range[j] = first->first;}
 			for (size_type j = 0; j < i;j++){
 				tree.deleteByVal(range[j]);

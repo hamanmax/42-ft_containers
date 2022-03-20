@@ -45,11 +45,13 @@ void test_vector_iterator_int(std::string str[4]){
 	typedef ivector ftvector;
 
 	int range[50]; for (int i = 0; i < 50;i++){range[i] = i;};
-	ftvector t(range, range + 50), t3(range, range + 50);
+	ftvector t(range, range + 50),t3(range, range + 50);
 	ftvector::iterator it = t.begin(),ite = t.end() - 1;
 	ftvector::const_iterator cit = t.begin(),cite = t.end() - 1;
 	ftvector::reverse_iterator rit = t.rbegin(),rite = t.rend() - 1;
 	ftvector::const_reverse_iterator crit = t.rbegin(), crite = t.rend() - 1;
+	ismap::reverse_iterator mrit;
+	ismap::const_reverse_iterator mcrit;
 	std::cout << "Testing vector_iterator with a vector<int> range of 50 elements :" << std::endl;
 	print_vector_iterator_operators<ftvector::iterator >(str[0],it,ite);
 	std::cout << std::endl << "Testing const_vector_iterator with a vector<int> range of 50 elements :" << std::endl;
@@ -168,7 +170,7 @@ void test_vector_insert_unit(T * vector, U val)
 template <class T,typename U>
 void test_vector_insert_fill(T * vector,int count, U val)
 {
-	T test[6] = {vector[0], vector[1], vector[2], vector[3], vector[4], vector[5]};
+	T test[6] = {T(vector[0]), T(vector[1]), vector[2], vector[3], vector[4], vector[5]};
 	for (int i = 0; i < 6; i++)
 	{
 		test[i].insert(test[i].begin(),count,val);

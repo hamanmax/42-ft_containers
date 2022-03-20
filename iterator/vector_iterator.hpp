@@ -109,4 +109,96 @@ class vector_iterator : public ft::iterator<Category, T>
 			return (New -= nb);
 		}
 };
+
+//   template<typename _IteratorL, typename _IteratorR, typename _Container>
+//     inline bool
+//     operator==(const vector_iterator<_IteratorL, _Container>& __lhs,
+//                const vector_iterator<_IteratorR, _Container>& __rhs)
+//     _GLIBCXX_NOEXCEPT
+//     { return __lhs == __rhs; }
+//   template<typename _Iterator, typename _Container>
+//     inline bool
+//     operator==(const vector_iterator<_Iterator, _Container>& __lhs,
+//                const vector_iterator<_Iterator, _Container>& __rhs)
+//     _GLIBCXX_NOEXCEPT
+//     { return __lhs == __rhs; }
+//   template<typename _IteratorL, typename _IteratorR, typename _Container>
+//     inline bool
+//     operator!=(const vector_iterator<_IteratorL, _Container>& __lhs,
+//                const vector_iterator<_IteratorR, _Container>& __rhs)
+//     _GLIBCXX_NOEXCEPT
+//     { return __lhs != __rhs; }
+//   template<typename _Iterator, typename _Container>
+//     inline bool
+//     operator!=(const vector_iterator<_Iterator, _Container>& __lhs,
+//                const vector_iterator<_Iterator, _Container>& __rhs)
+//     _GLIBCXX_NOEXCEPT
+//     { return __lhs != __rhs; }
+//   // Random access iterator requirements
+//   template<typename _IteratorL, typename _IteratorR, typename _Container>
+//     inline bool
+//     operator<(const vector_iterator<_IteratorL, _Container>& __lhs,
+//               const vector_iterator<_IteratorR, _Container>& __rhs)
+//     _GLIBCXX_NOEXCEPT
+//     { return __lhs < __rhs; }
+//   template<typename _Iterator, typename _Container>
+//     inline bool
+//     operator<(const vector_iterator<_Iterator, _Container>& __lhs,
+//               const vector_iterator<_Iterator, _Container>& __rhs)
+//     _GLIBCXX_NOEXCEPT
+//     { return __lhs < __rhs; }
+//   template<typename _IteratorL, typename _IteratorR, typename _Container>
+//     inline bool
+//     operator>(const vector_iterator<_IteratorL, _Container>& __lhs,
+//               const vector_iterator<_IteratorR, _Container>& __rhs)
+//     _GLIBCXX_NOEXCEPT
+//     { return __lhs > __rhs; }
+//   template<typename _Iterator, typename _Container>
+//     inline bool
+//     operator>(const vector_iterator<_Iterator, _Container>& __lhs,
+//               const vector_iterator<_Iterator, _Container>& __rhs)
+//     _GLIBCXX_NOEXCEPT
+//     { return __lhs > __rhs; }
+//   template<typename _IteratorL, typename _IteratorR, typename _Container>
+//     inline bool
+//     operator<=(const vector_iterator<_IteratorL, _Container>& __lhs,
+//                const vector_iterator<_IteratorR, _Container>& __rhs)
+//     _GLIBCXX_NOEXCEPT
+//     { return __lhs <= __rhs; }
+//   template<typename _Iterator, typename _Container>
+//     inline bool
+//     operator<=(const vector_iterator<_Iterator, _Container>& __lhs,
+//                const vector_iterator<_Iterator, _Container>& __rhs)
+//     _GLIBCXX_NOEXCEPT
+//     { return __lhs <= __rhs; }
+//   template<typename _IteratorL, typename _IteratorR, typename _Container>
+//     inline bool
+//     operator>=(const vector_iterator<_IteratorL, _Container>& __lhs,
+//                const vector_iterator<_IteratorR, _Container>& __rhs)
+//     _GLIBCXX_NOEXCEPT
+//     { return __lhs >= __rhs; }
+//   template<typename _Iterator, typename _Container>
+//     inline bool
+//     operator>=(const vector_iterator<_Iterator, _Container>& __lhs,
+//                const vector_iterator<_Iterator, _Container>& __rhs)
+//     _GLIBCXX_NOEXCEPT
+//     { return __lhs >= __rhs; }
+// 	  template<typename _IteratorL, typename _IteratorR, typename _Container>
+// 	  inline typename vector_iterator<_IteratorL, _Container>::difference_type
+//     operator-(const vector_iterator<_IteratorL, _Container>& __lhs,
+//               const vector_iterator<_IteratorR, _Container>& __rhs) { return __lhs - __rhs; }
+//  template<typename _Iterator, typename _Container>
+//     inline typename vector_iterator<_Iterator, _Container>::difference_type
+//     operator-(const vector_iterator<_Iterator, _Container>& __lhs,
+//               const vector_iterator<_Iterator, _Container>& __rhs)
+//     _GLIBCXX_NOEXCEPT
+//     { return __lhs - __rhs; }
+//   template<typename _Iterator, typename _Container>
+//     inline vector_iterator<_Iterator, _Container>
+//     operator+(typename vector_iterator<_Iterator, _Container>::difference_type
+//               __n, const vector_iterator<_Iterator, _Container>& __i)
+//     _GLIBCXX_NOEXCEPT
+//     { return vector_iterator<_Iterator, _Container>(__i.base() + __n); }
+
+
 #endif

@@ -1,6 +1,9 @@
 #include <iomanip>
 #include <iostream>
 #include "utility.hpp"
+
+
+#include <stdlib.h>
 using namespace std;
 
 enum COLOR { RED, BLACK };
@@ -85,6 +88,7 @@ class RBTree {
 	node_pointer root;
 	node_pointer dummy;
 	key_compare comp;
+	std::allocator<node<Key,T,Comp> > allocator;
 	private:
 	// left rotates the given node
 	void leftRotate(node_pointer x) {
@@ -136,9 +140,9 @@ class RBTree {
 	}
 
 	void swapValues(node_pointer u, node_pointer v) {
-	value_type temp;
-	temp = u->val;
+	value_type temp = u->val;
 	u->val = v->val;
+	//u->val = v->val;
 	v->val = temp;
 }
 
@@ -234,6 +238,53 @@ class RBTree {
 			n = n->right;
 		return n;
 	}
+
+	void swapPtr(node_pointer v,node_pointer u)
+	{
+		node_pointer vparent = v->parent;
+		node_pointer vleft = v->left;
+		node_pointer vright = v->right;
+		node_pointer uparent = u->parent;
+		node_pointer uleft = u->left;
+		node_pointer uright = u->right;
+		std::cout << v << " | " << u << std::endl;
+		print_tree(this->root,0);
+		if (vleft)
+		vleft->parent = u;
+		if (vright)
+		vright->parent = u;
+		if (vparent && vparent->left == v)
+			vparent->left = u;
+		else if (vparent)
+			vparent->right = u;
+
+		if (uleft)
+		uleft->parent = v;
+		if (uright)
+		uright->parent = v;
+		if (uparent && uparent->left == u)
+			uparent->left = v;
+		else if (uparent)
+			uparent->right = v;
+
+		v->parent = uparent;
+		v->left = uleft;
+		v->right = uright;
+		u->parent = vparent;
+		u->left = vleft;
+		u->right = vright;
+		swapColors(u,v);
+		if (root->parent != root)
+		{
+		while (root->parent)
+			root = root->parent;
+		}
+		if (root->parent == root && size == 0) root = NULL;
+		std::cout << "//////////////" << size << std::endl;
+		print_tree(this->root,0);
+
+	}
+
 	void deleteNode(node_pointer v) {
 	node_pointer u = BSTreplace(v);
 	// True when u and v are both black
@@ -265,7 +316,8 @@ class RBTree {
 		}
 		}
 		size--;
-		delete v;
+		allocator.destroy(v);
+		allocator.deallocate(v,1);
 		return;
 	}
 
@@ -275,7 +327,8 @@ class RBTree {
 			// v is root, assign the value of u to v, and delete u
 			v->val = u->val;
 			v->left = v->right = NULL;
-			delete u;
+			allocator.destroy(u);
+			allocator.deallocate(u,1);
 			size--;
 		}
 		else {
@@ -288,7 +341,8 @@ class RBTree {
 			parent->right = u;
 		}
 		size--;
-		delete v;
+		allocator.destroy(v);
+		allocator.deallocate(v,1);
 		u->parent = parent;
 		if (uvBlack) {
 			// u and v both black, fix double black at u
@@ -392,8 +446,8 @@ class RBTree {
 public:
 	// constructor
 	// initialize root
-	RBTree():size(0), root(NULL), dummy(new node<Key,T,Comp>()),comp(Comp()) {}
-	~RBTree(){delete dummy;}
+	RBTree():size(0), root(NULL), dummy(std::allocator<node<Key,T,Comp> >().allocate(1)),comp(Comp()),allocator(std::allocator<node<Key,T,Comp> >()) {}
+	~RBTree(){allocator.deallocate(dummy,1);}
 
 	node_pointer getRoot() const { return root; }
 
@@ -484,7 +538,10 @@ public:
 
 	// inserts the given value to tree
 	node_pointer insert(value_type n, node_pointer hint) {
-	node_pointer newNode = new node<Key, T,Comp>(n);
+	node_pointer newNode;
+	newNode = allocator.allocate(1);
+	allocator.construct(newNode,n);
+
 	if (root == NULL) {
 		// when root is null
 		// simply insert value at root
@@ -496,7 +553,8 @@ public:
 
 		if (temp->val.first == n.first) {
 		// return if value already exists
-		delete newNode;
+		allocator.destroy(newNode);
+		allocator.deallocate(newNode,1);
 		return NULL;
 		}
 
@@ -520,7 +578,9 @@ public:
 
 	// inserts the given value to tree
 	node_pointer insert(value_type n) {
-	node_pointer newNode = new node<Key, T,Comp>(n);
+	node_pointer newNode;
+	newNode = allocator.allocate(1);
+	allocator.construct(newNode,n);
 	if (root == NULL) {
 		// when root is null
 		// simply insert value at root
@@ -532,7 +592,8 @@ public:
 
 		if (temp->val.first == n.first) {
 		// return if value already exists
-		delete newNode;
+		allocator.destroy(newNode);
+		allocator.deallocate(newNode,1);
 		return NULL;
 		}
 

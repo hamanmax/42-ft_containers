@@ -6,9 +6,9 @@
 #include <iterator>
 #include <cstdlib>
 #include <cstddef>
-#include "vector_iterator.hpp"
-#include "utility.hpp"
-#include "reverse_iterator.hpp"
+#include "../iterator/vector_iterator.hpp"
+#include "../template/utility.hpp"
+#include "../iterator/reverse_iterator.hpp"
 
 namespace ft
 {
@@ -76,7 +76,7 @@ class vector
 
 		// 5) Copy constructor. Constructs the container with the copy of the contents of other.
 
-		vector<T,Alloc>( const vector& other ){
+		vector( const vector& other ){
 			_alloc = other._alloc;
 			_start = _alloc.allocate(other.capacity());
 			_capacity_end = _start + other.size();
@@ -88,7 +88,7 @@ class vector
 
 		// Destructs the vector. The destructors of the elements are called and the used storage is deallocated.
 
-		~vector<T,Alloc>() {
+		~vector() {
 			value_type *ptr = _start;
 			for (size_type i = 0; i< size(); i++)
 			{

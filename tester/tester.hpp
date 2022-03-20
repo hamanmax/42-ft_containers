@@ -1,10 +1,10 @@
 #ifndef TESTER_HPP
 #define TESTER_HPP
 
-#include "map.hpp"
-#include "vector.hpp"
-#include "stack.hpp"
-#include "utility.hpp"
+#include "../container/map.hpp"
+#include "../container/vector.hpp"
+#include "../container/stack.hpp"
+#include "../template/utility.hpp"
 #include <map>
 #include <vector>
 #include <stack>
@@ -14,17 +14,17 @@
 // * Color define
 
 #define END "\033[0m"
-#define LIGHTGREEN "\u001b[38;5;40m"
-#define GREEN "\u001b[38;5;22m"
-#define RED "\u001b[38;5;88m"
-#define LIGHTRED "\u001b[38;5;160m"
-#define LIGHTBLUE "\u001b[38;5;39m"
-#define ORANGE "\u001b[38;5;130m"
-#define LIGHTORANGE "\u001b[38;5;208m"
-#define LIGHTYELLOW "\u001b[38;5;227m"
-#define BLUE "\u001b[38;5;20m"
-#define BOLD "\u001b[1m"
-#define UNDERLINE "\u001b[4m"
+#define LIGHTGREEN "\033[38;5;40m"
+#define GREEN "\033[38;5;22m"
+#define RED "\033[38;5;88m"
+#define LIGHTRED "\033[38;5;160m"
+#define LIGHTBLUE "\033[38;5;39m"
+#define ORANGE "\033[38;5;130m"
+#define LIGHTORANGE "\033[38;5;208m"
+#define LIGHTYELLOW "\033[38;5;227m"
+#define BLUE "\033[38;5;20m"
+#define BOLD "\033[1m"
+#define UNDERLINE "\033[4m"
 #define RIGHTARROW "\U00002192 "
 
 // * Typedefs

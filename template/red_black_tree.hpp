@@ -1,78 +1,42 @@
+#ifndef RBTREE_HPP
+#define RBTREE_HPP
+
 #include <iomanip>
 #include <iostream>
 #include "utility.hpp"
 
 
 #include <stdlib.h>
-using namespace std;
 
 enum COLOR { RED, BLACK };
 template<class Key,class T,class comp = std::less<Key> , class pair = ft::pair<Key,T> >
 class node {
 public:
-	typedef pair value_type;
-	value_type val;
-	COLOR color;
-	node *left, *right, *parent;
+	typedef pair	value_type;
 
-	node(value_type val) : val(val) {
-	parent = left = right = NULL;
+	value_type	val;
+	COLOR		color;
+	node		*left, *right, *parent;
 
-	// node is created during insertion
-	// node is red at insertion
-	color = RED;
-	}
-	node(){
-		parent = left = right = NULL;
-	}
+	node(value_type val);
+	node();
+	node(node const & copy);
+	~node();
+	node & operator=(node const & assign);
 
 // returns pointer to uncle
-node *uncle() {
-	// If no parent or grandparent, then no uncle
-	if (parent == NULL or parent->parent == NULL)
-		return NULL;
-
-	if (parent->isOnLeft())
-		// uncle on right
-		return parent->parent->right;
-	else
-		// uncle on left
-		return parent->parent->left;
-	}
+	node *uncle();
 
 // check if node is left child of parent
-	bool isOnLeft() { return this == parent->left; }
+	bool isOnLeft();
 
 	// returns pointer to sibling
-	node *sibling() {
-	// sibling null if no parent
-	if (parent == NULL)
-		return NULL;
-
-	if (isOnLeft())
-		return parent->right;
-
-	return parent->left;
-	}
+	node *sibling();
 
 	// moves node down and moves given node in its place
-	void moveDown(node *nParent) {
-	if (parent != NULL) {
-		if (isOnLeft()) {
-			parent->left = nParent;
-		}
-		else {
-			parent->right = nParent;
-		}
-	}
-	nParent->parent = parent;
-	parent = nParent;
-	}
+	void moveDown(node *nParent);
 
-	bool hasRedChild() {
-	return (left != NULL and left->color == RED) or
-			(right != NULL and right->color == RED);
-	}
+	bool hasRedChild();
 };
 
 // * RBTree
@@ -80,572 +44,72 @@ node *uncle() {
 template<class Key, class T,class Comp = std::less<Key> >
 class RBTree {
 	public:
-	typedef size_t size_type;
-	typedef Comp key_compare;
-	typedef ft::pair<Key,T> value_type;
-	typedef node<Key,T,Comp>* node_pointer;
-	size_type size;
-	node_pointer root;
-	node_pointer dummy;
-	key_compare comp;
-	std::allocator<node<Key,T,Comp> > allocator;
-	private:
-	// left rotates the given node
-	void leftRotate(node_pointer x) {
-	// new parent will be node's right child
-	node_pointer nParent = x->right;
+	typedef size_t						size_type;
+	typedef Comp						key_compare;
+	typedef ft::pair<Key,T>				value_type;
+	typedef node<Key,T,Comp>*			node_pointer;
 
-	// update root if current node is root
-	if (x == root)
-		root = nParent;
+	size_type							size;
+	node_pointer						root;
+	node_pointer						dummy;
+	key_compare							comp;
+	std::allocator<node<Key,T,Comp> >	allocator;
 
-	x->moveDown(nParent);
-
-	// connect x with new parent's left element
-	x->right = nParent->left;
-	// connect new parent's left element with node
-	// if it is not null
-	if (nParent->left != NULL)
-		nParent->left->parent = x;
-
-	// connect new parent with x
-	nParent->left = x;
-	}
-	void rightRotate(node_pointer x) {
-	// new parent will be node's left child
-	node_pointer nParent = x->left;
-
-	// update root if current node is root
-	if (x == root)
-		root = nParent;
-
-	x->moveDown(nParent);
-
-	// connect x with new parent's right element
-	x->left = nParent->right;
-	// connect new parent's right element with node
-	// if it is not null
-	if (nParent->right != NULL)
-		nParent->right->parent = x;
-
-	// connect new parent with x
-	nParent->right = x;
-	}
-
-	void swapColors(node_pointer x1, node_pointer x2) {
-		COLOR temp;
-	temp = x1->color;
-	x1->color = x2->color;
-	x2->color = temp;
-	}
-
-	void swapValues(node_pointer u, node_pointer v) {
-	value_type temp = u->val;
-	u->val = v->val;
-	//u->val = v->val;
-	v->val = temp;
-}
-
-	// fix red red at given node
-	void fixRedRed(node_pointer x) {
-	// if x is root color it black and return
-	if (x == root) {
-		x->color = BLACK;
-		return;
-	}
-
-	// initialize parent, grandparent, uncle
-	node_pointer parent = x->parent, grandparent = parent->parent,
-		uncle = x->uncle();
-
-	if (parent->color != BLACK) {
-		if (uncle != NULL && uncle->color == RED) {
-		// uncle red, perform recoloring and recurse
-		parent->color = BLACK;
-		uncle->color = BLACK;
-		grandparent->color = RED;
-		fixRedRed(grandparent);
-		} else {
-		// Else perform LR, LL, RL, RR
-		if (parent->isOnLeft()) {
-			if (x->isOnLeft()) {
-			// for left right
-			swapColors(parent, grandparent);
-			}
-			else {
-			leftRotate(parent);
-			swapColors(x, grandparent);
-			}
-			// for left left and left right
-			rightRotate(grandparent);
-		}
-		else {
-			if (x->isOnLeft()) {
-			// for right left
-			rightRotate(parent);
-			swapColors(x, grandparent);
-			}
-			else {
-			swapColors(parent, grandparent);
-			}
-
-			// for right right and right left
-			leftRotate(grandparent);
-		}
-		}
-	}
-	}
-
-	// find node that do not have a left child
-	// in the subtree of the given node
-	node_pointer successor(node_pointer x) {
-	node_pointer temp = x;
-
-	while (temp->left != NULL)
-		temp = temp->left;
-
-	return temp;
-	}
-
-	// find node that replaces a deleted node in BST
-	node_pointer BSTreplace(node_pointer x) {
-	// when node have 2 children
-	if (x->left != NULL and x->right != NULL)
-		return successor(x->right);
-
-	// when leaf
-	if (x->left == NULL and x->right == NULL)
-		return NULL;
-
-	// when single child
-	if (x->left != NULL)
-		return x->left;
-	else
-		return x->right;
-	}
-
-	// deletes the given node
-	public:
-	node_pointer minimum()const {
-		node_pointer n = root;
-		while(n->left != NULL)
-			n = n->left;
-		return n;
-	}
-	node_pointer maximum()const {
-		node_pointer n = root;
-		while(n->right != NULL)
-			n = n->right;
-		return n;
-	}
-
-	void swapPtr(node_pointer v,node_pointer u)
-	{
-		node_pointer vparent = v->parent;
-		node_pointer vleft = v->left;
-		node_pointer vright = v->right;
-		node_pointer uparent = u->parent;
-		node_pointer uleft = u->left;
-		node_pointer uright = u->right;
-		std::cout << v << " | " << u << std::endl;
-		print_tree(this->root,0);
-		if (vleft)
-		vleft->parent = u;
-		if (vright)
-		vright->parent = u;
-		if (vparent && vparent->left == v)
-			vparent->left = u;
-		else if (vparent)
-			vparent->right = u;
-
-		if (uleft)
-		uleft->parent = v;
-		if (uright)
-		uright->parent = v;
-		if (uparent && uparent->left == u)
-			uparent->left = v;
-		else if (uparent)
-			uparent->right = v;
-
-		v->parent = uparent;
-		v->left = uleft;
-		v->right = uright;
-		u->parent = vparent;
-		u->left = vleft;
-		u->right = vright;
-		swapColors(u,v);
-		if (root->parent != root)
-		{
-		while (root->parent)
-			root = root->parent;
-		}
-		if (root->parent == root && size == 0) root = NULL;
-		std::cout << "//////////////" << size << std::endl;
-		print_tree(this->root,0);
-
-	}
-
-	void deleteNode(node_pointer v) {
-	node_pointer u = BSTreplace(v);
-	// True when u and v are both black
-	bool uvBlack = ((u == NULL or u->color == BLACK) and (v->color == BLACK));
-	node_pointer parent = v->parent;
-
-	if (u == NULL) {
-		// u is NULL therefore v is leaf
-		if (v == root) {
-		// v is root, making root null
-		root = NULL;
-		} else {
-		if (uvBlack) {
-			// u and v both black
-			// v is leaf, fix double black at v
-			fixDoubleBlack(v);
-		} else {
-			// u or v is red
-			if (v->sibling() != NULL)
-			// sibling is not null, make it red"
-			v->sibling()->color = RED;
-		}
-
-		// delete v from the tree
-		if (v->isOnLeft()) {
-			parent->left = NULL;
-		} else {
-			parent->right = NULL;
-		}
-		}
-		size--;
-		allocator.destroy(v);
-		allocator.deallocate(v,1);
-		return;
-	}
-
-	if (v->left == NULL or v->right == NULL) {
-		// v has 1 child
-		if (v == root) {
-			// v is root, assign the value of u to v, and delete u
-			v->val = u->val;
-			v->left = v->right = NULL;
-			allocator.destroy(u);
-			allocator.deallocate(u,1);
-			size--;
-		}
-		else {
-		// Detach v from tree and move u up
-		if (v->isOnLeft()) {
-			parent->left = u;
-		}
-		else
-		{
-			parent->right = u;
-		}
-		size--;
-		allocator.destroy(v);
-		allocator.deallocate(v,1);
-		u->parent = parent;
-		if (uvBlack) {
-			// u and v both black, fix double black at u
-			fixDoubleBlack(u);
-		} else {
-			// u or v red, color u black
-			u->color = BLACK;
-		}
-		}
-		return;
-	}
-
-	// v has 2 children, swap values with successor and recurse
-	swapValues(u, v);
-	deleteNode(u);
-	}
-
-	void print_tree(node_pointer root, int depth) {
-	if (root)
-	{
-
-    if (root->right)
-        print_tree(root->right, depth + 1);
-    std::cout << std::setw(depth * 2) << "" << (root->color == 0?"\033[38;5;160m":"\033[38;5;20m") << root->val.first << "\033[0m" << std::endl;
-    if (root->left)
-        print_tree(root->left, depth + 1);
-	}
-}
-	void fixDoubleBlack(node_pointer x) {
-	if (x == root)
-		// Reached root
-		return;
-
-	node_pointer sibling = x->sibling(), parent = x->parent;
-	if (sibling == NULL) {
-		// No sibiling, double black pushed up
-		fixDoubleBlack(parent);
-	} else {
-		if (sibling->color == RED) {
-		// Sibling red
-		parent->color = RED;
-		sibling->color = BLACK;
-		if (sibling->isOnLeft()) {
-			// left case
-			rightRotate(parent);
-		} else {
-			// right case
-			leftRotate(parent);
-		}
-		fixDoubleBlack(x);
-		} else {
-		// Sibling black
-		if (sibling->hasRedChild()) {
-			// at least 1 red children
-			if (sibling->left != NULL and sibling->left->color == RED) {
-			if (sibling->isOnLeft()) {
-				// left left
-				sibling->left->color = sibling->color;
-				sibling->color = parent->color;
-				rightRotate(parent);
-			} else {
-				// right left
-				sibling->left->color = parent->color;
-				rightRotate(sibling);
-				leftRotate(parent);
-			}
-			} else {
-			if (sibling->isOnLeft()) {
-				// left right
-				sibling->right->color = parent->color;
-				leftRotate(sibling);
-				rightRotate(parent);
-			} else {
-				// right right
-				sibling->right->color = sibling->color;
-				sibling->color = parent->color;
-				leftRotate(parent);
-			}
-			}
-			parent->color = BLACK;
-		} else {
-			// 2 black children
-			sibling->color = RED;
-			if (parent->color == BLACK)
-			fixDoubleBlack(parent);
-			else
-			parent->color = BLACK;
-		}
-		}
-	}
-	}
-	// prints inorder recursively
-	void inorder(node_pointer x) {
-	if (x == NULL)
-		return;
-	inorder(x->left);
-	cout << x->val.first << " ";
-	inorder(x->right);
-	}
-
-public:
 	// constructor
 	// initialize root
-	RBTree():size(0), root(NULL), dummy(std::allocator<node<Key,T,Comp> >().allocate(1)),comp(Comp()),allocator(std::allocator<node<Key,T,Comp> >()) {}
-	~RBTree(){allocator.deallocate(dummy,1);}
+	RBTree();
+	~RBTree();
 
-	node_pointer getRoot() const { return root; }
+	node_pointer getRoot() const;
+	size_type getSize() const;
+	node_pointer getDummy() const;
 
-	size_type getSize() const { return size; }
+	node_pointer minimum()const;
+	node_pointer maximum()const;
 
-	node_pointer getDummy() const {
-			dummy->parent = root;
-		if (root != NULL)
-		{
-			dummy->left = minimum();
-			dummy->right = maximum();
-		}
-		return dummy;
-	}
+	void swapPtr(node_pointer v,node_pointer u);
 
-	node_pointer searchAt(Key n)const {
-		node_pointer temp = root;
-	while (temp != NULL) {
-		if (comp(n,temp->val.first))
-		{
-			if (temp->left == NULL)
-				return NULL;
-			else
-				temp = temp->left;
-		}
-		else if (n == temp->val.first)
-		{
-			break;
-		}
-		else
-		{
-			if (temp->right == NULL)
-				return NULL;
-			else
-				temp = temp->right;
-		}
-	}
-		return temp;
-	}
+	// deletes the given node
+	void deleteNode(node_pointer v);
+	// utility function that deletes the node with given value
+	void deleteByVal(const Key n);
+
+	void print_tree(node_pointer root, int depth);
+
+	// searches for given value
+	// if found returns the node (used for delete)
+	// else returns NULL
+	node_pointer searchAt(Key n)const;
 	// searches for given value
 	// if found returns the node (used for delete)
 	// else returns the last node while traversing (used in insert)
-	node_pointer search(Key n)const  {
-	node_pointer temp = root;
-	while (temp != NULL) {
-
-		if (comp(n,temp->val.first)) {
-		if (temp->left == NULL)
-			break;
-		else
-			temp = temp->left;
-		} else if (n == temp->val.first) {
-		break;
-		}
-		else {
-		if (temp->right == NULL)
-			break;
-		else
-			temp = temp->right;
-		}
-	}
-
-	return temp;
-	}
-
-	node_pointer search(Key n, node_pointer hint)const {
-	node_pointer temp = hint;
-	while (temp != NULL) {
-		if (comp(n,temp->val.first)) {
-		if (temp->left == NULL)
-			break;
-		else
-			temp = temp->left;
-		} else if (n == temp->val.first) {
-		break;
-		}
-		else {
-		if (temp->right == NULL)
-			break;
-		else
-			temp = temp->right;
-		}
-	}
-
-	return temp;
-	}
+	node_pointer search(Key n)const;
+	node_pointer search(Key n, node_pointer hint)const;
 
 
 	// inserts the given value to tree
-	node_pointer insert(value_type n, node_pointer hint) {
-	node_pointer newNode;
-	newNode = allocator.allocate(1);
-	allocator.construct(newNode,n);
-
-	if (root == NULL) {
-		// when root is null
-		// simply insert value at root
-		newNode->color = BLACK;
-		root = newNode;
-	}
-	else {
-		node_pointer temp = search(n.first,hint);
-
-		if (temp->val.first == n.first) {
-		// return if value already exists
-		allocator.destroy(newNode);
-		allocator.deallocate(newNode,1);
-		return NULL;
-		}
-
-		// if value is not found, search returns the node
-		// where the value is to be inserted
-
-		// connect new node to correct node
-		newNode->parent = temp;
-
-		if (comp(n.first,temp->val.first))
-		temp->left = newNode;
-		else
-		temp->right = newNode;
-
-		// fix red red voilaton if exists
-		fixRedRed(newNode);
-	}
-		size++;
-		return newNode;
-	}
-
+	node_pointer insert(value_type n, node_pointer hint);
 	// inserts the given value to tree
-	node_pointer insert(value_type n) {
-	node_pointer newNode;
-	newNode = allocator.allocate(1);
-	allocator.construct(newNode,n);
-	if (root == NULL) {
-		// when root is null
-		// simply insert value at root
-		newNode->color = BLACK;
-		root = newNode;
-	}
-	else {
-		node_pointer temp = search(n.first);
+	node_pointer insert(value_type n);
+	private:
+	// rotates the given node
+	void leftRotate(node_pointer x);
+	void rightRotate(node_pointer x);
 
-		if (temp->val.first == n.first) {
-		// return if value already exists
-		allocator.destroy(newNode);
-		allocator.deallocate(newNode,1);
-		return NULL;
-		}
+	void swapColors(node_pointer x1, node_pointer x2);
+	void swapValues(node_pointer u, node_pointer v);
 
-		// if value is not found, search returns the node
-		// where the value is to be inserted
+	// fix double color at given node
+	void fixRedRed(node_pointer x);
+	void fixDoubleBlack(node_pointer x);
+	// find node that do not have a left child
+	// in the subtree of the given node
+	node_pointer successor(node_pointer x);
+	// find node that replaces a deleted node in BST
+	node_pointer BSTreplace(node_pointer x);
 
-		// connect new node to correct node
-		newNode->parent = temp;
-
-		if (comp(n.first,temp->val.first))
-		temp->left = newNode;
-		else
-		temp->right = newNode;
-
-		// fix red red voilaton if exists
-		fixRedRed(newNode);
-	}
-		size++;
-		return newNode;
-	}
-
-	// utility function that deletes the node with given value
-	void deleteByVal(const Key n) {
-	if (root == NULL)
-		// Tree is empty
-		return;
-
-	node_pointer v = search(n);
-
-	if (v->val.first != n) {
-		return;
-	}
-
-	deleteNode(v);
-	}
-
-	// prints inorder of the tree
-	void printInOrder() {
-	cout << "Inorder: " << endl;
-	if (root == NULL)
-		cout << "Tree is empty" << endl;
-	else
-		inorder(root);
-	cout << endl;
-	}
-// prints level order of the tree
-void printLevelOrder() {
-	cout << "Level order: " << endl;
-	if (root == NULL)
-		cout << "Tree is empty" << endl;
-	else
-		levelOrder(root);
-	cout << endl;
-	}
 };
+
+#include "red_black_tree.cpp"
+
+#endif

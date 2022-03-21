@@ -1,5 +1,6 @@
 #ifndef ITERATOR_HPP
 #define ITERATOR_HPP
+#include <cstddef>
 
 struct InputIteratorTag{};
 

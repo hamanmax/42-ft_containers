@@ -12,92 +12,51 @@ template<
 class vector_iterator : public ft::iterator<Category, T>
 {
 	public:
-	typedef Category	 iterator_category;
-	typedef Pointer pointer;
+	typedef Distance		difference_type;
+	typedef Category		iterator_category;
+	typedef Pointer			pointer;
 	typedef Reference		reference;
 	private:
 		pointer _mptr;
 	protected:
 	public:
-		vector_iterator(pointer ptr):_mptr(ptr){};
-		vector_iterator():_mptr(0){};
-		vector_iterator & operator=(vector_iterator const & op) {_mptr = op.getptr(); return *this;};
+		vector_iterator(pointer ptr);
+		vector_iterator();
+		vector_iterator & operator=(vector_iterator const & op);
 		template<typename U>
 		vector_iterator( const vector_iterator<U>  & copy) {_mptr = copy.getptr();}
+		~vector_iterator();
 
-		~vector_iterator(){};
-		reference operator*(){
-			return *this->_mptr;}
+		reference operator*() const;
+		pointer operator->() const;
 
-		pointer operator->(){
-			return this->_mptr;}
+		pointer getptr()const;
 
-		const pointer& getptr()const {return _mptr;}
+		bool operator==(const vector_iterator& Other) const;
 
-		bool operator==(const vector_iterator& Other) const {return (_mptr == Other._mptr);}
+		bool operator!=(const vector_iterator& Other) const;
 
-		bool operator!=(const vector_iterator& Other) const {return Other._mptr != this->_mptr;}
+		bool operator<(const vector_iterator& Other) const;
 
-		bool operator<(const vector_iterator& Other) const {return Other._mptr > _mptr;}
+		bool operator>(const vector_iterator& Other) const;
 
-		bool operator>(const vector_iterator& Other) const {return Other._mptr < _mptr;}
+		bool operator<=(const vector_iterator& Other) const;
 
-		bool operator<=(const vector_iterator& Other) const {return Other._mptr >= _mptr;}
+		bool operator>=(const vector_iterator& Other) const;
 
-		bool operator>=(const vector_iterator& Other) const {return Other._mptr <= _mptr;}
+		reference operator[](const ssize_t n)const;
 
-		reference operator[](const ssize_t n)const {
-			return(_mptr[n]);}
+		vector_iterator&	operator++();
+		vector_iterator	operator++(int);
+		vector_iterator &operator+=(const ssize_t n);
+		vector_iterator operator+(const ssize_t n)const;
 
-		vector_iterator&	operator++() {
-			++_mptr;
-			return(*this);}
+		vector_iterator&	operator--();
+		vector_iterator	operator--(int);
+		vector_iterator &operator-=(const ssize_t n);
+		vector_iterator operator-(const ssize_t n)const;
 
-		vector_iterator	operator++(int) {
-			vector_iterator Old(*this);
-			++(this->_mptr);
-			return(Old);}
-
-		vector_iterator &operator+=(const ssize_t n){
-			_mptr += n;
-			return *this;}
-
-		vector_iterator operator+(const ssize_t n)const {
-			vector_iterator it(*this);
-			if (n < 0)
-				for (ssize_t i = 0; i > n; i--)
-					it--;
-			else
-				for (ssize_t i = 0; i < n; i++)
-					it++;
-			return (it);}
-
-		vector_iterator&	operator--(){
-			--_mptr;
-			return(*this);}
-
-		vector_iterator	operator--(int){
-			vector_iterator Old(*this);
-			this->_mptr--;
-			return(Old);}
-
-		vector_iterator &operator-=(const ssize_t n){
-			_mptr -= n;
-			return *this;}
-
-		vector_iterator operator-(ssize_t n)const {
-			vector_iterator it(*this);
-			if (n > 0)
-				for (ssize_t i = 0; i < n; i++)
-					it--;
-			else
-				for (ssize_t i = 0; i > n; i--)
-					it++;
-			return (it);}
-
-		Distance	operator-(vector_iterator it)const {
-			return (this->_mptr - it._mptr);
-		}
+		difference_type	operator-(vector_iterator it)const;
 
 		friend vector_iterator operator+(int nb,const vector_iterator& it) {
 			vector_iterator New(it);
@@ -109,6 +68,8 @@ class vector_iterator : public ft::iterator<Category, T>
 			return (New -= nb);
 		}
 };
+
+#include "vector_iterator.cpp"
 
 //   template<typename _IteratorL, typename _IteratorR, typename _Container>
 //     inline bool

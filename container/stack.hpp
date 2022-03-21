@@ -2,59 +2,58 @@
 #define STACK_HPP
 #include "vector.hpp"
 
-
 namespace ft
 {
 	template<class T, class Container = ft::vector<T> >
 	class stack
 	{
 		public: // ALiases
-		typedef Container container_type;
-		typedef typename container_type::value_type value_type;
-		typedef typename container_type::size_type size_type;
-		typedef typename container_type::reference reference;
-		typedef typename container_type::const_reference const_reference;
+		typedef Container									container_type;
+		typedef typename container_type::value_type			value_type;
+		typedef typename container_type::size_type			size_type;
+		typedef typename container_type::reference			reference;
+		typedef typename container_type::const_reference	const_reference;
 
 		protected:
-		container_type _Container;
+		container_type c;
 
 		public:
 
 		// * Constructors
 
-		explicit stack( const Container& cont = Container() ):_Container(cont){}
-		stack(const stack& other):_Container(other._Container){};
+		explicit stack( const Container& cont = Container() );
+		stack(const stack& other);
 
-		~stack(){}
+		~stack();
 
-		stack& operator=( const stack& other ){_Container = other._Container;return *this;};
+		stack& operator=( const stack& other );
 
 		// * Element Access
 
-		reference top(){return _Container.back();}
-		const_reference top()const {return _Container.back();}
+		reference top();
+		const_reference top()const;
 
 		// * Capacity
 
-		bool empty()const {return _Container.empty();}
-		size_type size() const{return _Container.size();}
+		bool empty()const;
+		size_type size() const;
 
 		// * Modifiers
 
-		void push(const value_type& value){_Container.push_back(value);}
+		void push(const value_type& value);
 
-		void pop(){_Container.pop_back();}
+		void pop();
 
 		// * Operators
 
-		friend bool operator==(const stack& lhs, const stack& rhs){return lhs._Container == rhs._Container;}
-		friend bool operator!=(const stack& lhs, const stack& rhs){return lhs._Container != rhs._Container;}
-		friend bool operator<(const stack& lhs, const stack& rhs){return lhs._Container < rhs._Container;}
-		friend bool operator<=(const stack& lhs, const stack& rhs){return lhs._Container <= rhs._Container;}
-		friend bool operator>(const stack& lhs, const stack& rhs){return lhs._Container > rhs._Container;}
-		friend bool operator>=(const stack& lhs, const stack& rhs){return lhs._Container >= rhs._Container;}
+		friend bool operator==(const stack& lhs, const stack& rhs){return lhs.c == rhs.c;}
+		friend bool operator!=(const stack& lhs, const stack& rhs){return lhs.c != rhs.c;}
+		friend bool operator<(const stack& lhs, const stack& rhs){return lhs.c < rhs.c;}
+		friend bool operator<=(const stack& lhs, const stack& rhs){return lhs.c <= rhs.c;}
+		friend bool operator>(const stack& lhs, const stack& rhs){return lhs.c > rhs.c;}
+		friend bool operator>=(const stack& lhs, const stack& rhs){return lhs.c >= rhs.c;}
 	};
 };
-
+#include "stack.cpp"
 
 #endif

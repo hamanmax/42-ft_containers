@@ -56,20 +56,12 @@ namespace ft
 			T1 first;
 			T2 second;
 
-			pair() : first(), second() {};
-			pair(const T1& a, const T2& b) : first(a), second(b) {};
+			pair();
+			pair(const T1& a, const T2& b);
 			template<class U,class V>
 			pair(const pair<U, V>& copy) : first(copy.first), second(copy.second) {};
-			pair& operator=(const pair& assign)
-			{
-				if (this != &assign)
-				{
-					first = assign.first;
-					second = assign.second;
-				}
-				return (*this);
-			}
-			~pair() {};
+			pair& operator=(const pair& assign);
+			~pair();
 
 			friend bool operator==(const pair& lhs, const pair& rhs){
 				return ((lhs.first == rhs.first and lhs.second == rhs.second));}
@@ -103,10 +95,21 @@ namespace ft
 		return pair<T1,T2>(t,u);
 	}
 
+	template <class Ite>
+	size_t	itlen(Ite first, Ite last) {
+	size_t	i = 0;
+	while (first != last){
+		++first;
+		++i;
+	}
+	return (i);
+	}
+
 	template <class T>
-	void swap ( T& a, T& b )
-	{
-		T c(a); a=b; b=c;
+	void swap ( T& a, T& b ){
+		T c(a);
+		a=b;
+		b=c;
 	}
 
 	template <bool B>
@@ -151,4 +154,5 @@ namespace ft
 
 } // namespace ft
 
+#include "utility.cpp"
 #endif

@@ -428,7 +428,7 @@ void test_map_key_comp(){
 }
 
 void test_map_value_comp(){
-	std::cout << endl << BOLD << UNDERLINE << "Testing member function value comp :" << END << std::endl;
+	std::cout << std::endl << BOLD << UNDERLINE << "Testing member function value comp :" << END << std::endl;
 	ismap m_lesser;
 	NAMESPACE::map<double,double,std::greater<double> > m_greater;
 	ispair p(4,"Bonjour");

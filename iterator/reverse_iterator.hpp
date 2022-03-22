@@ -47,7 +47,7 @@ class reverse_iterator{
 		friend inline reverse_iterator::difference_type operator-( const reverse_iterator& lhs, const reverse_iterator& rhs ) {return rhs.base() -lhs.base();}
 };
 
-	#include "reverse_iterator.cpp"
+	#include "reverse_iterator.tpp"
 
 	template<typename Iterator>
 	bool operator==(const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs)

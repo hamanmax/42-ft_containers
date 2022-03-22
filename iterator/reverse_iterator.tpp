@@ -23,11 +23,11 @@ ft::reverse_iterator<Ite>::operator->()const {
 	return &(operator*());}
 
 template <class Ite>
-typename ft::reverse_iterator<Ite>::reverse_iterator &
+class ft::reverse_iterator<Ite>::reverse_iterator &
 ft::reverse_iterator<Ite>::operator++(){--current; return *this;}
 
 template <class Ite>
-typename ft::reverse_iterator<Ite>::reverse_iterator
+class ft::reverse_iterator<Ite>::reverse_iterator
 ft::reverse_iterator<Ite>::operator++(int){
 	reverse_iterator tmp = *this;
 	--current;
@@ -35,11 +35,11 @@ ft::reverse_iterator<Ite>::operator++(int){
 }
 
 template <class Ite>
-typename ft::reverse_iterator<Ite>::reverse_iterator &
+class ft::reverse_iterator<Ite>::reverse_iterator &
 ft::reverse_iterator<Ite>::operator--(){++current; return *this;}
 
 template <class Ite>
-typename ft::reverse_iterator<Ite>::reverse_iterator
+class ft::reverse_iterator<Ite>::reverse_iterator
 ft::reverse_iterator<Ite>::operator--(int){
 	reverse_iterator tmp = *this;
 	++current;
@@ -47,25 +47,25 @@ ft::reverse_iterator<Ite>::operator--(int){
 }
 
 template <class Ite>
-typename ft::reverse_iterator<Ite>::reverse_iterator
+class ft::reverse_iterator<Ite>::reverse_iterator
 ft::reverse_iterator<Ite>::operator+(difference_type n) const{
 	return reverse_iterator(current - n);
 }
 
 template <class Ite>
-typename ft::reverse_iterator<Ite>::reverse_iterator
+class ft::reverse_iterator<Ite>::reverse_iterator
 ft::reverse_iterator<Ite>::operator-(difference_type n) const{
 	return reverse_iterator(current + n);
 }
 
 template <class Ite>
-typename ft::reverse_iterator<Ite>::reverse_iterator &
+class ft::reverse_iterator<Ite>::reverse_iterator &
 ft::reverse_iterator<Ite>::operator+=(difference_type n){
 	current -= n; return *this;
 }
 
 template <class Ite>
-typename ft::reverse_iterator<Ite>::reverse_iterator &
+class ft::reverse_iterator<Ite>::reverse_iterator &
 ft::reverse_iterator<Ite>::operator-=(difference_type n){
 	current += n; return *this;
 }

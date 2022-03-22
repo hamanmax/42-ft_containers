@@ -27,7 +27,7 @@ tree.deleteNode(tree.getRoot());
 }
 
 template<class Key, class T,class Compare,class Allocator>
-typename ft::map<Key, T,Compare,Allocator>::map&
+class ft::map<Key, T,Compare,Allocator>::map&
 ft::map<Key,T,Compare,Allocator>::operator=(const map& other){
 	this->clear();
 	allocator = other.allocator;
@@ -64,7 +64,7 @@ ft::map<Key,T,Compare,Allocator>::operator[](const Key& key){
 	node<Key,T,Compare> *tmp = tree.searchAt(key);
 	if (tmp)
 return tmp->val.second;
-	value_type val = ft::pair<key_type,mapped_type>(key,mapped_type());
+	value_type val = ft::make_pair<key_type,mapped_type>(key,mapped_type());
 	return tree.insert(val)->val.second;
 }
 
@@ -149,8 +149,8 @@ ft::pair<typename ft::map<Key,T,Compare,Allocator>::iterator, bool>
 ft::map<Key,T,Compare,Allocator>::insert( const value_type& value){
 	node<Key,T> *n = tree.insert(value);
 	if (n == NULL)
-return (ft::pair<iterator, bool>(iterator(tree.search(value.first),tree.getDummy()),false));
-	return (ft::pair<iterator, bool>(iterator(n,tree.getDummy()),true));
+return (ft::make_pair<iterator, bool>(iterator(tree.search(value.first),tree.getDummy()),false));
+	return (ft::make_pair<iterator, bool>(iterator(n,tree.getDummy()),true));
 }
 
 template<class Key, class T,class Compare,class Allocator>
@@ -171,13 +171,8 @@ ft::map<Key,T,Compare,Allocator>::erase(iterator pos){
 template<class Key, class T,class Compare,class Allocator>
 void
 ft::map<Key,T,Compare,Allocator>::erase(iterator first, iterator last){
-	size_type i = 0;
-	for (iterator tmp = first; tmp != last;tmp++,i++){}
-	Key range[i] ;
-	for (size_type j = 0; j < i;j++,first++){range[j] = first->first;}
-	for (size_type j = 0; j < i;j++){
-tree.deleteByVal(range[j]);
-	}
+	while (first != last)
+	tree.deleteNode((first++).getptr());
 }
 
 template<class Key, class T,class Compare,class Allocator>
@@ -238,13 +233,13 @@ return (end());
 template<class Key, class T,class Compare,class Allocator>
 ft::pair<typename ft::map<Key,T,Compare,Allocator>::iterator, typename ft::map<Key,T,Compare,Allocator>::iterator>
 ft::map<Key,T,Compare,Allocator>::equal_range(const Key& key){
-	return ft::pair<iterator, iterator>(lower_bound(key), upper_bound(key));
+	return ft::make_pair<iterator, iterator>(lower_bound(key), upper_bound(key));
 }
 
 template<class Key, class T,class Compare,class Allocator>
 ft::pair<typename ft::map<Key,T,Compare,Allocator>::const_iterator, typename ft::map<Key,T,Compare,Allocator>::const_iterator>
 ft::map<Key,T,Compare,Allocator>::equal_range(const Key& key)const {
-	return ft::pair<const_iterator, const_iterator>(lower_bound(key), upper_bound(key));
+	return ft::make_pair<const_iterator, const_iterator>(lower_bound(key), upper_bound(key));
 }
 
 template<class Key, class T,class Compare,class Allocator>

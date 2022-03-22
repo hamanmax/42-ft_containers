@@ -110,6 +110,6 @@ class RBTree {
 
 };
 
-#include "red_black_tree.cpp"
+#include "red_black_tree.tpp"
 
 #endif

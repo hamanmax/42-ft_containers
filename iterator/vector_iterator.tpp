@@ -7,7 +7,10 @@ template<class T,class P,class R,class C,class D>
 vector_iterator<T,P,R,C,D>::vector_iterator(pointer ptr):_mptr(ptr){}
 
 template<class T,class P,class R,class C,class D>
-typename vector_iterator<T,P,R,C,D>::vector_iterator &
+vector_iterator<T,P,R,C,D>::vector_iterator(const vector_iterator  & copy):_mptr(copy.getptr()){}
+
+template<class T,class P,class R,class C,class D>
+class vector_iterator<T,P,R,C,D>::vector_iterator &
 vector_iterator<T,P,R,C,D>::operator=(vector_iterator const & op) {
 	_mptr = op.getptr();
 	return *this;
@@ -49,25 +52,25 @@ vector_iterator<T,P,R,C,D>::operator!=(const vector_iterator& Other) const {
 template<class T,class P,class R,class C,class D>
 bool
 vector_iterator<T,P,R,C,D>::operator<(const vector_iterator& Other) const {
-	return Other._mptr > _mptr;
+	return (Other._mptr > _mptr);
 }
 
 template<class T,class P,class R,class C,class D>
 bool
 vector_iterator<T,P,R,C,D>::operator>(const vector_iterator& Other) const {
-	return Other._mptr < _mptr;
+	return (Other._mptr < _mptr);
 }
 
 template<class T,class P,class R,class C,class D>
 bool
 vector_iterator<T,P,R,C,D>::operator<=(const vector_iterator& Other) const {
-	return Other._mptr >= _mptr;
+	return (Other._mptr >= _mptr);
 }
 
 template<class T,class P,class R,class C,class D>
 bool
 vector_iterator<T,P,R,C,D>::operator>=(const vector_iterator& Other) const {
-	return Other._mptr <= _mptr;
+	return (Other._mptr <= _mptr);
 }
 
 template<class T,class P,class R,class C,class D>
@@ -76,14 +79,14 @@ vector_iterator<T,P,R,C,D>::operator[](const ssize_t n)const {
 return(_mptr[n]);}
 
 template<class T,class P,class R,class C,class D>
-typename vector_iterator<T,P,R,C,D>::vector_iterator&
+class vector_iterator<T,P,R,C,D>::vector_iterator&
 vector_iterator<T,P,R,C,D>::operator++() {
 ++_mptr;
 return(*this);
 }
 
 template<class T,class P,class R,class C,class D>
-typename vector_iterator<T,P,R,C,D>::vector_iterator
+class vector_iterator<T,P,R,C,D>::vector_iterator
 vector_iterator<T,P,R,C,D>::operator++(int) {
 vector_iterator Old(*this);
 ++(this->_mptr);
@@ -91,14 +94,14 @@ return(Old);
 }
 
 template<class T,class P,class R,class C,class D>
-typename vector_iterator<T,P,R,C,D>::vector_iterator&
+class vector_iterator<T,P,R,C,D>::vector_iterator&
 vector_iterator<T,P,R,C,D>::operator+=(const ssize_t n) {
 	_mptr += n;
 	return *this;
 }
 
 template<class T,class P,class R,class C,class D>
-typename vector_iterator<T,P,R,C,D>::vector_iterator
+class vector_iterator<T,P,R,C,D>::vector_iterator
 vector_iterator<T,P,R,C,D>::operator+(const ssize_t n)const {
 vector_iterator it(*this);
 	if (n < 0)
@@ -111,14 +114,14 @@ vector_iterator it(*this);
 }
 
 template<class T,class P,class R,class C,class D>
-typename vector_iterator<T,P,R,C,D>::vector_iterator&
+class vector_iterator<T,P,R,C,D>::vector_iterator&
 vector_iterator<T,P,R,C,D>::operator--() {
 --_mptr;
 return(*this);
 }
 
 template<class T,class P,class R,class C,class D>
-typename vector_iterator<T,P,R,C,D>::vector_iterator
+class vector_iterator<T,P,R,C,D>::vector_iterator
 vector_iterator<T,P,R,C,D>::operator--(int) {
 vector_iterator Old(*this);
 --(this->_mptr);
@@ -126,14 +129,14 @@ return(Old);
 }
 
 template<class T,class P,class R,class C,class D>
-typename vector_iterator<T,P,R,C,D>::vector_iterator&
+class vector_iterator<T,P,R,C,D>::vector_iterator&
 vector_iterator<T,P,R,C,D>::operator-=(const ssize_t n) {
 	_mptr -= n;
 	return *this;
 }
 
 template<class T,class P,class R,class C,class D>
-typename vector_iterator<T,P,R,C,D>::vector_iterator
+class vector_iterator<T,P,R,C,D>::vector_iterator
 vector_iterator<T,P,R,C,D>::operator-(const ssize_t n) const{
 			vector_iterator it(*this);
 			if (n > 0)

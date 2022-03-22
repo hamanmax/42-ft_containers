@@ -16,7 +16,7 @@ template <class T,class Container>
 typename ft::stack<T,Container>::const_reference ft::stack<T,Container>::top() const {return c.back();}
 
 template <class T,class Container>
-typename ft::stack<T,Container>::stack& ft::stack<T,Container>::operator=( const stack& other){c = other.c;return *this;}
+class ft::stack<T,Container>::stack& ft::stack<T,Container>::operator=( const stack& other){c = other.c;return *this;}
 
 template <class T,class Container>
 bool ft::stack<T,Container>::empty()const {return c.empty();}

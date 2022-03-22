@@ -24,7 +24,7 @@ node<Key,T,comp,pair>::node(node const & copy): val(copy.val) {
 }
 
 template<class Key,class T,class comp,class pair>
-typename node<Key,T,comp,pair>::node &
+class node<Key,T,comp,pair>::node &
 node<Key,T,comp,pair>::operator=(node const & assign){
 	this = assign;
 	return *this;
@@ -34,7 +34,7 @@ template<class Key,class T,class comp,class pair>
 node<Key,T,comp,pair>::~node(){}
 
 template<class Key,class T,class comp,class pair>
-typename node<Key,T,comp,pair>::node *
+class node<Key,T,comp,pair>::node *
 node<Key,T,comp,pair>::uncle(){
 	// If no parent or grandparent, then no uncle
 	if (parent == NULL or parent->parent == NULL)
@@ -55,7 +55,7 @@ node<Key,T,comp,pair>::isOnLeft() {
 }
 
 template<class Key,class T,class comp,class pair>
-typename node<Key,T,comp,pair>::node *
+class node<Key,T,comp,pair>::node *
 node<Key,T,comp,pair>::sibling() {
 	// sibling null if no parent
 	if (parent == NULL)

@@ -58,6 +58,7 @@ namespace ft
 
 			pair();
 			pair(const T1& a, const T2& b);
+			pair(const pair& copy);
 			template<class U,class V>
 			pair(const pair<U, V>& copy) : first(copy.first), second(copy.second) {};
 			pair& operator=(const pair& assign);
@@ -154,5 +155,5 @@ namespace ft
 
 } // namespace ft
 
-#include "utility.cpp"
+#include "utility.tpp"
 #endif

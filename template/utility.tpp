@@ -7,7 +7,10 @@ template<typename T1, typename T2>
 ft::pair<T1, T2>::pair(const T1& a, const T2& b): first(a), second(b) {}
 
 template<typename T1, typename T2>
-typename ft::pair<T1, T2>::pair&
+ft::pair<T1, T2>::pair(const pair& copy): first(copy.first), second(copy.second) {}
+
+template<typename T1, typename T2>
+struct ft::pair<T1, T2>::pair&
 ft::pair<T1, T2>::operator=(const pair& assign){
 	if (this != &assign)
 	{

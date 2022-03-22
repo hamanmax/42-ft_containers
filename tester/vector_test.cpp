@@ -50,8 +50,6 @@ void test_vector_iterator_int(std::string str[4]){
 	ftvector::const_iterator cit = t.begin(),cite = t.end() - 1;
 	ftvector::reverse_iterator rit = t.rbegin(),rite = t.rend() - 1;
 	ftvector::const_reverse_iterator crit = t.rbegin(), crite = t.rend() - 1;
-	ismap::reverse_iterator mrit;
-	ismap::const_reverse_iterator mcrit;
 	std::cout << "Testing vector_iterator with a vector<int> range of 50 elements :" << std::endl;
 	print_vector_iterator_operators<ftvector::iterator >(str[0],it,ite);
 	std::cout << std::endl << "Testing const_vector_iterator with a vector<int> range of 50 elements :" << std::endl;
@@ -61,7 +59,6 @@ void test_vector_iterator_int(std::string str[4]){
 	std::cout << std::endl << "Testing const_reverse_vector_iterator with a vector<int> range of 50 elements :" << std::endl;
 	print_vector_iterator_operators<ftvector::const_reverse_iterator >(str[3],crit,crite);
 	std::cout << std::endl << END;
-	print_operators("Iterator.",(ftvector::iterator(t.begin())),(ftvector::iterator(t3.begin())));
 }
 
 void test_vector_iterator_string(std::string str[4]){
@@ -95,6 +92,30 @@ void test_vector_iterator_string(std::string str[4]){
 	print_operators("Iterator.",*(ftvector::iterator(t.begin())),*(ftvector::iterator(t3.begin())));
 }
 
+void test_iterator_const(){
+	std::cout << std::endl << BOLD << LIGHTBLUE << "Testing vector and map iterators const comparison" << END << std::endl;
+	ivector t(15,100);
+	ismap m;
+	m.insert(ispair(15,"Bonjour"));
+
+	ismap::iterator mit = m.begin();
+	ismap::const_iterator mcit = m.begin();
+	ismap::reverse_iterator mrit = m.rbegin();
+	ismap::const_reverse_iterator mcrit = m.rbegin();
+
+	ivector::iterator it = t.begin();
+	ivector::const_iterator cit = t.begin();
+	ivector::reverse_iterator rit = t.rbegin();
+	ivector::const_reverse_iterator crit = t.rbegin();
+	if (cit == it)
+		std::cout << "vector const iterator and iterator can compare" << END << std::endl;
+	if (crit == rit)
+		std::cout << "vector const reverse iterator and reverse iterator can compare" << END << std::endl;
+	if (mcit == mit)
+		std::cout << "map const iterator and iterator can compare" << END << std::endl;
+	if (mcrit == mrit)
+		std::cout << "map const reverse iterator and reverse iterator can compare" << END << std::endl;
+}
 
 void test_vector_iterators(){
 	std::cout << std::endl << BOLD << LIGHTBLUE << "Testing vector's iterators" << END << std::endl;
@@ -105,6 +126,7 @@ void test_vector_iterators(){
 	std::string cpstr[4]; cpstr[0] = str; cpstr[1] = str2; cpstr[2] = str3; cpstr[3] = str4;
 	test_vector_iterator_int(cpstr);
 	test_vector_iterator_string(cpstr);
+	test_iterator_const();
 }
 
 void test_vector_clear(){

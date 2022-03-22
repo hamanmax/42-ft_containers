@@ -54,6 +54,6 @@ namespace ft
 		friend bool operator>=(const stack& lhs, const stack& rhs){return lhs.c >= rhs.c;}
 	};
 };
-#include "stack.cpp"
+#include "stack.tpp"
 
 #endif

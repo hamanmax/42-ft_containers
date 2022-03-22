@@ -1,6 +1,7 @@
 #ifndef VECTOR_ITERATOR_HPP
 #define VECTOR_ITERATOR_HPP
 #include "iterator.hpp"
+#include <unistd.h>
 
 template<
 			class T,
@@ -23,6 +24,7 @@ class vector_iterator : public ft::iterator<Category, T>
 		vector_iterator(pointer ptr);
 		vector_iterator();
 		vector_iterator & operator=(vector_iterator const & op);
+		vector_iterator( const vector_iterator  & copy);
 		template<typename U>
 		vector_iterator( const vector_iterator<U>  & copy) {_mptr = copy.getptr();}
 		~vector_iterator();
@@ -69,20 +71,7 @@ class vector_iterator : public ft::iterator<Category, T>
 		}
 };
 
-#include "vector_iterator.cpp"
-
-//   template<typename _IteratorL, typename _IteratorR, typename _Container>
-//     inline bool
-//     operator==(const vector_iterator<_IteratorL, _Container>& __lhs,
-//                const vector_iterator<_IteratorR, _Container>& __rhs)
-//     _GLIBCXX_NOEXCEPT
-//     { return __lhs == __rhs; }
-//   template<typename _Iterator, typename _Container>
-//     inline bool
-//     operator==(const vector_iterator<_Iterator, _Container>& __lhs,
-//                const vector_iterator<_Iterator, _Container>& __rhs)
-//     _GLIBCXX_NOEXCEPT
-//     { return __lhs == __rhs; }
+#include "vector_iterator.tpp"
 //   template<typename _IteratorL, typename _IteratorR, typename _Container>
 //     inline bool
 //     operator!=(const vector_iterator<_IteratorL, _Container>& __lhs,

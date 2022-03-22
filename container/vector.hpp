@@ -236,5 +236,7 @@ friend bool	operator>=(const vector& lhs, const vector& rhs){return (!(lhs < rhs
 template<class T,class Alloc>
 void swap(vector<T,Alloc>& x,vector<T,Alloc>& y){x.swap(y);}
 }
-#include "vector.cpp"
+
+#include "vector.tpp"
+
 #endif

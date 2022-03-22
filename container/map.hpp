@@ -173,6 +173,6 @@ namespace ft
 	};
 };
 
-#include "map.cpp"
+#include "map.tpp"
 
 #endif

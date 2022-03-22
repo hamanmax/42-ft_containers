@@ -10,7 +10,7 @@ template<class T,class m,class C,class P,class R,class Ca>
 map_iterator<T,m,C,P,R,Ca>::map_iterator():_comp(C()),_mptr(0),_dummy(0){}
 
 template<class T,class m,class C,class P,class R,class Ca>
-typename map_iterator<T,m,C,P,R,Ca>::map_iterator &
+class map_iterator<T,m,C,P,R,Ca>::map_iterator &
 map_iterator<T,m,C,P,R,Ca>::operator=(map_iterator const & copy){
 	_comp = copy.getcompare();
 	_mptr = copy.getptr();
@@ -82,7 +82,7 @@ map_iterator<T,m,C,P,R,Ca>::Maximum(){
 	}
 
 template<class T,class m,class C,class P,class R,class Ca>
-typename map_iterator<T,m,C,P,R,Ca>::map_iterator&
+class map_iterator<T,m,C,P,R,Ca>::map_iterator&
 map_iterator<T,m,C,P,R,Ca>::operator++(){
 		node_pointer OldPtr = _mptr;
 		node_pointer NewPtr = NULL;
@@ -107,7 +107,7 @@ map_iterator<T,m,C,P,R,Ca>::operator++(){
 	}
 
 template<class T,class m,class C,class P,class R,class Ca>
-typename map_iterator<T,m,C,P,R,Ca>::map_iterator
+class map_iterator<T,m,C,P,R,Ca>::map_iterator
 map_iterator<T,m,C,P,R,Ca>::operator++(int){
 		map_iterator Ret(*this);
 		node_pointer OldPtr = _mptr;
@@ -134,7 +134,7 @@ map_iterator<T,m,C,P,R,Ca>::operator++(int){
 	}
 
 template<class T,class m,class C,class P,class R,class Ca>
-typename map_iterator<T,m,C,P,R,Ca>::map_iterator&
+class map_iterator<T,m,C,P,R,Ca>::map_iterator&
 map_iterator<T,m,C,P,R,Ca>::operator--(){
 		node_pointer OldPtr = _mptr;
 		node_pointer NewPtr = NULL;
@@ -165,7 +165,7 @@ map_iterator<T,m,C,P,R,Ca>::operator--(){
 	}
 
 template<class T,class m,class C,class P,class R,class Ca>
-typename map_iterator<T,m,C,P,R,Ca>::map_iterator
+class map_iterator<T,m,C,P,R,Ca>::map_iterator
 map_iterator<T,m,C,P,R,Ca>::operator--(int){
 		map_iterator Ret(*this);
 		node_pointer OldPtr = _mptr;

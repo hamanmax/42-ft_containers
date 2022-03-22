@@ -57,5 +57,5 @@ public:
 	map_iterator operator--(int);
 };
 
-#include "map_iterator.cpp"
+#include "map_iterator.tpp"
 #endif

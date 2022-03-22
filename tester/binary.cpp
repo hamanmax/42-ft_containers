@@ -3,8 +3,8 @@
 #include <cstdlib>
 #ifndef NAMESPACE
 #define NAMESPACE ft
-
 #endif
+#define RAND_MAX 2147483647
 int main()
 {
 	ft::pair<const int,double> pair(12,25);
@@ -17,7 +17,7 @@ int main()
 	std::cout << "The important part of performance for a map is the insertion,the deletion and the search" << std::endl;
 	std::cout << "for the first test i'll create 1 millions of randoms keys object" << std::endl;
 	clock_gettime(CLOCK_PROCESS_CPUTIME_ID,&ts1);
-	for (int i=1; i< 1000000;i++){t.insert(ispair(i,std::string("Bonjour")));}
+	for (int i=0; i< 1000000;i++){t.insert(ispair(rand(),std::string("Bonjour")));}
 	//for (int i=0; i< 1000000;i++){t.insert(ispair(rand(),std::string("Bonjour")));}
 	struct timespec ts2;
 	clock_gettime(CLOCK_PROCESS_CPUTIME_ID,&ts2);
@@ -33,12 +33,12 @@ int main()
 	std::cout << "time elapsed: " << result << " ms" << std::endl;
 	std::cout << "for the second test i'll delete the key from two differente ways" << std::endl;
 	clock_gettime(CLOCK_PROCESS_CPUTIME_ID,&ts1);
-	t.clear();
+	t2.clear();
 	clock_gettime(CLOCK_PROCESS_CPUTIME_ID,&ts2);
 	result = 1000.0*ts2.tv_sec + 1e-6*ts2.tv_nsec - (1000.0*ts1.tv_sec + 1e-6*ts1.tv_nsec);
 	std::cout << "time elapsed for the clear function: " << result << " ms" << std::endl;
 	clock_gettime(CLOCK_PROCESS_CPUTIME_ID,&ts1);
-	t2.erase(t2.begin(),t2.end());
+	t.erase(t.begin(),--t.end());
 	clock_gettime(CLOCK_PROCESS_CPUTIME_ID,&ts2);
 	result = 1000.0*ts2.tv_sec + 1e-6*ts2.tv_nsec - (1000.0*ts1.tv_sec + 1e-6*ts1.tv_nsec);
 	std::cout << "time elapsed for the erase function: " << result << " ms" << std::endl;
@@ -74,17 +74,6 @@ int main()
 	ivector v3(v2);
 	result = 1000.0*ts2.tv_sec + 1e-6*ts2.tv_nsec - (1000.0*ts1.tv_sec + 1e-6*ts1.tv_nsec);
 	std::cout << "time elapsed: " << result << " ms" << std::endl;
-	std::cout << "for the second test i'll delete the key from two differente ways" << std::endl;
-	clock_gettime(CLOCK_PROCESS_CPUTIME_ID,&ts1);
-	v.clear();
-	clock_gettime(CLOCK_PROCESS_CPUTIME_ID,&ts2);
-	result = 1000.0*ts2.tv_sec + 1e-6*ts2.tv_nsec - (1000.0*ts1.tv_sec + 1e-6*ts1.tv_nsec);
-	std::cout << "time elapsed for the clear function: " << result << " ms" << std::endl;
-	clock_gettime(CLOCK_PROCESS_CPUTIME_ID,&ts1);
-	v2.erase(v2.begin(),--v2.end());
-	clock_gettime(CLOCK_PROCESS_CPUTIME_ID,&ts2);
-	result = 1000.0*ts2.tv_sec + 1e-6*ts2.tv_nsec - (1000.0*ts1.tv_sec + 1e-6*ts1.tv_nsec);
-	std::cout << "time elapsed for the erase function: " << result << " ms" << std::endl;
 	std::cout << "For the last test i will access to elements of the map" << std::endl;
 	clock_gettime(CLOCK_PROCESS_CPUTIME_ID,&ts1);
 	v3.at(0);

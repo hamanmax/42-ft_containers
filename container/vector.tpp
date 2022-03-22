@@ -46,7 +46,7 @@ ft::vector<T,Alloc>::~vector() {
 }
 
 template<class T,class Alloc>
-typename ft::vector<T,Alloc>::vector& ft::vector<T,Alloc>::operator=(vector const & op){
+class ft::vector<T,Alloc>::vector& ft::vector<T,Alloc>::operator=(vector const & op){
 	if (op.size() > capacity()){
 		for (iterator it = begin(); it != end(); ++it)
 			_alloc.destroy(&(*it));
@@ -248,13 +248,7 @@ void ft::vector<T,Alloc>::insert(iterator pos, size_type count, const_reference 
 
 template <class T,class Alloc>
 typename ft::vector<T,Alloc>::iterator ft::vector<T,Alloc>::erase(iterator pos){
-	if (pos != end())
-	{
-		ft::swap(*pos,*(end() - 1));
-		pop_back();
-		return pos;
-	}
-	return end();
+	return (this->erase(pos, pos + 1));
 }
 
 template<class T,class Alloc>
@@ -270,7 +264,8 @@ typename ft::vector<T,Alloc>::iterator ft::vector<T,Alloc>::erase(iterator first
 	}
 	while (deleted-- > 0)
 	{
-		this->_alloc.destroy(&(*--end));
+		pointer ptr = --_end;
+		_alloc.destroy(ptr);
 	}
 	return (tmp);
 }

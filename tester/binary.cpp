@@ -4,7 +4,6 @@
 #ifndef NAMESPACE
 #define NAMESPACE ft
 #endif
-#define RAND_MAX 2147483647
 int main()
 {
 	ft::pair<const int,double> pair(12,25);

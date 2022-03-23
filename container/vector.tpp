@@ -229,12 +229,11 @@ void ft::vector<T,Alloc>::insert(iterator pos, size_type count, const_reference 
 	size_type spos = 0;
 	if (count == 0){return ;}
 	for (iterator i = begin(); i != pos;i++,spos++){}
-	if (size() + count > capacity() * 2)
-		reserve(capacity() + count);
-	else if (size() + count > capacity() && capacity() > count * 2)
-		reserve(capacity() + count * 2);
-	else if (size() + count > capacity() && capacity() != 0)
+	if (size() + count > capacity() && capacity() != 0)
+	{
+		while (size() + count > capacity() && capacity() != 0)
 		reserve(capacity() * 2);
+	}
 	else if (capacity() == 0)
 		reserve(count);
 	for (size_type i = size() + count - 1; i > spos + count - 1; i-- )

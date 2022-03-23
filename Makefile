@@ -4,7 +4,7 @@ FLAG = -Wall -Wextra -Werror
 
 FLAGSTD = -std=c++98
 
-CXX = clang++
+CXX = c++
 
 SHELL = bash
 

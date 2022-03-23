@@ -138,20 +138,21 @@ vector_iterator<T,P,R,C,D>::operator-=(const ssize_t n) {
 template<class T,class P,class R,class C,class D>
 class vector_iterator<T,P,R,C,D>::vector_iterator
 vector_iterator<T,P,R,C,D>::operator-(const ssize_t n) const{
-			vector_iterator it(*this);
-			if (n > 0)
-				for (ssize_t i = 0; i < n; i++)
-					it--;
-			else
-				for (ssize_t i = 0; i > n; i--)
-					it++;
-			return (it);}
+	vector_iterator it(*this);
+	if (n > 0)
+		for (ssize_t i = 0; i < n; i++)
+			it--;
+	else
+		for (ssize_t i = 0; i > n; i--)
+			it++;
+	return (it);
+}
 
 template<class T,class P,class R,class C,class D>
 typename vector_iterator<T,P,R,C,D>::difference_type
 vector_iterator<T,P,R,C,D>::operator-(vector_iterator it) const {
-			return (this->_mptr - it._mptr);
-		}
+	return (this->_mptr - it._mptr);
+}
 
 
 

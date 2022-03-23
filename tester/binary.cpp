@@ -17,7 +17,6 @@ int main()
 	std::cout << "for the first test i'll create 1 millions of randoms keys object" << std::endl;
 	clock_gettime(CLOCK_PROCESS_CPUTIME_ID,&ts1);
 	for (int i=0; i< 1000000;i++){t.insert(ispair(rand(),std::string("Bonjour")));}
-	//for (int i=0; i< 1000000;i++){t.insert(ispair(rand(),std::string("Bonjour")));}
 	struct timespec ts2;
 	clock_gettime(CLOCK_PROCESS_CPUTIME_ID,&ts2);
 	double result = 1000.0*ts2.tv_sec + 1e-6*ts2.tv_nsec - (1000.0*ts1.tv_sec + 1e-6*ts1.tv_nsec);

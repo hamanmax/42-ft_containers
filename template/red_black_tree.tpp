@@ -139,53 +139,49 @@ RBTree<Key,T,Comp>::maximum()const {
 	return n;
 }
 
-template<class Key,class T,class Comp>
-void
-RBTree<Key,T,Comp>::swapPtr(node_pointer v,node_pointer u)
-	{
-		node_pointer vparent = v->parent;
-		node_pointer vleft = v->left;
-		node_pointer vright = v->right;
-		node_pointer uparent = u->parent;
-		node_pointer uleft = u->left;
-		node_pointer uright = u->right;
-		std::cout << v << " | " << u << std::endl;
-		print_tree(this->root,0);
-		if (vleft)
-		vleft->parent = u;
-		if (vright)
-		vright->parent = u;
-		if (vparent && vparent->left == v)
-			vparent->left = u;
-		else if (vparent)
-			vparent->right = u;
+// template<class Key,class T,class Comp>
+// void
+// RBTree<Key,T,Comp>::swapPtr(node_pointer v,node_pointer u)
+// 	{
+// 		node_pointer vparent = v->parent;
+// 		node_pointer vleft = v->left;
+// 		node_pointer vright = v->right;
+// 		node_pointer uparent = u->parent;
+// 		node_pointer uleft = u->left;
+// 		node_pointer uright = u->right;
+// 		std::cout << v << " | " << u << std::endl;
+// 		if (vleft)
+// 		vleft->parent = u;
+// 		if (vright)
+// 		vright->parent = u;
+// 		if (vparent && vparent->left == v)
+// 			vparent->left = u;
+// 		else if (vparent)
+// 			vparent->right = u;
 
-		if (uleft)
-		uleft->parent = v;
-		if (uright)
-		uright->parent = v;
-		if (uparent && uparent->left == u)
-			uparent->left = v;
-		else if (uparent)
-			uparent->right = v;
+// 		if (uleft)
+// 		uleft->parent = v;
+// 		if (uright)
+// 		uright->parent = v;
+// 		if (uparent && uparent->left == u)
+// 			uparent->left = v;
+// 		else if (uparent)
+// 			uparent->right = v;
 
-		v->parent = uparent;
-		v->left = uleft;
-		v->right = uright;
-		u->parent = vparent;
-		u->left = vleft;
-		u->right = vright;
-		swapColors(u,v);
-		if (root->parent != root)
-		{
-		while (root->parent)
-			root = root->parent;
-		}
-		if (root->parent == root && size == 0) root = NULL;
-		std::cout << "//////////////" << size << std::endl;
-		print_tree(this->root,0);
-
-	}
+// 		v->parent = uparent;
+// 		v->left = uleft;
+// 		v->right = uright;
+// 		u->parent = vparent;
+// 		u->left = vleft;
+// 		u->right = vright;
+// 		swapColors(u,v);
+// 		if (root->parent != root)
+// 		{
+// 		while (root->parent)
+// 			root = root->parent;
+// 		}
+// 		if (root->parent == root && size == 0) root = NULL;
+// 	}
 
 
 template<class Key,class T,class Comp>

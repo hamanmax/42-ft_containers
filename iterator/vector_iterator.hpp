@@ -29,43 +29,43 @@ class vector_iterator : public ft::iterator<Category, T>
 		vector_iterator( const vector_iterator<U>  & copy) {_mptr = copy.getptr();}
 		~vector_iterator();
 
-		reference operator*() const;
-		pointer operator->() const;
+		reference	operator*() const;
+		pointer		operator->() const;
 
-		pointer getptr()const;
+		pointer		getptr()const;
 
-		bool operator==(const vector_iterator& Other) const;
+		bool		operator==(const vector_iterator& Other) const;
 
-		bool operator!=(const vector_iterator& Other) const;
+		bool		operator!=(const vector_iterator& Other) const;
 
-		bool operator<(const vector_iterator& Other) const;
+		bool		operator<(const vector_iterator& Other) const;
 
-		bool operator>(const vector_iterator& Other) const;
+		bool		operator>(const vector_iterator& Other) const;
 
-		bool operator<=(const vector_iterator& Other) const;
+		bool		operator<=(const vector_iterator& Other) const;
 
-		bool operator>=(const vector_iterator& Other) const;
+		bool		operator>=(const vector_iterator& Other) const;
 
-		reference operator[](const ssize_t n)const;
+		reference	operator[](const ssize_t n)const;
 
 		vector_iterator&	operator++();
-		vector_iterator	operator++(int);
-		vector_iterator &operator+=(const ssize_t n);
-		vector_iterator operator+(const ssize_t n)const;
+		vector_iterator		operator++(int);
+		vector_iterator&	operator+=(const ssize_t n);
+		vector_iterator		operator+(const ssize_t n)const;
 
 		vector_iterator&	operator--();
-		vector_iterator	operator--(int);
-		vector_iterator &operator-=(const ssize_t n);
-		vector_iterator operator-(const ssize_t n)const;
+		vector_iterator		operator--(int);
+		vector_iterator&	operator-=(const ssize_t n);
+		vector_iterator		operator-(const ssize_t n)const;
 
-		difference_type	operator-(vector_iterator it)const;
+		difference_type		operator-(vector_iterator it)const;
 
-		friend vector_iterator operator+(int nb,const vector_iterator& it) {
+		friend vector_iterator	operator+(int nb,const vector_iterator& it) {
 			vector_iterator New(it);
 			return (New += nb);
 		}
 
-		friend vector_iterator operator-(int nb,const vector_iterator& it) {
+		friend vector_iterator	operator-(int nb,const vector_iterator& it) {
 			vector_iterator New(it);
 			return (New -= nb);
 		}
